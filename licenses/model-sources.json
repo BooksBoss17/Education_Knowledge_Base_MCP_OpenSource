@@ -1,0 +1,304 @@
+[
+  {
+    "model_id": "ch-svtrv2-rec",
+    "repo": "PaddlePaddle/ch_SVTRv2_rec",
+    "revision": "67349283ac400fb34f73a5c32f1c0c00df5ee26a",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/ch_SVTRv2_rec/revision/67349283ac400fb34f73a5c32f1c0c00df5ee26a?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "textline_recognition"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "got-ocr2-0",
+    "repo": "stepfun-ai/GOT-OCR-2.0-hf",
+    "revision": "d3017ef2c2c1395888c8d635c5e0508bcb0ac78d",
+    "evidence_url": "https://huggingface.co/api/models/stepfun-ai/GOT-OCR-2.0-hf/revision/d3017ef2c2c1395888c8d635c5e0508bcb0ac78d?blobs=true",
+    "card": {
+      "pipeline_tag": "image-text-to-text",
+      "library_name": "transformers",
+      "language": [
+        "multilingual"
+      ],
+      "tags": [
+        "got",
+        "vision-language",
+        "ocr2.0"
+      ],
+      "license": "apache-2.0"
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "pp-doclayout-plus-l",
+    "repo": "PaddlePaddle/PP-DocLayout_plus-L",
+    "revision": "aa52b8528c84f9b1a34ac3a88fe0e576edb9d11d",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/PP-DocLayout_plus-L/revision/aa52b8528c84f9b1a34ac3a88fe0e576edb9d11d?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "layout_detection"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "pp-formulanet-plus-l",
+    "repo": "PaddlePaddle/PP-FormulaNet_plus-L",
+    "revision": "0809597a77f735bfb35354edb632f2e6dff606f3",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/PP-FormulaNet_plus-L/revision/0809597a77f735bfb35354edb632f2e6dff606f3?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "formula_recognition"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "pp-lcnet-x1-0-table-cls",
+    "repo": "PaddlePaddle/PP-LCNet_x1_0_table_cls",
+    "revision": "2fa6323e7dab88fa883081db1460995f46af2922",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/PP-LCNet_x1_0_table_cls/revision/2fa6323e7dab88fa883081db1460995f46af2922?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "wired_table_classification"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "pp-ocrv6-medium-det",
+    "repo": "PaddlePaddle/PP-OCRv6_medium_det",
+    "revision": "8e0f56fb2ef86b461d99cfc7ac5c137738985f61",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/PP-OCRv6_medium_det/revision/8e0f56fb2ef86b461d99cfc7ac5c137738985f61?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "textline_detection"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "pp-ocrv6-medium-rec",
+    "repo": "PaddlePaddle/PP-OCRv6_medium_rec",
+    "revision": "e5a92bcbc5cc1b494628e458d267778f0704fd7c",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/PP-OCRv6_medium_rec/revision/e5a92bcbc5cc1b494628e458d267778f0704fd7c?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "text_recognition"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "qwen3-embedding-4b",
+    "repo": "Qwen/Qwen3-Embedding-4B",
+    "revision": "5cf2132abc99cad020ac570b19d031efec650f2b",
+    "evidence_url": "https://huggingface.co/api/models/Qwen/Qwen3-Embedding-4B/revision/5cf2132abc99cad020ac570b19d031efec650f2b?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "base_model": [
+        "Qwen/Qwen3-4B-Base"
+      ],
+      "tags": [
+        "transformers",
+        "sentence-transformers",
+        "sentence-similarity",
+        "feature-extraction",
+        "text-embeddings-inference"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "rt-detr-l-wired-table-cell-det",
+    "repo": "PaddlePaddle/RT-DETR-L_wired_table_cell_det",
+    "revision": "e2bd53c06b3a815d86acbf5c6779dada58819cfe",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/RT-DETR-L_wired_table_cell_det/revision/e2bd53c06b3a815d86acbf5c6779dada58819cfe?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "table_cells_detection"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "rt-detr-l-wireless-table-cell-det",
+    "repo": "PaddlePaddle/RT-DETR-L_wireless_table_cell_det",
+    "revision": "25ca86356a601c877476bb0dcc5fd09153d9d64d",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/RT-DETR-L_wireless_table_cell_det/revision/25ca86356a601c877476bb0dcc5fd09153d9d64d?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "table_cells_detection"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "slanext-wired",
+    "repo": "PaddlePaddle/SLANeXt_wired",
+    "revision": "763069fcda6a065f2171753205a32bf899a88d15",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/SLANeXt_wired/revision/763069fcda6a065f2171753205a32bf899a88d15?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "table_structure_recognition"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "slanext-wireless",
+    "repo": "PaddlePaddle/SLANeXt_wireless",
+    "revision": "1b73e05c752d2e0763b5d205846dec23122e5808",
+    "evidence_url": "https://huggingface.co/api/models/PaddlePaddle/SLANeXt_wireless/revision/1b73e05c752d2e0763b5d205846dec23122e5808?blobs=true",
+    "card": {
+      "license": "apache-2.0",
+      "library_name": "PaddleOCR",
+      "language": [
+        "en",
+        "zh"
+      ],
+      "pipeline_tag": "image-to-text",
+      "tags": [
+        "OCR",
+        "PaddlePaddle",
+        "PaddleOCR",
+        "table_structure_recognition"
+      ]
+    },
+    "declared_license": "apache-2.0",
+    "distribution": "DOWNLOAD_ONLY"
+  },
+  {
+    "model_id": "wemm-embedding-4b",
+    "repo": "tencent/WeMM-Embedding-4B",
+    "revision": "41a4fafdd26252ddff05c025413af7e61e26f08e",
+    "evidence_url": "https://huggingface.co/api/models/tencent/WeMM-Embedding-4B/revision/41a4fafdd26252ddff05c025413af7e61e26f08e?blobs=true",
+    "card": {
+      "library_name": "transformers",
+      "license": "other",
+      "license_name": "apache-2.0",
+      "license_link": "https://huggingface.co/tencent/WeMM-Embedding-4B/blob/main/LICENSE",
+      "base_model": [
+        "Qwen/Qwen3.5-4B"
+      ],
+      "pipeline_tag": "feature-extraction",
+      "tags": [
+        "sentence-transformers",
+        "multimodal-embedding",
+        "text-embedding",
+        "image-embedding",
+        "video-embedding",
+        "mrl"
+      ],
+      "language": [
+        "zh",
+        "en"
+      ]
+    },
+    "declared_license": "other",
+    "distribution": "DOWNLOAD_ONLY"
+  }
+]

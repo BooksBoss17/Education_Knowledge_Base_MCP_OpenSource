@@ -1,0 +1,58 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "rt-detr-l-wired-table-cell-det",
+  "display_name": "RT-DETR-L_wired_table_cell_det",
+  "engine": "table",
+  "task": "table_cell_detection",
+  "provider": "PaddlePaddle",
+  "upstream": "PaddlePaddle/RT-DETR-L_wired_table_cell_det",
+  "upstream_source": "PaddlePaddle/RT-DETR-L_wired_table_cell_det",
+  "upstream_revision": "e2bd53c06b3a815d86acbf5c6779dada58819cfe",
+  "model_fingerprint": "169e8e283e4dc94fac3511d7ac3fed4b218790bc08bc8396b9d836345b4daa94",
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "runtime_profile": "win-x64-py311-cuda126",
+  "expected_device": "gpu:0",
+  "precision_baseline": "fp32",
+  "integration_status": "MODEL_READY",
+  "license": {
+    "status": "VERIFIED_FROM_MODEL_CARD_METADATA",
+    "spdx": "Apache-2.0",
+    "source_file": "README.md"
+  },
+  "file_count": 6,
+  "total_bytes": 129945728,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 1575,
+      "sha256": "a3a43406012ee8c7b9b38dfab1b11610f33e8245cd864a9a9302d042616a859e"
+    },
+    {
+      "path": "config.json",
+      "bytes": 5695,
+      "sha256": "411eaf19f4cbdfcc5bf4da8aaf15eeb57e7e98213cb721cdb890ec0fa2c1930e"
+    },
+    {
+      "path": "inference.json",
+      "bytes": 1081363,
+      "sha256": "abea237f1e53d3dc3bf7ea1321dfebe78552a6070e567dfc94028b622fd575e8"
+    },
+    {
+      "path": "inference.pdiparams",
+      "bytes": 128841073,
+      "sha256": "357321c2845f0a035e8d118622649685a3cdb89d28b09a64e45a5a3df7a9fedc"
+    },
+    {
+      "path": "inference.yml",
+      "bytes": 1630,
+      "sha256": "edf6d6180f2b9e3e666c744ee5ded38a72c6ef9056cd193250e3e55ba268acef"
+    },
+    {
+      "path": "README.md",
+      "bytes": 14392,
+      "sha256": "400b7336ab11edafd5c00fb2ceff791f2e50bc99ccc7fbe3e3e48832ae97a463"
+    }
+  ]
+}

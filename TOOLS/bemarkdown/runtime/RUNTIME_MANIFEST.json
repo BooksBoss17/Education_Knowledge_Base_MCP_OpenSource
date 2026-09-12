@@ -1,0 +1,727 @@
+{
+  "schema": "bemarkdown-runtime-manifest-v1",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "validation_status": "PUBLIC_VALIDATED_READY_FULL",
+  "tool_version": "0.2.0",
+  "tool_wheel": {
+    "path": "dist/bemarkdown-0.2.0-py3-none-any.whl",
+    "sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295"
+  },
+  "profile": "profiles/win-x64-py311-cuda126.json",
+  "platform": "Windows x64",
+  "python": "CPython 3.11.x",
+  "layers": {
+    "core": [
+      "beautifulsoup4==4.15.0",
+      "lxml==6.1.2",
+      "mathml2latex==0.2.12",
+      "mathtypejx @ https://codeload.github.com/a917470154/mathtypejx/zip/7d90e7274c85cf56ac28d4d15e593044693d7e70#sha256=33d9e6410aaf47406621e30b1bcf3f73eee031d21c17feb26e8dc64b789d31cd",
+      "olefile==0.47",
+      "pillow==12.1.0",
+      "PyMuPDF==1.27.2.3",
+      "python-docx==1.2.0",
+      "soupsieve==2.9.2",
+      "typing_extensions==4.15.0"
+    ],
+    "formula_ocr": [
+      "aistudio_sdk==0.3.9",
+      "annotated-types==0.8.0",
+      "anyio==4.12.1",
+      "bce-python-sdk==0.9.76",
+      "cachetools==7.1.7",
+      "certifi==2026.1.4",
+      "chardet==7.6.0",
+      "charset-normalizer==3.5.1",
+      "click==8.4.2",
+      "colorama==0.4.6",
+      "colorlog==6.12.0",
+      "crc32c==2.9",
+      "cssselect==1.5.0",
+      "cssutils==2.15.0",
+      "einops==0.8.2",
+      "encutils==1.0.0",
+      "et_xmlfile==2.0.0",
+      "filelock==3.32.3",
+      "fsspec==2026.7.0",
+      "ftfy==6.3.1",
+      "future==1.0.0",
+      "h11==0.16.0",
+      "hf-xet==1.6.0",
+      "httpcore==1.0.9",
+      "httpx==0.28.1",
+      "huggingface_hub==1.28.0",
+      "idna==3.11",
+      "imagesize==2.0.0",
+      "Jinja2==3.1.6",
+      "joblib==1.5.3",
+      "latex2mathml==3.81.0",
+      "MarkupSafe==3.0.3",
+      "modelscope==1.39.1",
+      "modelscope-hub==0.2.0",
+      "more-itertools==11.1.0",
+      "narwhals==2.25.0",
+      "networkx==3.6.1",
+      "numpy==2.3.5",
+      "nvidia-cublas-cu12==12.6.4.1",
+      "nvidia-cuda-runtime-cu12==12.6.77",
+      "nvidia-cudnn-cu12==9.9.0.52",
+      "nvidia-cufft-cu12==11.3.0.4",
+      "nvidia-curand-cu12==10.3.7.77",
+      "nvidia-cusolver-cu12==11.7.1.2",
+      "nvidia-cusparse-cu12==12.5.4.2",
+      "nvidia-nvjitlink-cu12==12.9.86",
+      "opencv-contrib-python==4.10.0.84",
+      "openpyxl==3.1.5",
+      "opt-einsum==3.3.0",
+      "packaging==26.3",
+      "paddlepaddle-gpu==3.2.2",
+      "paddlex==3.7.2",
+      "pandas==3.0.5",
+      "premailer==3.10.0",
+      "prettytable==3.18.0",
+      "protobuf==6.33.4",
+      "psutil==7.2.2",
+      "py-cpuinfo==9.0.0",
+      "pyclipper==1.4.0",
+      "pycryptodome==3.23.0",
+      "pydantic==2.13.4",
+      "pydantic_core==2.46.4",
+      "pypdfium2==5.13.0",
+      "python-bidi==0.6.11",
+      "python-dateutil==2.9.0.post0",
+      "PyYAML==6.0.2",
+      "regex==2026.7.19",
+      "requests==2.34.2",
+      "ruamel.yaml==0.19.1",
+      "safetensors==0.7.0",
+      "scikit-learn==1.9.0",
+      "scipy==1.17.1",
+      "sentencepiece==0.2.2",
+      "shapely==2.1.2",
+      "six==1.17.0",
+      "threadpoolctl==3.6.0",
+      "tiktoken==0.14.0",
+      "tokenizers==0.23.1",
+      "tqdm==4.70.0",
+      "typing-inspection==0.4.4",
+      "tzdata==2026.3",
+      "ujson==5.13.0",
+      "urllib3==2.7.0",
+      "wcwidth==0.8.2"
+    ],
+    "text_ensemble": [
+      "accelerate==1.14.0",
+      "annotated-doc==0.0.5",
+      "markdown-it-py==4.2.0",
+      "mdurl==0.1.2",
+      "mpmath==1.3.0",
+      "Pygments==2.21.0",
+      "rich==15.0.0",
+      "safetensors==0.8.0",
+      "shellingham==1.5.4",
+      "sympy==1.14.0",
+      "tokenizers==0.22.2",
+      "torch==2.13.0+cu130",
+      "torchvision==0.28.0+cu130",
+      "transformers==5.15.1",
+      "typer==0.27.1"
+    ]
+  },
+  "model_suites": {
+    "legacy_paddle": {
+      "path": "model_suite.json",
+      "suite_id": "bemarkdown-paddle-document-suite-v1",
+      "suite_fingerprint": "1521f6cccb7b01e7f2c189cc3e23d8f60f971e554f11d9041ddad8526c20c47a",
+      "model_count": 9
+    },
+    "pdf_production": {
+      "path": "pdf_production_suite.json",
+      "suite_id": "bemarkdown-pdf-production-suite-v1",
+      "suite_fingerprint": "d6c862f5659adb3994092b5358be10d1232119d8bb454e2df435dae4789bb082",
+      "model_count": 11
+    }
+  },
+  "mathtypejx": {
+    "version": "0.1.0",
+    "revision": "7d90e7274c85cf56ac28d4d15e593044693d7e70",
+    "source": "https://github.com/a917470154/mathtypejx"
+  },
+  "paddle_baseline": {
+    "paddlepaddle_gpu": "3.2.2",
+    "paddlex": "3.7.2",
+    "cuda_runtime": "12.6",
+    "cudnn_compiled": "9.9.0",
+    "cudnn_package": "9.9.0.52",
+    "device": "gpu:0",
+    "precision": "fp32",
+    "cpu_fallback": false
+  },
+  "text_ensemble": {
+    "shared_runtime_required": true,
+    "compatibility_status": "PENDING_FORMAL_STAGED_SMOKE",
+    "providers": {
+      "A": "pp-ocrv6-medium-rec",
+      "B": "ch-svtrv2-rec",
+      "C": "got-ocr2-0"
+    },
+    "torch": "2.13.0+cu130",
+    "torchvision": "0.28.0+cu130",
+    "transformers": "5.15.1",
+    "accelerate": "1.14.0",
+    "torch_cuda_wheel_abi": "cu130",
+    "paddle_cuda_baseline_unchanged": "12.6",
+    "got_precision": "bf16",
+    "got_batch_size": 1,
+    "got_do_sample": false,
+    "got_max_new_tokens": 256,
+    "cpu_fallback": false
+  },
+  "wheel_reproducibility": {
+    "byte_identical": true,
+    "first_sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295",
+    "second_sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295",
+    "content_identical": true,
+    "content_sha256": "01f9b180f0f22517fa44bccf338b3314da71aec3369dd7dcd78ca11ff48d6d9c"
+  },
+  "wheel_runtime_import_closure": {
+    "schema": "bemarkdown-wheel-runtime-import-closure-v1",
+    "entry_modules": [
+      "bemarkdown",
+      "bemarkdown.__main__",
+      "bemarkdown.cli",
+      "bemarkdown.production",
+      "bemarkdown.pdf.workers.ch_svtrv2_rec",
+      "bemarkdown.pdf.workers.got_ocr2"
+    ],
+    "reachable_modules": [
+      "bemarkdown",
+      "bemarkdown.__main__",
+      "bemarkdown._vendor.omml2latex_parser",
+      "bemarkdown.agent_task_contract",
+      "bemarkdown.asset_contract",
+      "bemarkdown.batch",
+      "bemarkdown.cli",
+      "bemarkdown.config",
+      "bemarkdown.doctor",
+      "bemarkdown.docx_image_content",
+      "bemarkdown.docx_visual",
+      "bemarkdown.drawingml",
+      "bemarkdown.eq",
+      "bemarkdown.formula",
+      "bemarkdown.formula_ocr",
+      "bemarkdown.formula_runtime_owner",
+      "bemarkdown.formulanet_runtime",
+      "bemarkdown.ir",
+      "bemarkdown.model_registry",
+      "bemarkdown.model_runtime",
+      "bemarkdown.model_suite",
+      "bemarkdown.model_suite_runtime",
+      "bemarkdown.mtef_cache",
+      "bemarkdown.namespaces",
+      "bemarkdown.package",
+      "bemarkdown.paddlex_runtime",
+      "bemarkdown.pdf.caption_order",
+      "bemarkdown.pdf.cff_glyph_bounds",
+      "bemarkdown.pdf.clean_markdown",
+      "bemarkdown.pdf.detection_batches",
+      "bemarkdown.pdf.diagram_bounds",
+      "bemarkdown.pdf.figure_formula_support",
+      "bemarkdown.pdf.figure_graphic_markers",
+      "bemarkdown.pdf.figure_label_debug",
+      "bemarkdown.pdf.figure_label_segments",
+      "bemarkdown.pdf.figure_labels",
+      "bemarkdown.pdf.figure_symbols",
+      "bemarkdown.pdf.figure_waveforms",
+      "bemarkdown.pdf.formula_containment",
+      "bemarkdown.pdf.formula_ink_bounds",
+      "bemarkdown.pdf.fraction_repair_runtime",
+      "bemarkdown.pdf.fraction_structure_repair",
+      "bemarkdown.pdf.got_batching",
+      "bemarkdown.pdf.graphics_render",
+      "bemarkdown.pdf.image_containment",
+      "bemarkdown.pdf.inline_atomic_superscript",
+      "bemarkdown.pdf.inline_math_candidates",
+      "bemarkdown.pdf.inline_math_repair",
+      "bemarkdown.pdf.inline_math_runtime",
+      "bemarkdown.pdf.isolated_image_content",
+      "bemarkdown.pdf.modular_pipeline",
+      "bemarkdown.pdf.native_column_order",
+      "bemarkdown.pdf.native_drawn_blanks",
+      "bemarkdown.pdf.native_font_unicode",
+      "bemarkdown.pdf.native_glyph_bounds",
+      "bemarkdown.pdf.native_image_appearance",
+      "bemarkdown.pdf.native_margin_notes",
+      "bemarkdown.pdf.native_margin_titles",
+      "bemarkdown.pdf.native_math",
+      "bemarkdown.pdf.native_visibility",
+      "bemarkdown.pdf.non_text_ownership",
+      "bemarkdown.pdf.ocr_character_geometry",
+      "bemarkdown.pdf.page_review",
+      "bemarkdown.pdf.page_visual_text_recovery",
+      "bemarkdown.pdf.pipeline_mode",
+      "bemarkdown.pdf.production_runtime",
+      "bemarkdown.pdf.production_three_model_live",
+      "bemarkdown.pdf.region_line_coverage",
+      "bemarkdown.pdf.ruled_writing_area",
+      "bemarkdown.pdf.source_evidence",
+      "bemarkdown.pdf.source_table_grid",
+      "bemarkdown.pdf.source_table_math",
+      "bemarkdown.pdf.table_bounds",
+      "bemarkdown.pdf.table_formula_review",
+      "bemarkdown.pdf.table_runtime",
+      "bemarkdown.pdf.table_source_markers",
+      "bemarkdown.pdf.text_containment",
+      "bemarkdown.pdf.text_evidence",
+      "bemarkdown.pdf.text_scope_review",
+      "bemarkdown.pdf.three_model_ocr",
+      "bemarkdown.pdf.visible_vectors",
+      "bemarkdown.pdf.vram_monitor",
+      "bemarkdown.pdf.workers",
+      "bemarkdown.pdf.workers.ch_svtrv2_rec",
+      "bemarkdown.pdf.workers.deferred_got",
+      "bemarkdown.pdf.workers.got_ocr2",
+      "bemarkdown.pdf_content_quality",
+      "bemarkdown.pdf_content_router",
+      "bemarkdown.pdf_document_ir",
+      "bemarkdown.pdf_formula_consensus",
+      "bemarkdown.pdf_formula_visual",
+      "bemarkdown.pdf_layout_fusion",
+      "bemarkdown.pdf_layout_runtime",
+      "bemarkdown.pdf_ocr_recovery",
+      "bemarkdown.pdf_output_audit",
+      "bemarkdown.pdf_region_ir",
+      "bemarkdown.pdf_source",
+      "bemarkdown.pdf_table_engine",
+      "bemarkdown.pipeline",
+      "bemarkdown.production",
+      "bemarkdown.production_gpu_closeout",
+      "bemarkdown.production_runtime",
+      "bemarkdown.release",
+      "bemarkdown.resource_profiles",
+      "bemarkdown.scanner",
+      "bemarkdown.serializer",
+      "bemarkdown.text_recognition_contract",
+      "bemarkdown.validator",
+      "bemarkdown.wmf",
+      "bemarkdown.wmf_renderer"
+    ],
+    "forbidden_reachable_modules": [],
+    "missing_entry_modules": [],
+    "parse_error_modules": [],
+    "import_edges": {
+      "bemarkdown": [
+        "bemarkdown.batch",
+        "bemarkdown.formula_ocr",
+        "bemarkdown.formulanet_runtime",
+        "bemarkdown.mtef_cache",
+        "bemarkdown.package",
+        "bemarkdown.pipeline",
+        "bemarkdown.production",
+        "bemarkdown.validator"
+      ],
+      "bemarkdown.__main__": [
+        "bemarkdown.cli"
+      ],
+      "bemarkdown.cli": [
+        "bemarkdown.batch",
+        "bemarkdown.config",
+        "bemarkdown.doctor",
+        "bemarkdown.package",
+        "bemarkdown.pdf_source",
+        "bemarkdown.production"
+      ],
+      "bemarkdown.production": [
+        "bemarkdown.config",
+        "bemarkdown.docx_image_content",
+        "bemarkdown.docx_visual",
+        "bemarkdown.formula_ocr",
+        "bemarkdown.mtef_cache",
+        "bemarkdown.package",
+        "bemarkdown.pdf.clean_markdown",
+        "bemarkdown.pdf.production_runtime",
+        "bemarkdown.pipeline",
+        "bemarkdown.resource_profiles"
+      ],
+      "bemarkdown.pdf.workers.ch_svtrv2_rec": [
+        "bemarkdown.model_registry",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.pdf.workers.got_ocr2": [
+        "bemarkdown.pdf.got_batching",
+        "bemarkdown.pdf.vram_monitor",
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.batch": [
+        "bemarkdown.config",
+        "bemarkdown.formula_runtime_owner",
+        "bemarkdown.package",
+        "bemarkdown.pdf_source",
+        "bemarkdown.production"
+      ],
+      "bemarkdown.formula_ocr": [
+        "bemarkdown.formulanet_runtime",
+        "bemarkdown.ir",
+        "bemarkdown.model_registry"
+      ],
+      "bemarkdown.formulanet_runtime": [
+        "bemarkdown.model_registry",
+        "bemarkdown.model_runtime",
+        "bemarkdown.paddlex_runtime"
+      ],
+      "bemarkdown.mtef_cache": [
+        "bemarkdown.formula",
+        "bemarkdown.validator"
+      ],
+      "bemarkdown.package": [
+        "bemarkdown.namespaces"
+      ],
+      "bemarkdown.pipeline": [
+        "bemarkdown.asset_contract",
+        "bemarkdown.formula_ocr",
+        "bemarkdown.mtef_cache",
+        "bemarkdown.package",
+        "bemarkdown.scanner",
+        "bemarkdown.serializer"
+      ],
+      "bemarkdown.validator": [
+        "bemarkdown.formula"
+      ],
+      "bemarkdown.config": [],
+      "bemarkdown.doctor": [
+        "bemarkdown.asset_contract",
+        "bemarkdown.config",
+        "bemarkdown.model_registry",
+        "bemarkdown.model_suite",
+        "bemarkdown.model_suite_runtime",
+        "bemarkdown.mtef_cache",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.production",
+        "bemarkdown.release",
+        "bemarkdown.wmf"
+      ],
+      "bemarkdown.pdf_source": [
+        "bemarkdown.pdf.native_image_appearance",
+        "bemarkdown.production"
+      ],
+      "bemarkdown.docx_image_content": [
+        "bemarkdown.asset_contract",
+        "bemarkdown.ir",
+        "bemarkdown.pdf.isolated_image_content",
+        "bemarkdown.pdf.production_runtime",
+        "bemarkdown.pdf_layout_runtime",
+        "bemarkdown.pdf_output_audit",
+        "bemarkdown.pdf_region_ir",
+        "bemarkdown.production",
+        "bemarkdown.resource_profiles"
+      ],
+      "bemarkdown.docx_visual": [
+        "bemarkdown.package",
+        "bemarkdown.production"
+      ],
+      "bemarkdown.pdf.clean_markdown": [],
+      "bemarkdown.pdf.production_runtime": [
+        "bemarkdown.formula_ocr",
+        "bemarkdown.pdf.diagram_bounds",
+        "bemarkdown.pdf.figure_label_debug",
+        "bemarkdown.pdf.figure_label_segments",
+        "bemarkdown.pdf.figure_labels",
+        "bemarkdown.pdf.figure_symbols",
+        "bemarkdown.pdf.fraction_repair_runtime",
+        "bemarkdown.pdf.inline_math_runtime",
+        "bemarkdown.pdf.modular_pipeline",
+        "bemarkdown.pdf.production_three_model_live",
+        "bemarkdown.pdf.source_evidence",
+        "bemarkdown.pdf.table_bounds",
+        "bemarkdown.pdf.table_formula_review",
+        "bemarkdown.pdf.table_runtime",
+        "bemarkdown.pdf.text_scope_review",
+        "bemarkdown.pdf_content_router",
+        "bemarkdown.pdf_document_ir",
+        "bemarkdown.pdf_layout_fusion",
+        "bemarkdown.pdf_layout_runtime",
+        "bemarkdown.pdf_output_audit",
+        "bemarkdown.pdf_region_ir",
+        "bemarkdown.resource_profiles"
+      ],
+      "bemarkdown.resource_profiles": [],
+      "bemarkdown.model_registry": [
+        "bemarkdown.config"
+      ],
+      "bemarkdown.paddlex_runtime": [],
+      "bemarkdown.text_recognition_contract": [],
+      "bemarkdown.pdf.got_batching": [],
+      "bemarkdown.pdf.vram_monitor": [],
+      "bemarkdown.formula_runtime_owner": [
+        "bemarkdown.formulanet_runtime"
+      ],
+      "bemarkdown.ir": [],
+      "bemarkdown.model_runtime": [],
+      "bemarkdown.formula": [
+        "bemarkdown._vendor.omml2latex_parser",
+        "bemarkdown.eq"
+      ],
+      "bemarkdown.namespaces": [],
+      "bemarkdown.asset_contract": [
+        "bemarkdown.ir"
+      ],
+      "bemarkdown.scanner": [
+        "bemarkdown.drawingml",
+        "bemarkdown.formula",
+        "bemarkdown.ir",
+        "bemarkdown.mtef_cache",
+        "bemarkdown.namespaces",
+        "bemarkdown.package",
+        "bemarkdown.validator",
+        "bemarkdown.wmf",
+        "bemarkdown.wmf_renderer"
+      ],
+      "bemarkdown.serializer": [
+        "bemarkdown.ir"
+      ],
+      "bemarkdown.model_suite": [
+        "bemarkdown.model_registry",
+        "bemarkdown.release"
+      ],
+      "bemarkdown.model_suite_runtime": [
+        "bemarkdown.model_registry",
+        "bemarkdown.model_runtime",
+        "bemarkdown.model_suite",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.release"
+      ],
+      "bemarkdown.release": [
+        "bemarkdown",
+        "bemarkdown.asset_contract",
+        "bemarkdown.production"
+      ],
+      "bemarkdown.wmf": [],
+      "bemarkdown.pdf.native_image_appearance": [],
+      "bemarkdown.pdf.isolated_image_content": [
+        "bemarkdown.pdf.fraction_structure_repair"
+      ],
+      "bemarkdown.pdf_layout_runtime": [
+        "bemarkdown.model_registry",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.pdf_region_ir"
+      ],
+      "bemarkdown.pdf_output_audit": [
+        "bemarkdown.formula",
+        "bemarkdown.pdf.clean_markdown",
+        "bemarkdown.pdf.figure_labels",
+        "bemarkdown.pdf_document_ir",
+        "bemarkdown.pdf_table_engine",
+        "bemarkdown.validator"
+      ],
+      "bemarkdown.pdf_region_ir": [],
+      "bemarkdown.pdf.diagram_bounds": [
+        "bemarkdown.pdf_region_ir"
+      ],
+      "bemarkdown.pdf.figure_label_debug": [],
+      "bemarkdown.pdf.figure_label_segments": [
+        "bemarkdown.pdf_content_router"
+      ],
+      "bemarkdown.pdf.figure_labels": [
+        "bemarkdown.formula_ocr",
+        "bemarkdown.formulanet_runtime",
+        "bemarkdown.pdf.figure_formula_support",
+        "bemarkdown.pdf.figure_graphic_markers",
+        "bemarkdown.pdf.figure_symbols",
+        "bemarkdown.pdf.figure_waveforms",
+        "bemarkdown.pdf.page_visual_text_recovery",
+        "bemarkdown.pdf_content_router",
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.pdf.figure_symbols": [],
+      "bemarkdown.pdf.fraction_repair_runtime": [
+        "bemarkdown.pdf.fraction_structure_repair",
+        "bemarkdown.pdf.text_evidence",
+        "bemarkdown.pdf_content_quality"
+      ],
+      "bemarkdown.pdf.inline_math_runtime": [
+        "bemarkdown.pdf.inline_atomic_superscript",
+        "bemarkdown.pdf.inline_math_candidates",
+        "bemarkdown.pdf.inline_math_repair",
+        "bemarkdown.pdf.ocr_character_geometry",
+        "bemarkdown.pdf.text_evidence"
+      ],
+      "bemarkdown.pdf.modular_pipeline": [
+        "bemarkdown.pdf.figure_labels",
+        "bemarkdown.pdf.pipeline_mode",
+        "bemarkdown.pdf_content_router",
+        "bemarkdown.pdf_document_ir",
+        "bemarkdown.pdf_layout_fusion",
+        "bemarkdown.pdf_output_audit",
+        "bemarkdown.pdf_source",
+        "bemarkdown.pdf_table_engine",
+        "bemarkdown.production_gpu_closeout"
+      ],
+      "bemarkdown.pdf.production_three_model_live": [
+        "bemarkdown.agent_task_contract",
+        "bemarkdown.model_registry",
+        "bemarkdown.pdf.got_batching",
+        "bemarkdown.pdf.inline_math_runtime",
+        "bemarkdown.pdf.page_visual_text_recovery",
+        "bemarkdown.pdf.region_line_coverage",
+        "bemarkdown.pdf.text_evidence",
+        "bemarkdown.pdf.three_model_ocr",
+        "bemarkdown.pdf.workers",
+        "bemarkdown.pdf.workers.ch_svtrv2_rec",
+        "bemarkdown.pdf.workers.deferred_got",
+        "bemarkdown.pdf_content_router",
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.pdf.source_evidence": [
+        "bemarkdown.pdf.native_drawn_blanks",
+        "bemarkdown.pdf.native_font_unicode",
+        "bemarkdown.pdf.native_glyph_bounds",
+        "bemarkdown.pdf.native_math",
+        "bemarkdown.pdf.native_visibility",
+        "bemarkdown.pdf.visible_vectors"
+      ],
+      "bemarkdown.pdf.table_bounds": [
+        "bemarkdown.pdf_region_ir"
+      ],
+      "bemarkdown.pdf.table_formula_review": [],
+      "bemarkdown.pdf.table_runtime": [
+        "bemarkdown.model_registry",
+        "bemarkdown.model_runtime",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.pdf.source_table_grid",
+        "bemarkdown.pdf.table_source_markers",
+        "bemarkdown.pdf_content_router",
+        "bemarkdown.pdf_document_ir",
+        "bemarkdown.pdf_table_engine"
+      ],
+      "bemarkdown.pdf.text_scope_review": [],
+      "bemarkdown.pdf_content_router": [
+        "bemarkdown.formula_ocr",
+        "bemarkdown.formulanet_runtime",
+        "bemarkdown.model_registry",
+        "bemarkdown.model_runtime",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.pdf.detection_batches",
+        "bemarkdown.pdf.formula_ink_bounds",
+        "bemarkdown.pdf.graphics_render",
+        "bemarkdown.pdf.image_containment",
+        "bemarkdown.pdf.native_font_unicode",
+        "bemarkdown.pdf.native_glyph_bounds",
+        "bemarkdown.pdf.native_margin_titles",
+        "bemarkdown.pdf.native_math",
+        "bemarkdown.pdf.non_text_ownership",
+        "bemarkdown.pdf.ocr_character_geometry",
+        "bemarkdown.pdf.page_review",
+        "bemarkdown.pdf.region_line_coverage",
+        "bemarkdown.pdf.ruled_writing_area",
+        "bemarkdown.pdf_content_quality",
+        "bemarkdown.pdf_formula_consensus",
+        "bemarkdown.pdf_formula_visual",
+        "bemarkdown.pdf_ocr_recovery",
+        "bemarkdown.production_runtime"
+      ],
+      "bemarkdown.pdf_document_ir": [
+        "bemarkdown.pdf.caption_order",
+        "bemarkdown.pdf.figure_labels",
+        "bemarkdown.pdf.formula_containment",
+        "bemarkdown.pdf.image_containment",
+        "bemarkdown.pdf.native_column_order",
+        "bemarkdown.pdf.native_margin_notes",
+        "bemarkdown.pdf.text_containment",
+        "bemarkdown.pdf_table_engine"
+      ],
+      "bemarkdown.pdf_layout_fusion": [],
+      "bemarkdown._vendor.omml2latex_parser": [],
+      "bemarkdown.eq": [],
+      "bemarkdown.drawingml": [
+        "bemarkdown.namespaces"
+      ],
+      "bemarkdown.wmf_renderer": [
+        "bemarkdown.wmf"
+      ],
+      "bemarkdown.pdf.fraction_structure_repair": [
+        "bemarkdown.pdf.inline_math_repair"
+      ],
+      "bemarkdown.pdf_table_engine": [
+        "bemarkdown.pdf.source_table_math"
+      ],
+      "bemarkdown.pdf.figure_formula_support": [
+        "bemarkdown.pdf.inline_math_repair"
+      ],
+      "bemarkdown.pdf.figure_graphic_markers": [],
+      "bemarkdown.pdf.figure_waveforms": [],
+      "bemarkdown.pdf.page_visual_text_recovery": [],
+      "bemarkdown.pdf.text_evidence": [
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.pdf_content_quality": [],
+      "bemarkdown.pdf.inline_atomic_superscript": [
+        "bemarkdown.pdf.inline_math_repair"
+      ],
+      "bemarkdown.pdf.inline_math_candidates": [],
+      "bemarkdown.pdf.inline_math_repair": [],
+      "bemarkdown.pdf.ocr_character_geometry": [],
+      "bemarkdown.pdf.pipeline_mode": [
+        "bemarkdown.config"
+      ],
+      "bemarkdown.production_gpu_closeout": [
+        "bemarkdown.production_runtime"
+      ],
+      "bemarkdown.agent_task_contract": [],
+      "bemarkdown.pdf.region_line_coverage": [],
+      "bemarkdown.pdf.three_model_ocr": [
+        "bemarkdown.pdf.text_evidence",
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.pdf.workers": [],
+      "bemarkdown.pdf.workers.deferred_got": [],
+      "bemarkdown.pdf.native_drawn_blanks": [
+        "bemarkdown.pdf.visible_vectors"
+      ],
+      "bemarkdown.pdf.native_font_unicode": [],
+      "bemarkdown.pdf.native_glyph_bounds": [
+        "bemarkdown.pdf.cff_glyph_bounds"
+      ],
+      "bemarkdown.pdf.native_math": [
+        "bemarkdown.pdf.native_glyph_bounds",
+        "bemarkdown.pdf.native_visibility"
+      ],
+      "bemarkdown.pdf.native_visibility": [
+        "bemarkdown.pdf.native_glyph_bounds"
+      ],
+      "bemarkdown.pdf.visible_vectors": [],
+      "bemarkdown.pdf.source_table_grid": [
+        "bemarkdown.pdf_table_engine"
+      ],
+      "bemarkdown.pdf.table_source_markers": [],
+      "bemarkdown.pdf.detection_batches": [],
+      "bemarkdown.pdf.formula_ink_bounds": [],
+      "bemarkdown.pdf.graphics_render": [],
+      "bemarkdown.pdf.image_containment": [],
+      "bemarkdown.pdf.native_margin_titles": [],
+      "bemarkdown.pdf.non_text_ownership": [],
+      "bemarkdown.pdf.page_review": [],
+      "bemarkdown.pdf.ruled_writing_area": [],
+      "bemarkdown.pdf_formula_consensus": [
+        "bemarkdown.formula_ocr",
+        "bemarkdown.formulanet_runtime"
+      ],
+      "bemarkdown.pdf_formula_visual": [],
+      "bemarkdown.pdf_ocr_recovery": [],
+      "bemarkdown.production_runtime": [],
+      "bemarkdown.pdf.caption_order": [],
+      "bemarkdown.pdf.formula_containment": [],
+      "bemarkdown.pdf.native_column_order": [],
+      "bemarkdown.pdf.native_margin_notes": [],
+      "bemarkdown.pdf.text_containment": [],
+      "bemarkdown.pdf.source_table_math": [
+        "bemarkdown.pdf.native_math"
+      ],
+      "bemarkdown.pdf.cff_glyph_bounds": [
+        "bemarkdown.pdf.native_glyph_bounds"
+      ]
+    },
+    "reachable_module_count": 110,
+    "closure_fingerprint": "398b7bf4532d4b79cdd6bcb5505f38f643399fe6535a108bb5618e1b9a3596d0",
+    "gate": "PASS"
+  }
+}

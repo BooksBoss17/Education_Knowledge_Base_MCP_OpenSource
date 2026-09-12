@@ -1,0 +1,58 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "slanext-wireless",
+  "display_name": "SLANeXt_wireless",
+  "engine": "table",
+  "task": "table_structure_recognition",
+  "provider": "PaddlePaddle",
+  "upstream": "PaddlePaddle/SLANeXt_wireless",
+  "upstream_source": "PaddlePaddle/SLANeXt_wireless",
+  "upstream_revision": "1b73e05c752d2e0763b5d205846dec23122e5808",
+  "model_fingerprint": "f162960740c9819e364827bf3e6bf3e947097395a0bed12fa63a939d5873d639",
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "runtime_profile": "win-x64-py311-cuda126",
+  "expected_device": "gpu:0",
+  "precision_baseline": "fp32",
+  "integration_status": "MODEL_READY",
+  "license": {
+    "status": "VERIFIED_FROM_MODEL_CARD_METADATA",
+    "spdx": "Apache-2.0",
+    "source_file": "README.md"
+  },
+  "file_count": 6,
+  "total_bytes": 365752552,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 1575,
+      "sha256": "a3a43406012ee8c7b9b38dfab1b11610f33e8245cd864a9a9302d042616a859e"
+    },
+    {
+      "path": "config.json",
+      "bytes": 4951,
+      "sha256": "af459c24c87f3af37d6515f4a875b120d5da53ae61152514e1831d80f21c3387"
+    },
+    {
+      "path": "inference.json",
+      "bytes": 959302,
+      "sha256": "5b872f08e74f628ca1db8405db147e82e6e0c7cb358e101fd01cdafc946632d8"
+    },
+    {
+      "path": "inference.pdiparams",
+      "bytes": 364771513,
+      "sha256": "6bf0568e24638491c75920954a92583d8c0d46aa76a2a635fb2fa666ffb618ff"
+    },
+    {
+      "path": "inference.yml",
+      "bytes": 2069,
+      "sha256": "58d1d7fdffd3e58cfec98571b817ea012f2107d644bd4f8e4607fae84f1923a6"
+    },
+    {
+      "path": "README.md",
+      "bytes": 13142,
+      "sha256": "e931fc5d2be31ea6f8518d0b2285e1213b8d68d140380f3a8183763c37ead666"
+    }
+  ]
+}

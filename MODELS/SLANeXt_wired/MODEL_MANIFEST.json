@@ -1,0 +1,58 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "slanext-wired",
+  "display_name": "SLANeXt_wired",
+  "engine": "table",
+  "task": "table_structure_recognition",
+  "provider": "PaddlePaddle",
+  "upstream": "PaddlePaddle/SLANeXt_wired",
+  "upstream_source": "PaddlePaddle/SLANeXt_wired",
+  "upstream_revision": "763069fcda6a065f2171753205a32bf899a88d15",
+  "model_fingerprint": "5a2f8df793d066487815c3811be2035a837bc869dcae1e070f77c0a0615f3be9",
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "runtime_profile": "win-x64-py311-cuda126",
+  "expected_device": "gpu:0",
+  "precision_baseline": "fp32",
+  "integration_status": "MODEL_READY",
+  "license": {
+    "status": "VERIFIED_FROM_MODEL_CARD_METADATA",
+    "spdx": "Apache-2.0",
+    "source_file": "README.md"
+  },
+  "file_count": 6,
+  "total_bytes": 365752316,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 1575,
+      "sha256": "a3a43406012ee8c7b9b38dfab1b11610f33e8245cd864a9a9302d042616a859e"
+    },
+    {
+      "path": "config.json",
+      "bytes": 4948,
+      "sha256": "1379eb21de34e69e3c5e68492304751db7f139037487c2c62133cdb22233993d"
+    },
+    {
+      "path": "inference.json",
+      "bytes": 959302,
+      "sha256": "5b872f08e74f628ca1db8405db147e82e6e0c7cb358e101fd01cdafc946632d8"
+    },
+    {
+      "path": "inference.pdiparams",
+      "bytes": 364771513,
+      "sha256": "ff0362a30f707fa7d27d8453c4396b992fca287377a42d01515bca6eeb3908f5"
+    },
+    {
+      "path": "inference.yml",
+      "bytes": 2066,
+      "sha256": "abbbd1b4dc6b1a2e9cd34c035514da53a1a6b1ec267292b0b8802025650a33bf"
+    },
+    {
+      "path": "README.md",
+      "bytes": 12912,
+      "sha256": "6e5529b446ac4ece9afdbabc006407b849171921a0687665199ca6be06fdc504"
+    }
+  ]
+}

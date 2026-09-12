@@ -1,0 +1,11 @@
+# BeMarkdown CORE production lock for CPython 3.11 / Windows x64.
+beautifulsoup4==4.15.0
+lxml==6.1.2
+mathml2latex==0.2.12
+mathtypejx @ https://codeload.github.com/a917470154/mathtypejx/zip/7d90e7274c85cf56ac28d4d15e593044693d7e70#sha256=33d9e6410aaf47406621e30b1bcf3f73eee031d21c17feb26e8dc64b789d31cd
+olefile==0.47
+pillow==12.1.0
+PyMuPDF==1.27.2.3
+python-docx==1.2.0
+soupsieve==2.9.2
+typing_extensions==4.15.0

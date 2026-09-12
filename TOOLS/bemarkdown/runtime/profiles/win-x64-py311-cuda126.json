@@ -1,0 +1,48 @@
+{
+  "schema": "bemarkdown-runtime-profile-v1",
+  "profile_id": "win-x64-py311-cuda126",
+  "platform": "Windows",
+  "architecture": "x86_64",
+  "python": "3.11.x",
+  "formula_ocr": {
+    "model_id": "pp-formulanet-plus-l",
+    "paddlepaddle_gpu": "3.2.2",
+    "paddlex": "3.7.2",
+    "cuda_runtime": "12.6",
+    "cudnn_compiled": "9.9.0",
+    "cudnn_package": "9.9.0.52",
+    "device": "gpu:0",
+    "precision": "fp32",
+    "production_batch": 2,
+    "cpu_fallback": false
+  },
+  "text_ensemble": {
+    "shared_runtime_required": true,
+    "compatibility_status": "PENDING_FORMAL_STAGED_SMOKE",
+    "providers": {
+      "A": "pp-ocrv6-medium-rec",
+      "B": "ch-svtrv2-rec",
+      "C": "got-ocr2-0"
+    },
+    "paddle_provider": {
+      "paddlepaddle_gpu": "3.2.2",
+      "paddlex": "3.7.2",
+      "cuda_runtime": "12.6",
+      "precision": "fp32"
+    },
+    "torch_provider": {
+      "torch": "2.13.0+cu130",
+      "torchvision": "0.28.0+cu130",
+      "transformers": "5.15.1",
+      "accelerate": "1.14.0",
+      "wheel_abi": "cu130",
+      "precision": "bf16",
+      "batch_size": 1,
+      "do_sample": false,
+      "max_new_tokens": 256
+    },
+    "paddle_cuda_baseline_unchanged": true,
+    "cpu_fallback": false
+  },
+  "wmf_renderer": "win32_gdi"
+}

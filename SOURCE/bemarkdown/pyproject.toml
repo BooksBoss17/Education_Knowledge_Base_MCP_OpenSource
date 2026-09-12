@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bemarkdown"
+version = "0.2.0"
+description = "Deterministic DOCX and frozen-production PDF to Markdown pipeline"
+readme = "README.md"
+license = {text = "AGPL-3.0-only"}
+requires-python = ">=3.11"
+dependencies = [
+  "beautifulsoup4>=4.15,<5",
+  "lxml>=6.0,<7",
+  "mathml2latex==0.2.12",
+  "mathtypejx @ https://codeload.github.com/a917470154/mathtypejx/zip/7d90e7274c85cf56ac28d4d15e593044693d7e70#sha256=33d9e6410aaf47406621e30b1bcf3f73eee031d21c17feb26e8dc64b789d31cd",
+  "olefile==0.47",
+  "Pillow>=12,<13",
+  "PyMuPDF==1.27.2.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<9", "ruff>=0.12,<1"]
+pdf-census = ["PyMuPDF==1.27.2.3"]
+
+[project.scripts]
+bemarkdown = "bemarkdown.cli:main"
+wmf_renderer = "bemarkdown.wmf_renderer:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"bemarkdown._vendor" = ["OMML2LATEX_LICENSE.txt"]
+"bemarkdown" = ["static/formula_review/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff.lint.per-file-ignores]
+"src/bemarkdown/_vendor/omml2latex_parser.py" = ["BLE001", "F601", "F841", "PIE810", "S112"]

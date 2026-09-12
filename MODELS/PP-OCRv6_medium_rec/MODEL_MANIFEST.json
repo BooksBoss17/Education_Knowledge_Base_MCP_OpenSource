@@ -1,0 +1,53 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "pp-ocrv6-medium-rec",
+  "display_name": "PP-OCRv6_medium_rec",
+  "engine": "text",
+  "task": "text_recognition",
+  "provider": "PaddlePaddle",
+  "upstream": "PaddlePaddle/PP-OCRv6_medium_rec",
+  "upstream_source": "PaddlePaddle/PP-OCRv6_medium_rec",
+  "upstream_revision": "e5a92bcbc5cc1b494628e458d267778f0704fd7c",
+  "model_fingerprint": "049fe56c75fed8e8cb787f7700b66b88a2052a61cf61025dac0451848284b915",
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "runtime_profile": "win-x64-py311-cuda126",
+  "expected_device": "gpu:0",
+  "precision_baseline": "fp32",
+  "integration_status": "MODEL_READY",
+  "license": {
+    "status": "VERIFIED_FROM_MODEL_CARD_METADATA",
+    "spdx": "Apache-2.0",
+    "source_file": "README.md"
+  },
+  "file_count": 5,
+  "total_bytes": 76862530,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 1575,
+      "sha256": "a3a43406012ee8c7b9b38dfab1b11610f33e8245cd864a9a9302d042616a859e"
+    },
+    {
+      "path": "inference.json",
+      "bytes": 221814,
+      "sha256": "0b2e25e990bd072f1bf77d59d67d508bce6c4bd44af6624e0fb27d6da2cd00e8"
+    },
+    {
+      "path": "inference.pdiparams",
+      "bytes": 76465087,
+      "sha256": "1b01c79a914587933f615569e75de54f2e638ebb5d3f3b3c1b38c24ede8c7319"
+    },
+    {
+      "path": "inference.yml",
+      "bytes": 150580,
+      "sha256": "991b700facf5b50a7de193468207d5f4255b538dde0d312ae3b7c7a9b6873129"
+    },
+    {
+      "path": "README.md",
+      "bytes": 23474,
+      "sha256": "75ff9c4853ed171f36224127805062f9bcd1cfbbcacae3d577344866df74f6d3"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "education-public-tool-release-v1",
+  "release_id": "education-mcp-public-base-20260913-v1",
+  "source_baseline_commit": "86b857c7f897dc7a5493f141986851bc9e128b05",
+  "wheel_sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295",
+  "status": "VALIDATED_PUBLIC_BASE",
+  "source_directory": "../../SOURCE/bemarkdown"
+}

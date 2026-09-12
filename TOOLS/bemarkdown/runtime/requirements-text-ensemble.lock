@@ -1,0 +1,25 @@
+# BeMarkdown TEXT_ENSEMBLE overlay for the single full Windows runtime.
+#
+# The Paddle baseline remains PaddlePaddle GPU 3.2.2 / PaddleX 3.7.2 /
+# CUDA 12.6.  Torch's cu130 wheel tag is a provider-specific ABI and does not
+# upgrade or replace the Paddle CUDA baseline.  Install the two Torch wheels
+# from https://download.pytorch.org/whl/cu130, then enforce this overlay.
+#
+# Common dependencies already frozen by requirements-core.lock and
+# requirements-formula-ocr.lock are intentionally not duplicated.  Only the
+# GOT worker closure and the two required overrides are listed here.
+accelerate==1.14.0
+annotated-doc==0.0.5
+markdown-it-py==4.2.0
+mdurl==0.1.2
+mpmath==1.3.0
+Pygments==2.21.0
+rich==15.0.0
+safetensors==0.8.0
+shellingham==1.5.4
+sympy==1.14.0
+tokenizers==0.22.2
+torch==2.13.0+cu130
+torchvision==0.28.0+cu130
+transformers==5.15.1
+typer==0.27.1

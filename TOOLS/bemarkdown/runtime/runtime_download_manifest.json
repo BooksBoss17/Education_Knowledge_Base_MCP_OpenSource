@@ -1,0 +1,18 @@
+{
+  "schema": "bemarkdown-runtime-download-manifest-v1",
+  "core_offline_bundle": {
+    "complete": false,
+    "files": []
+  },
+  "formula_ocr_offline_bundle": {
+    "complete": false,
+    "reason": "CUDA/cuDNN redistribution and full wheel inventory require publication review",
+    "lock_sha256": "4ca9fd86622bb3eb4e54b29cd1000f6ddb510e42d184455442b5848eb1e580ab"
+  },
+  "text_ensemble_offline_bundle": {
+    "complete": false,
+    "reason": "The frozen Torch cu130 and Transformers overlay requires host download; no fully offline claim is made",
+    "lock_sha256": "a5bfb00da5290120dacaf5c752a334c63f9ad2eeed78ebb899e473dd3fe73e37",
+    "torch_index": "https://download.pytorch.org/whl/cu130"
+  }
+}

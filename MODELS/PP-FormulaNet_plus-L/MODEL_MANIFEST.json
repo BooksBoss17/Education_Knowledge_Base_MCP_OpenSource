@@ -1,0 +1,51 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "model_id": "pp-formulanet-plus-l",
+  "display_name": "PP-FormulaNet_plus-L",
+  "task": "formula_ocr",
+  "provider": "PaddlePaddle",
+  "upstream": "PaddlePaddle/PP-FormulaNet_plus-L",
+  "upstream_revision": "0809597a77f735bfb35354edb632f2e6dff606f3",
+  "model_fingerprint": "b215b9cfdebb18660cc6ab66951fa89a23463128be2b879a6e4f2c2d80939b4e",
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "runtime_profile": "win-x64-py311-cuda126",
+  "license": {
+    "status": "VERIFIED_FROM_MODEL_CARD_METADATA",
+    "spdx": "Apache-2.0",
+    "source_file": "README.md"
+  },
+  "file_count": 6,
+  "total_bytes": 735468877,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 1575,
+      "sha256": "a3a43406012ee8c7b9b38dfab1b11610f33e8245cd864a9a9302d042616a859e"
+    },
+    {
+      "path": "config.json",
+      "bytes": 3951676,
+      "sha256": "44e0be0fd39b676cc409c2ef537b4a52509db55cc79bacbbe65b55fe8d64c6a4"
+    },
+    {
+      "path": "inference.json",
+      "bytes": 1650354,
+      "sha256": "ad259c4b896d99aa3479336b9121112fb40ff1ababfbf8765a3428a3b86df582"
+    },
+    {
+      "path": "inference.pdiparams",
+      "bytes": 727598255,
+      "sha256": "4245c39c181d1d21e472bc85c7434df9b23f177be46552c0542bf153addbc355"
+    },
+    {
+      "path": "inference.yml",
+      "bytes": 2244564,
+      "sha256": "afc92a2737268da0499c37b0b6741da268c369fd7424667fcfeb8fa6c7b22d30"
+    },
+    {
+      "path": "README.md",
+      "bytes": 22453,
+      "sha256": "81ec2f66f8d28536523010af80d0162b9c7dc0b0497acd6216cda44a2aac224d"
+    }
+  ]
+}

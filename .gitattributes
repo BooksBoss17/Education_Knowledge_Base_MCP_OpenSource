@@ -1,0 +1,2 @@
+# Preserve byte-addressed manifests, source and wheel identities on every host.
+* -text

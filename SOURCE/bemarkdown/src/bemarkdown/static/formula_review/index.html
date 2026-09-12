@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>需要确认的公式</title>
+  <link rel="stylesheet" href="./mathlive/mathlive-fonts.css">
+  <link rel="stylesheet" href="./mathlive/mathlive-static.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./mathlive/mathlive.min.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div><p class="eyebrow">BeMarkdown 本地审查</p><h1>需要确认的公式</h1></div>
+      <strong id="progress">0 / 0</strong>
+    </header>
+    <section class="guide" id="guide">
+      <button class="guide-close" type="button" aria-label="关闭引导">×</button>
+      <h2>发现一个需要确认的公式</h2>
+      <ol>
+        <li>看上面的原图。</li><li>下方公式正确，点“识别正确”。</li>
+        <li>有错，直接点击错误的位置修改。</li><li>分数、上下标、根号、希腊字母可以点按钮。</li>
+        <li>不需要输入 LaTeX。</li>
+      </ol>
+      <div class="examples"><span>U₂/V → 点 V → 输入 N</span><span>F₁₁ → 选中多余的 1 → 删除</span><span>分数或根号 → 点“分数”或“√□”</span></div>
+    </section>
+    <section class="card source-card">
+      <div class="card-title"><h2>原公式</h2><div class="zoom-controls" aria-label="原图缩放"><button type="button" data-zoom="out">−</button><button type="button" data-zoom="reset">100%</button><button type="button" data-zoom="in">＋</button></div></div>
+      <div class="crop-stage"><img id="source-crop" alt="原公式图片"></div>
+    </section>
+    <section class="card editor-card">
+      <div class="card-title"><h2>当前识别结果</h2><div class="edit-tools"><button type="button" data-command="undo">撤销</button><button type="button" data-command="redo">重做</button><button type="button" data-command="restore">恢复识别结果</button></div></div>
+      <math-field id="formula-editor" aria-label="可视化公式编辑框"></math-field>
+      <p class="hint">点击公式中的位置即可修改；数字和字母可以直接用键盘输入。</p>
+      <div class="keyboard" aria-label="公式符号键盘">
+        <div class="keyboard-tabs" role="tablist"><button type="button" class="active" data-tab="common">常用</button><button type="button" data-tab="structure">结构</button><button type="button" data-tab="greek">希腊字母</button><button type="button" data-tab="physics">物理符号</button></div>
+        <div id="key-grid" class="key-grid"></div>
+      </div>
+      <details class="advanced"><summary>高级信息</summary><pre id="advanced-latex" aria-label="系统生成的 LaTeX"></pre></details>
+      <p id="message" class="message" role="status"></p>
+    </section>
+    <footer><button type="button" class="secondary" id="previous">上一条</button><div class="primary-actions"><button type="button" class="success" id="confirm">识别正确</button><button type="button" class="primary" id="edit">开始修改</button><button type="button" class="secondary" id="unresolved">暂时无法判断</button></div><button type="button" class="secondary" id="next">下一条</button></footer>
+  </main>
+</body>
+</html>

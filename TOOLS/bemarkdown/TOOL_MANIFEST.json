@@ -1,0 +1,1750 @@
+{
+  "schema": "bemarkdown-tool-manifest-v1",
+  "tool_id": "bemarkdown",
+  "tool_version": "0.2.0",
+  "release_channel": "public-base",
+  "entrypoint": "bemarkdown",
+  "python_api": [
+    "convert_document",
+    "convert_documents",
+    "validate_package"
+  ],
+  "cli": [
+    "convert",
+    "convert-batch",
+    "validate",
+    "cleanup-staging",
+    "doctor"
+  ],
+  "package_contract": "bemarkdown-package-v1",
+  "asset_contract": "bemarkdown-asset-contract-v1",
+  "supported_sources": [
+    "DOCX",
+    "PDF"
+  ],
+  "capabilities": {
+    "docx": true,
+    "pdf": {
+      "publication_status": "PUBLICATION_CANDIDATE",
+      "independent_quality_validation": "PENDING_ZCODE"
+    },
+    "wmf_render": {
+      "platform": "win32-gdi",
+      "required_for_full_quality": true
+    },
+    "formula_ocr": {
+      "model_id": "pp-formulanet-plus-l",
+      "required_for_full_quality": true,
+      "cpu_fallback": false
+    },
+    "paddle_model_suite": {
+      "suite_id": "bemarkdown-paddle-document-suite-v1",
+      "suite_fingerprint": "1521f6cccb7b01e7f2c189cc3e23d8f60f971e554f11d9041ddad8526c20c47a",
+      "model_count": 9,
+      "status": "MODEL_READY",
+      "pdf_pipeline_ready": false
+    },
+    "pdf_production_suite": {
+      "suite_id": "bemarkdown-pdf-production-suite-v1",
+      "suite_fingerprint": "d6c862f5659adb3994092b5358be10d1232119d8bb454e2df435dae4789bb082",
+      "model_count": 11,
+      "status": "MODEL_READY",
+      "pdf_pipeline_ready": true,
+      "independent_quality_validation": "PENDING_ZCODE"
+    }
+  },
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "python_compatibility": "CPython 3.11.x",
+  "validated_platform": "Windows x64",
+  "build_commit": "588611b22c5afb97cf196a7b3d59e0a366130c91",
+  "wheel": {
+    "path": "dist/bemarkdown-0.2.0-py3-none-any.whl",
+    "sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295",
+    "bytes": 1371349,
+    "content_inventory": {
+      "content_sha256": "9a76bca2cd854cde4c336bd62db3a8d67a6ed333660179b2e8f4eb532c16218f",
+      "file_count": 212,
+      "total_uncompressed_bytes": 4456793,
+      "files": [
+        {
+          "path": "bemarkdown-0.2.0.dist-info/METADATA",
+          "bytes": 1088,
+          "sha256": "e26e7f296ed19ad477db01adece8233ad86171698eb58b987856724d64b6b225"
+        },
+        {
+          "path": "bemarkdown-0.2.0.dist-info/RECORD",
+          "bytes": 20200,
+          "sha256": "4bc22366cf21dec3e56d38b40d155c64b27c1d77d921cf2ba373d30e4e8fa216"
+        },
+        {
+          "path": "bemarkdown-0.2.0.dist-info/WHEEL",
+          "bytes": 91,
+          "sha256": "4a63b1614ee9ccd281a804af409ec38d7dd719417dda5ac684c6f747afe28aa2"
+        },
+        {
+          "path": "bemarkdown-0.2.0.dist-info/entry_points.txt",
+          "bytes": 95,
+          "sha256": "9f909431989a6f1a3189e94fc3ec3b85ebe1a8f2bc8dd043c6ecec4cec4f5f88"
+        },
+        {
+          "path": "bemarkdown-0.2.0.dist-info/licenses/LICENSE",
+          "bytes": 34020,
+          "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
+        },
+        {
+          "path": "bemarkdown-0.2.0.dist-info/top_level.txt",
+          "bytes": 11,
+          "sha256": "ebbe366ee0bab27fed3016c9a691887f2475841a852817cce18e3f0517ade381"
+        },
+        {
+          "path": "bemarkdown/__init__.py",
+          "bytes": 2306,
+          "sha256": "3b26277ca4a1e22c706e4218747de86e26c120aee3bb0df3349c5c40650060db"
+        },
+        {
+          "path": "bemarkdown/__main__.py",
+          "bytes": 48,
+          "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+        },
+        {
+          "path": "bemarkdown/_vendor/OMML2LATEX_LICENSE.txt",
+          "bytes": 11360,
+          "sha256": "240b8a39fdfd2bd3b3539c02e34466334884fc84b056b57f06e9da35323ecd97"
+        },
+        {
+          "path": "bemarkdown/_vendor/__init__.py",
+          "bytes": 75,
+          "sha256": "33bfe1047145c90412a4270cb14586c8e27e804c24f033cee14ea24943feedf3"
+        },
+        {
+          "path": "bemarkdown/_vendor/omml2latex_parser.py",
+          "bytes": 65851,
+          "sha256": "c6f8033579eb1359d4413a0c70a9cce9ae37b25717a3a4690ccaa50ac1975414"
+        },
+        {
+          "path": "bemarkdown/agent_execution.py",
+          "bytes": 16799,
+          "sha256": "f0e77f185530bc9b234cc515dd71097cbde446a3055b91c088ff5a342108e14d"
+        },
+        {
+          "path": "bemarkdown/agent_task_contract.py",
+          "bytes": 1493,
+          "sha256": "4e2c07d91ca4157b0c5e3223d2b2b8888cf3a6c2c328ab137997f2b8bd3dedcf"
+        },
+        {
+          "path": "bemarkdown/asset_contract.py",
+          "bytes": 11881,
+          "sha256": "7011517025a97035b8a741318090fe738a00ed7b47888f16694e33aeefcb69ff"
+        },
+        {
+          "path": "bemarkdown/audit_batching.py",
+          "bytes": 32818,
+          "sha256": "d930d555052267ff2f0cd3115847ee259e574974b6298f73c285eb6cd55587e4"
+        },
+        {
+          "path": "bemarkdown/batch.py",
+          "bytes": 3918,
+          "sha256": "63d369c747c767291ec7f4d2b1596e2f52799dd7826a739c2d5800f4ca139b5c"
+        },
+        {
+          "path": "bemarkdown/blind_vision_formula.py",
+          "bytes": 48070,
+          "sha256": "31113b0a0b4081a8cc097dee929cacd8de0897dfd63b46ed12897054e795f17c"
+        },
+        {
+          "path": "bemarkdown/census.py",
+          "bytes": 25688,
+          "sha256": "3ed342d8806f826c6e6a74e5217ce6119a8a42337d43e8f4b01edde45104928d"
+        },
+        {
+          "path": "bemarkdown/ch_svtrv2_rec_trial_v1.py",
+          "bytes": 13021,
+          "sha256": "0e1b2b84c21d2fc4168e0a5cba1fc11c7df44561050cb2ffbc5449845ab86ac1"
+        },
+        {
+          "path": "bemarkdown/cli.py",
+          "bytes": 10418,
+          "sha256": "9c6af10d00102de1db652c630ea747a2996359bdd24e19d0f63ccd07d5dbd96d"
+        },
+        {
+          "path": "bemarkdown/config.py",
+          "bytes": 3032,
+          "sha256": "41d07e733d2a63fbfca780f68494d8c74991f59c6f03c1a55819a8a763f324c5"
+        },
+        {
+          "path": "bemarkdown/corpus_v3_preregistration.py",
+          "bytes": 30045,
+          "sha256": "c742de1d789599af9ae60c17c9a912cd983606bb3f07bca9a22a096c2779055c"
+        },
+        {
+          "path": "bemarkdown/developer_cli.py",
+          "bytes": 20702,
+          "sha256": "f6f5432166cd101b02eae23e960e1fa6b524933ac678745fcb55d1cd88bf36e2"
+        },
+        {
+          "path": "bemarkdown/doctor.py",
+          "bytes": 19726,
+          "sha256": "066ae8382019d494e09ef1c6d6cec9f77d7252a004d896862e781710f639a81f"
+        },
+        {
+          "path": "bemarkdown/docx_census.py",
+          "bytes": 30622,
+          "sha256": "f4e080544785d2a2f10d78d7df7e6523fab96dc8e1df7802d4af9717ed9f7c69"
+        },
+        {
+          "path": "bemarkdown/docx_edge_census.py",
+          "bytes": 78189,
+          "sha256": "0a529e2501f1effaaea2a6c4abd7716e4b7d6a72440350e863b4553d80231f8e"
+        },
+        {
+          "path": "bemarkdown/docx_figure_labels.py",
+          "bytes": 10174,
+          "sha256": "9fdf593919cfb60e22b3b0f817f4df8d3158ed690b59f809e235b7b78f4ac684"
+        },
+        {
+          "path": "bemarkdown/docx_image_content.py",
+          "bytes": 24254,
+          "sha256": "707a56d9ff001647b47cac18ac1bf51d0bdfba60b51a2555c1e9b7968720457e"
+        },
+        {
+          "path": "bemarkdown/docx_visual.py",
+          "bytes": 7288,
+          "sha256": "f0cbd9cccfd24f1ea39919b8d52cf651b3ffcc1260c937eaadbd7265fed3b381"
+        },
+        {
+          "path": "bemarkdown/drawingml.py",
+          "bytes": 17903,
+          "sha256": "e01e6a050693e35c88c4e9eed7e978a695e5af131453fde22e44b890d6ae7162"
+        },
+        {
+          "path": "bemarkdown/eq.py",
+          "bytes": 8969,
+          "sha256": "92c9578a173e2f4ad7b8a5f66876bfc9e61765a605560fa9e213fb6e528ca4b6"
+        },
+        {
+          "path": "bemarkdown/formula.py",
+          "bytes": 11336,
+          "sha256": "1c00668bc58621b6aa75dd48b202d8257a5c1691df45c3e052f6c624412c9c15"
+        },
+        {
+          "path": "bemarkdown/formula_gt_evaluation.py",
+          "bytes": 24529,
+          "sha256": "ab5148504d0eb65f3c9a50ed99a205bc16c7fe7f125424a0a65e7082dc6b8564"
+        },
+        {
+          "path": "bemarkdown/formula_ocr.py",
+          "bytes": 27616,
+          "sha256": "e3e7701f034134fcef801f9fc32b77f4a8065b7be4b85efd4f3930db28a43e75"
+        },
+        {
+          "path": "bemarkdown/formula_page_audit.py",
+          "bytes": 42643,
+          "sha256": "0ed6817e43a923696da40f67cce8f38955a6180f424db362c60d63d0bf6bc543"
+        },
+        {
+          "path": "bemarkdown/formula_quality_benchmark.py",
+          "bytes": 40312,
+          "sha256": "7a8aa7d431c999929e569efa643a0e2154158149f673467a497ac4071db02518"
+        },
+        {
+          "path": "bemarkdown/formula_review.py",
+          "bytes": 25370,
+          "sha256": "3da2dc4dfeacf45fbb4922dfd8ca4b65841951631b9d7b23132d8aeae1fa5e91"
+        },
+        {
+          "path": "bemarkdown/formula_review_server.py",
+          "bytes": 7105,
+          "sha256": "a8eaba5f2729260b8c7dc62c784411c86d94cf41b2c9394b36dc055ef6ea04e0"
+        },
+        {
+          "path": "bemarkdown/formula_runtime_owner.py",
+          "bytes": 5091,
+          "sha256": "762d38f0833f6b413eeabbb401870b2ee65082ea4d7e33c7b106e9e7600e2cb0"
+        },
+        {
+          "path": "bemarkdown/formulanet_benchmark.py",
+          "bytes": 33363,
+          "sha256": "37ff26f5471adf21868c6bee514f739dd6ab9c5c642836bd511cd664aeb8fc38"
+        },
+        {
+          "path": "bemarkdown/formulanet_runtime.py",
+          "bytes": 13181,
+          "sha256": "a235880c31053c946816d024c0ae7ac8bfa2fd00de85a5ed740e8324bdac56f6"
+        },
+        {
+          "path": "bemarkdown/fresh_reference_pass.py",
+          "bytes": 13434,
+          "sha256": "ca4718913295ffdd731695b22aa6d3cfbfdb296daa779ec41ac540e57a58da6a"
+        },
+        {
+          "path": "bemarkdown/ir.py",
+          "bytes": 3795,
+          "sha256": "976b9833474a12ce22f53d05f46a8210703192e864a9c1433e4a315cae0859fe"
+        },
+        {
+          "path": "bemarkdown/large_e2e_validation.py",
+          "bytes": 17234,
+          "sha256": "f4be4366f622fc988e16d001a1c75db59039ee7b023cfd9315d9a354cc49d7e2"
+        },
+        {
+          "path": "bemarkdown/live_pipeline_continuity.py",
+          "bytes": 17091,
+          "sha256": "9a76fc38672b9dffd3560c896eb567cff39915be086f60d08158d210112fa823"
+        },
+        {
+          "path": "bemarkdown/model_registry.py",
+          "bytes": 18902,
+          "sha256": "dcfe9889e5add31eed5f06aee9983eec5e5ff7cac9e27b373bb564796ea97d76"
+        },
+        {
+          "path": "bemarkdown/model_runtime.py",
+          "bytes": 1634,
+          "sha256": "437d271dead85652dab6948af13099a10d7380cd01fc8d0b87e687807e3e20d5"
+        },
+        {
+          "path": "bemarkdown/model_suite.py",
+          "bytes": 9320,
+          "sha256": "9f6706fb497ca30cf99f1cb1d1526921436a3d6938f87a9dc081e1f7497c5f17"
+        },
+        {
+          "path": "bemarkdown/model_suite_runtime.py",
+          "bytes": 12653,
+          "sha256": "915803ba529764a030bb247cc447e28bc8e6e9f25b5cb3b5e10722770910d411"
+        },
+        {
+          "path": "bemarkdown/mtef_cache.py",
+          "bytes": 31132,
+          "sha256": "6ce14caaa761e3bcc6f045d97b79abc462073e91b6a90d2ba7aea2e7e4530a2e"
+        },
+        {
+          "path": "bemarkdown/namespaces.py",
+          "bytes": 1083,
+          "sha256": "1d6239873cc5fedc74fa0e28b6706de4a391783743821758a739952985587391"
+        },
+        {
+          "path": "bemarkdown/ocr_ensemble_benchmark.py",
+          "bytes": 21162,
+          "sha256": "2e4e18693eb2fb73a1d2cdb7523fc6de66d602ca7c902aacf57a4e5f7d56e645"
+        },
+        {
+          "path": "bemarkdown/ocr_ensemble_round2.py",
+          "bytes": 18164,
+          "sha256": "ef9ac5f7265ce815f4f1ccc5d88db9f842f12bc0b7c659c6d1e00a4512b319c4"
+        },
+        {
+          "path": "bemarkdown/ocr_ensemble_round3.py",
+          "bytes": 19382,
+          "sha256": "e03a9fc6b2965817dd42c29dd574aae6d81697453c4b0c1cd10e5934671951de"
+        },
+        {
+          "path": "bemarkdown/ocr_provider_selection_v3.py",
+          "bytes": 20348,
+          "sha256": "3319a69b3cbe62b26f20ae883f02fcc013aaba35bd16aba87c82877dddea2329"
+        },
+        {
+          "path": "bemarkdown/output_audit_production.py",
+          "bytes": 26349,
+          "sha256": "1c8a7a6070dc949efa72e1138eba2da4ba2174b06f09b2a7e83ab439b58701d2"
+        },
+        {
+          "path": "bemarkdown/ovisocr2_benchmark.py",
+          "bytes": 10526,
+          "sha256": "c88cdb698d3b0146d94d8af9ce195c3055bf1440aba37eff6b66bc79f13d6043"
+        },
+        {
+          "path": "bemarkdown/package.py",
+          "bytes": 17614,
+          "sha256": "c0b61667201d5aa4e3eb4ee1c692956c47887ae2ac746af31b5f85a801cf7c18"
+        },
+        {
+          "path": "bemarkdown/paddlex_runtime.py",
+          "bytes": 4512,
+          "sha256": "250fc0cda134c01c943fb2d1271b745b70be770f8243e61c457480503c0783d5"
+        },
+        {
+          "path": "bemarkdown/pdf/__init__.py",
+          "bytes": 1379,
+          "sha256": "1c32067277c92b4f6150b197762b100a2d715722bbc87523ea6ae1675e599ea3"
+        },
+        {
+          "path": "bemarkdown/pdf/adaptive_pipeline.py",
+          "bytes": 6947,
+          "sha256": "3209a59484e11188e3768d04f2dcf12b21ceb45467cf159c8971e402a1c83fe3"
+        },
+        {
+          "path": "bemarkdown/pdf/caption_order.py",
+          "bytes": 5055,
+          "sha256": "c5f461d95766412c3bfb5758c7306ad6db77058fe97fa9ebbc644b475f168e62"
+        },
+        {
+          "path": "bemarkdown/pdf/cff_glyph_bounds.py",
+          "bytes": 3456,
+          "sha256": "283aaa41b3b39dcf9a87b3ae218c1a973c461e9358229bef8b9442064c84daf8"
+        },
+        {
+          "path": "bemarkdown/pdf/clean_markdown.py",
+          "bytes": 7121,
+          "sha256": "8fe638ec66ded8f0a0edd878f2ade838d9876c290652cdc2a4b996bfb0f06cf4"
+        },
+        {
+          "path": "bemarkdown/pdf/detection_batches.py",
+          "bytes": 3282,
+          "sha256": "147d7f2008ad74d82d46aa4994bd0dcfd4bb85e0e2bb247bea7d0d1964cebfad"
+        },
+        {
+          "path": "bemarkdown/pdf/diagram_bounds.py",
+          "bytes": 11786,
+          "sha256": "eaecdf38b157ea5555ec91f84f3c092abfc2170229b6f02f57f861006bcd1e8c"
+        },
+        {
+          "path": "bemarkdown/pdf/evidence_resolver.py",
+          "bytes": 3748,
+          "sha256": "150a8333bff698a9a25ed2918b77d22c274e71da1e4b20108887de13753eac0e"
+        },
+        {
+          "path": "bemarkdown/pdf/figure_formula_support.py",
+          "bytes": 2705,
+          "sha256": "eed0cd23bc512f0561877ce88d3295a4af842ceaa59ea228caf5a36098af3917"
+        },
+        {
+          "path": "bemarkdown/pdf/figure_graphic_markers.py",
+          "bytes": 6574,
+          "sha256": "4a994f444bbedd37d13645058c07314aa692c7e48ed21d84f5b83ea1e206e263"
+        },
+        {
+          "path": "bemarkdown/pdf/figure_label_debug.py",
+          "bytes": 3738,
+          "sha256": "e7c14d7ad523033c18f7e23224e9f65f4e7523ee0e93a501e8da2927309bad99"
+        },
+        {
+          "path": "bemarkdown/pdf/figure_label_segments.py",
+          "bytes": 4989,
+          "sha256": "3ea146f78845f8d758dd607c2679ef4c0af031df9bbca5208cac42b3bd8a985e"
+        },
+        {
+          "path": "bemarkdown/pdf/figure_labels.py",
+          "bytes": 23136,
+          "sha256": "42606419ee93b24c0fdc65d2b03c847b4e78b3ebb05a953e565186afd32676d4"
+        },
+        {
+          "path": "bemarkdown/pdf/figure_symbols.py",
+          "bytes": 2650,
+          "sha256": "d9756c2898098ed50d70ff7fb4bf7c643870f3deda0a4d707f26f1ba96fbb6ed"
+        },
+        {
+          "path": "bemarkdown/pdf/figure_waveforms.py",
+          "bytes": 5340,
+          "sha256": "f8813cb21d42583da6c63f0302e471c8cb89f26184e2ed550eddd8b8bbf819b2"
+        },
+        {
+          "path": "bemarkdown/pdf/formula_containment.py",
+          "bytes": 2881,
+          "sha256": "5a6722eb0903188e0c0b6925d982a60945807a6f8a3e2a923bcfe1d47fc600e9"
+        },
+        {
+          "path": "bemarkdown/pdf/formula_ink_bounds.py",
+          "bytes": 3468,
+          "sha256": "68e38e1a34411f8f72c275dea700fa085968ed7ef528c1dae8cd22ebf5a1787e"
+        },
+        {
+          "path": "bemarkdown/pdf/fraction_repair_runtime.py",
+          "bytes": 8042,
+          "sha256": "0a5b5584a8dcb3c05a2950a487e2a8150462e5061adc893d186dc19e543f4a4f"
+        },
+        {
+          "path": "bemarkdown/pdf/fraction_structure_repair.py",
+          "bytes": 13489,
+          "sha256": "48bc6d66fae1f573029a8431c23ec00f6faea0f1bf1b3eabcf257efa24a9088a"
+        },
+        {
+          "path": "bemarkdown/pdf/got_batching.py",
+          "bytes": 4123,
+          "sha256": "1cfef3174e62ee3b43c8c251f7eb7d30eb50122bca355f1138903850aa4e57e4"
+        },
+        {
+          "path": "bemarkdown/pdf/graphics_render.py",
+          "bytes": 8521,
+          "sha256": "38b54ab8071d31fb1c3c4a748f239943f55217c2b77418ee37c08580a447feff"
+        },
+        {
+          "path": "bemarkdown/pdf/image_containment.py",
+          "bytes": 6791,
+          "sha256": "d6bdde8abce49e20ee99433c9f750d4eac66e522d407bb04077488223f8ab681"
+        },
+        {
+          "path": "bemarkdown/pdf/inline_atomic_superscript.py",
+          "bytes": 4711,
+          "sha256": "86b617c7df5f83ceaadbab2f59cf3368af525627a8239afae2fad6d6571ca168"
+        },
+        {
+          "path": "bemarkdown/pdf/inline_math_candidates.py",
+          "bytes": 3150,
+          "sha256": "77aadeff9883758312bf9490fc35a07913a68a850c95fadc92bc1fb499b03cd5"
+        },
+        {
+          "path": "bemarkdown/pdf/inline_math_repair.py",
+          "bytes": 10028,
+          "sha256": "fe8da22a08b293894b16680c9e6c63bb58f4adbeddc00d38ff876584387482dd"
+        },
+        {
+          "path": "bemarkdown/pdf/inline_math_runtime.py",
+          "bytes": 15402,
+          "sha256": "4c7bfc4691ae50e5df09cbf571cf17f45d0ed6e446a7e9c447f0df25904abeca"
+        },
+        {
+          "path": "bemarkdown/pdf/isolated_image_content.py",
+          "bytes": 1825,
+          "sha256": "fef8c47300dd6f7e7c7d3931d8bede407dd2bde121f74bf716105722f6b2fbdc"
+        },
+        {
+          "path": "bemarkdown/pdf/modular_pipeline.py",
+          "bytes": 20613,
+          "sha256": "e1024817961bf7db228fccf318eb61dc0d52c0b7fdd69492f3a2508cf91f79a1"
+        },
+        {
+          "path": "bemarkdown/pdf/native_column_order.py",
+          "bytes": 11449,
+          "sha256": "43017e27fedcfd630431474feb31f8cfd2cb58715c40aa44cd152ab2c94d929e"
+        },
+        {
+          "path": "bemarkdown/pdf/native_drawn_blanks.py",
+          "bytes": 4323,
+          "sha256": "7ae2b96ca0d5a50ebc7ab088fd50325981f464d57ebb4e4dbec4ebc26cc641fc"
+        },
+        {
+          "path": "bemarkdown/pdf/native_evidence.py",
+          "bytes": 7080,
+          "sha256": "e24f55489ef196cb35f37487bc5f0617a881e9be8fb4054ceddc90bdc00fbe86"
+        },
+        {
+          "path": "bemarkdown/pdf/native_figure_labels.py",
+          "bytes": 5661,
+          "sha256": "1c1bd78ae324aa962fccfb0a1997d218ad40dd5e4b3f47addaf82271b3137d10"
+        },
+        {
+          "path": "bemarkdown/pdf/native_font_unicode.py",
+          "bytes": 1314,
+          "sha256": "976320f8f1c6f448682155ea227eb0684eefea9823af0b1286ae8c75f13b5c84"
+        },
+        {
+          "path": "bemarkdown/pdf/native_glyph_bounds.py",
+          "bytes": 5147,
+          "sha256": "4642753f01440dc0d6bd3ad7ceecdc7b2531a4de4155a6f70687ae258b88fc2e"
+        },
+        {
+          "path": "bemarkdown/pdf/native_image_appearance.py",
+          "bytes": 2268,
+          "sha256": "6561e68f2cfd882bb8acc00298785ae930718c3a55c110df58d30219f1769056"
+        },
+        {
+          "path": "bemarkdown/pdf/native_margin_notes.py",
+          "bytes": 3696,
+          "sha256": "fc7bf1b74b7f69bed4986aa0a14323205cf2f57dac68aac17b62772df1b2d9c2"
+        },
+        {
+          "path": "bemarkdown/pdf/native_margin_titles.py",
+          "bytes": 2643,
+          "sha256": "478037fea60583c39d92283bddb91c05a7a60aac87acd46ec4d79cc4258068df"
+        },
+        {
+          "path": "bemarkdown/pdf/native_math.py",
+          "bytes": 29574,
+          "sha256": "46767e19e86e2c749acfa7db5a665fefbb739174d6aefe05c6a368a154bf9f2e"
+        },
+        {
+          "path": "bemarkdown/pdf/native_visibility.py",
+          "bytes": 4565,
+          "sha256": "02e2fe584bd1fac5be7255183f2eddac884e9495630bfb1fe563e27c8869ae19"
+        },
+        {
+          "path": "bemarkdown/pdf/non_text_ownership.py",
+          "bytes": 31055,
+          "sha256": "2fe11d639762bc4c7e700b44af5e60b37430fa99822cb3a7c6b4a02ce8c62c6c"
+        },
+        {
+          "path": "bemarkdown/pdf/object_profiler.py",
+          "bytes": 8708,
+          "sha256": "92c6fbc526bcb0878ccde0269571e89270d78aba93f2e271dbf297ebd6887cac"
+        },
+        {
+          "path": "bemarkdown/pdf/ocr_character_geometry.py",
+          "bytes": 6479,
+          "sha256": "4a1634c43ea9f0201165a645d13c7e29ac35202db392a7f72580fba7cbdadbc4"
+        },
+        {
+          "path": "bemarkdown/pdf/page_review.py",
+          "bytes": 766,
+          "sha256": "292386874ec0e3e01ab590a1de1a47fb622733ae69676453a3ef1091b83910c7"
+        },
+        {
+          "path": "bemarkdown/pdf/page_visual_text_recovery.py",
+          "bytes": 28305,
+          "sha256": "5a122fbeeba9b422012aea173f0d7187a965aa5f95efd01ce9ad3d19db0d2d4b"
+        },
+        {
+          "path": "bemarkdown/pdf/phase7a_oracle_adapter.py",
+          "bytes": 1838,
+          "sha256": "3b06ed3cc483f975c9fc1e9368a60ab0fc9d3c740ea878c6daa173e98d68cb51"
+        },
+        {
+          "path": "bemarkdown/pdf/pipeline_mode.py",
+          "bytes": 5140,
+          "sha256": "abae3da6ab69f3c81f6e22559c07f11c7400136bed8644278a787d854a13608b"
+        },
+        {
+          "path": "bemarkdown/pdf/production_runtime.py",
+          "bytes": 38741,
+          "sha256": "36297ba20a3e92821942e1c2229dc2f836ab7df3486c99a47919cf1f905a24fa"
+        },
+        {
+          "path": "bemarkdown/pdf/production_three_model_live.py",
+          "bytes": 54702,
+          "sha256": "2f60f5d55d4bf0a34a09fceccd16c56d6b24a8416b3e720f4fc5fd5a2d72520a"
+        },
+        {
+          "path": "bemarkdown/pdf/reading_order_v2.py",
+          "bytes": 5965,
+          "sha256": "135c9b5e482a6c60a0a79681a41b7f12db0dc751a6dee4b66a8003fc6fc4f82b"
+        },
+        {
+          "path": "bemarkdown/pdf/region_line_coverage.py",
+          "bytes": 7223,
+          "sha256": "cd15b0d0b404670f42f5bd7e3c04d3edac6cbf2e3872fbb924c6e972529a32c6"
+        },
+        {
+          "path": "bemarkdown/pdf/residual_agent.py",
+          "bytes": 31253,
+          "sha256": "11b5a924a4a222d5e4932b04db7150b99db28e0b9f291eea7326c083d34dfbf8"
+        },
+        {
+          "path": "bemarkdown/pdf/risk_manifest_v2.py",
+          "bytes": 4211,
+          "sha256": "8c9a7befc48ae2da267c099b55effd51e89947ac38614f66f59eefc432458039"
+        },
+        {
+          "path": "bemarkdown/pdf/ruled_writing_area.py",
+          "bytes": 5549,
+          "sha256": "bc1d377062ac39e9f8d911888f7eb6848afdab83574764b7ecc2cd46e736c86b"
+        },
+        {
+          "path": "bemarkdown/pdf/source_evidence.py",
+          "bytes": 12145,
+          "sha256": "3dce4e723af7405cf36c73d9cb3e999fe2ede7561520cdced7c2df71f44fb64b"
+        },
+        {
+          "path": "bemarkdown/pdf/source_table_grid.py",
+          "bytes": 9679,
+          "sha256": "867eb7f6c04c39e1f4be6a5c29179108697e9c54b96cba7d522186c6325e7414"
+        },
+        {
+          "path": "bemarkdown/pdf/source_table_math.py",
+          "bytes": 2237,
+          "sha256": "36cde0c59ccc7f3e5eac1b619ffdc0495494e18fd03b5800f157ffefb3ca1f1f"
+        },
+        {
+          "path": "bemarkdown/pdf/specialist_router.py",
+          "bytes": 4029,
+          "sha256": "921f115b2f4daa3147cba0b67932dbd46c25ac931b1d34a37d760c7402d6702f"
+        },
+        {
+          "path": "bemarkdown/pdf/table_bounds.py",
+          "bytes": 4932,
+          "sha256": "cf98a17c76016c1544a8977689655f525ab45a457563f84ebd91ae9a959f0371"
+        },
+        {
+          "path": "bemarkdown/pdf/table_evidence_v2.py",
+          "bytes": 5211,
+          "sha256": "f3e71f01d307157d8ab8cfdb57f5a7f078578e262bb7b554e56e8e96830fd85e"
+        },
+        {
+          "path": "bemarkdown/pdf/table_formula_review.py",
+          "bytes": 2624,
+          "sha256": "64a19aa3298fd442e5bed48b12627ef8a387d79a7842b746774642c7b6e754dd"
+        },
+        {
+          "path": "bemarkdown/pdf/table_runtime.py",
+          "bytes": 15506,
+          "sha256": "aede101aedc156ffc9fb43d3e2651cfadb1253c37f70efb30ef2a7a16c7f6024"
+        },
+        {
+          "path": "bemarkdown/pdf/table_source_markers.py",
+          "bytes": 4135,
+          "sha256": "7525811cc2cdf2ec67f83c7ae433266a1badac6cd2d62149416e8aba4a157549"
+        },
+        {
+          "path": "bemarkdown/pdf/text_containment.py",
+          "bytes": 2719,
+          "sha256": "9e09576b528f3269f4d2f712615f6e2c0a8a06722bace8b1d2a0cc86a24f9b0d"
+        },
+        {
+          "path": "bemarkdown/pdf/text_evidence.py",
+          "bytes": 15925,
+          "sha256": "71618b570834464cb10ab52459dc6e8475d89815add195ea10be3bb10893e570"
+        },
+        {
+          "path": "bemarkdown/pdf/text_scope_review.py",
+          "bytes": 2027,
+          "sha256": "8f3dd6f14f264444f9330cd452defd148d6fdb47a7204f1ca1689a6b590a7316"
+        },
+        {
+          "path": "bemarkdown/pdf/three_model_ocr.py",
+          "bytes": 35629,
+          "sha256": "c2a042a2293f2090a8c95265c2415b27e0af5b3101df10bbe1c9f74b696dce37"
+        },
+        {
+          "path": "bemarkdown/pdf/typed_authority.py",
+          "bytes": 12731,
+          "sha256": "368c89bcfd5a62f76c8c5ba84d73b6d309996f8f3c1a9535b931f1e8ff5fa503"
+        },
+        {
+          "path": "bemarkdown/pdf/visible_vectors.py",
+          "bytes": 1589,
+          "sha256": "872a5693ac19dbcd134cca523680915c010b21ff3989864ece68b888fcdad59a"
+        },
+        {
+          "path": "bemarkdown/pdf/visual_router.py",
+          "bytes": 4627,
+          "sha256": "70509c546f0b21bc9c3a1ca8a3ae54518d0ab707b5cebdea9416b41c98eb1219"
+        },
+        {
+          "path": "bemarkdown/pdf/vram_monitor.py",
+          "bytes": 10514,
+          "sha256": "6274661decec534baa547f3a5e7508fe9f2eafc9a389ef6c7394f1e2208a38ef"
+        },
+        {
+          "path": "bemarkdown/pdf/workers/__init__.py",
+          "bytes": 260,
+          "sha256": "8d0d7e744760f0d88bd23b30c4401300b68d7f79b5febc0d4163b14d009209fd"
+        },
+        {
+          "path": "bemarkdown/pdf/workers/ch_svtrv2_rec.py",
+          "bytes": 13385,
+          "sha256": "757095318cd5c1904414a2057ce294759e081e144101c26c70fb6b4f9da2007a"
+        },
+        {
+          "path": "bemarkdown/pdf/workers/deferred_got.py",
+          "bytes": 4370,
+          "sha256": "704224c70f9237326b48b7bf83e89a7ca627a2154784674563ec6815174857ab"
+        },
+        {
+          "path": "bemarkdown/pdf/workers/got_ocr2.py",
+          "bytes": 21815,
+          "sha256": "c93c9b46c9dcfdc257a299a1c0930f5dd5ddc026496151253de93e53e4b60ae3"
+        },
+        {
+          "path": "bemarkdown/pdf_census.py",
+          "bytes": 27045,
+          "sha256": "653928ff02cff71b097a6110344735f57b092d6ca3fd0edd0c58564808850efb"
+        },
+        {
+          "path": "bemarkdown/pdf_content_quality.py",
+          "bytes": 24232,
+          "sha256": "5628e652513edc032c7d401def7a3315e77256760acd75239b51c2a9383a2ac2"
+        },
+        {
+          "path": "bemarkdown/pdf_content_router.py",
+          "bytes": 124192,
+          "sha256": "4a27521d20450c7c96d621223efc4eb6d7692935ba05c89469cc075c882787a5"
+        },
+        {
+          "path": "bemarkdown/pdf_document_ir.py",
+          "bytes": 101298,
+          "sha256": "8449b2e059826f3be5b3c4a1346ae98ee2b7850ebae8d240ee16957e1b91b4c5"
+        },
+        {
+          "path": "bemarkdown/pdf_dual_paddle_evidence.py",
+          "bytes": 55554,
+          "sha256": "231db14227c3f1a5cfa502c5c49f88b238b56d703fcc136e32a38fc80c93763c"
+        },
+        {
+          "path": "bemarkdown/pdf_formula_consensus.py",
+          "bytes": 26076,
+          "sha256": "9acb03c4b55bec05b7f3bf8bf2880e80ae84872a5a3be81461a2028982039d81"
+        },
+        {
+          "path": "bemarkdown/pdf_formula_visual.py",
+          "bytes": 19807,
+          "sha256": "4c151dbc9c8d0485b596800f073ab2722ede1e6a8fb9568281a25f58455d73bd"
+        },
+        {
+          "path": "bemarkdown/pdf_layout_benchmark.py",
+          "bytes": 28577,
+          "sha256": "a1bf76dbf3fd5e7a00416c4d28bc484f4cbd426da50c478fd464620a17b27660"
+        },
+        {
+          "path": "bemarkdown/pdf_layout_calibration.py",
+          "bytes": 61328,
+          "sha256": "0b0ace81e9069809dea04b7a51abb5f641b9883f26f85990d4b262d0621588f8"
+        },
+        {
+          "path": "bemarkdown/pdf_layout_evaluation.py",
+          "bytes": 62347,
+          "sha256": "d33d10158e358cf550eda7cd8f31b0e547615d8a277052d27722c00329fc0e25"
+        },
+        {
+          "path": "bemarkdown/pdf_layout_fusion.py",
+          "bytes": 114979,
+          "sha256": "c6b006fbcf177e8ea5cb408f00c9e44cfda0a4c3062cf4ae0d654df9903903c0"
+        },
+        {
+          "path": "bemarkdown/pdf_layout_runtime.py",
+          "bytes": 17277,
+          "sha256": "8eefd5f437e33cf66985f82c319078103c36c75c79d94403920fd5c0d0dc304c"
+        },
+        {
+          "path": "bemarkdown/pdf_ocr_recovery.py",
+          "bytes": 5416,
+          "sha256": "ecb9f386db521ceb987646ab02c4ee215414f78c8b8edb238be974123417d4b0"
+        },
+        {
+          "path": "bemarkdown/pdf_output_audit.py",
+          "bytes": 47785,
+          "sha256": "655288034a2d77815c3340ab73d4955863e4d6eafd8534989c9a5a7a9081ba6d"
+        },
+        {
+          "path": "bemarkdown/pdf_region_ir.py",
+          "bytes": 27879,
+          "sha256": "89eb07787cab68b1f1536b9152b2d3c1ad7b250ff6ac10c29c508f58baaa5b3e"
+        },
+        {
+          "path": "bemarkdown/pdf_source.py",
+          "bytes": 21409,
+          "sha256": "361a07a810b529459bf6d0d96ca5fe20db43d1ea8d1e0bb143f43afb735d06c5"
+        },
+        {
+          "path": "bemarkdown/pdf_table_engine.py",
+          "bytes": 41702,
+          "sha256": "30277bc2292045157757c2eb8eca988f858574ed8ec54b2ebc9a8440775e1583"
+        },
+        {
+          "path": "bemarkdown/pdf_visual_text_gate.py",
+          "bytes": 3998,
+          "sha256": "2db554f74786d6f33ec1830054575e482c7ae8bfddabf49d6921f1ed1b3d152c"
+        },
+        {
+          "path": "bemarkdown/phase3b_integration.py",
+          "bytes": 26336,
+          "sha256": "0123818c90f6dc3785ca350d538ff80f49aa7775ef823e0920f6ebc87a2c3d3d"
+        },
+        {
+          "path": "bemarkdown/phase3c_benchmark.py",
+          "bytes": 22962,
+          "sha256": "ac3d943eec0c19eac9523a1e211cf11df44d6376f47663b7c329d006b8164669"
+        },
+        {
+          "path": "bemarkdown/phase3d2_validation.py",
+          "bytes": 26468,
+          "sha256": "b318594ae0cf37df27f8007dab5d419ecb9a527dd6f2c26cb7b1b2c78738c963"
+        },
+        {
+          "path": "bemarkdown/phase4a_validation.py",
+          "bytes": 27224,
+          "sha256": "8e4b5f500c310218b42ea886dc262cdc1b0d685cf1e6bd2684d99ea95acc2e9c"
+        },
+        {
+          "path": "bemarkdown/phase4b_validation.py",
+          "bytes": 15272,
+          "sha256": "08e75094bfaf17c2d6fccc93ce3aa6a2230eb908e9e02e57bbe7d6ec8ddae956"
+        },
+        {
+          "path": "bemarkdown/pipeline.py",
+          "bytes": 15322,
+          "sha256": "9d2ebaa26d4c610fcfa05b24938e096e122590125c19c73cef7a0e33e6489a32"
+        },
+        {
+          "path": "bemarkdown/pp_error_root_cause_audit_v1.py",
+          "bytes": 8170,
+          "sha256": "3eef5e0c01beee9406166c98211443a3caa48f7e07aa8a3939447d3eeb65325e"
+        },
+        {
+          "path": "bemarkdown/production.py",
+          "bytes": 27120,
+          "sha256": "dca9168df058ede41895343b49a56a3785cf36c81a26ede3d3b235af39d5fc56"
+        },
+        {
+          "path": "bemarkdown/production_audit_orchestration.py",
+          "bytes": 15075,
+          "sha256": "8226caca255f7eed00883261c6e91a560d03cb2195e51406da4b80836ea636a5"
+        },
+        {
+          "path": "bemarkdown/production_gpu_closeout.py",
+          "bytes": 21824,
+          "sha256": "2648d8c6c2d860e23e7234a19c83e264badfc3839955037d725af193eafcba47"
+        },
+        {
+          "path": "bemarkdown/production_runtime.py",
+          "bytes": 52701,
+          "sha256": "60d00f0ad7e6cbae9554a6ac7c5cecf0c34a0dc4f9dad0058b3c9ec6a471af95"
+        },
+        {
+          "path": "bemarkdown/reference_evaluation.py",
+          "bytes": 18962,
+          "sha256": "f5615f86db6209d6f0d814a87207ed40bfb3b85826b39fa7a70b2797226f5e11"
+        },
+        {
+          "path": "bemarkdown/reference_patch_planning.py",
+          "bytes": 19658,
+          "sha256": "8facf72b08e7e0987dcbdf71c7dd3abbd72897f586f622b665e178dbb1d110cb"
+        },
+        {
+          "path": "bemarkdown/regression.py",
+          "bytes": 5180,
+          "sha256": "06268788132bd2fb217bf55888396915f7b05e81e7297c8f6eff568cd54c055b"
+        },
+        {
+          "path": "bemarkdown/release.py",
+          "bytes": 20875,
+          "sha256": "0b9d604a837dde4a945139a66ddbfa8907aec5cf3d1ca210cc10527ab2b72fdd"
+        },
+        {
+          "path": "bemarkdown/resource_audit.py",
+          "bytes": 5499,
+          "sha256": "017c064b5714366a1d2de3791e4dea4397b33cb6c40a151b5c86af5d4f8165a2"
+        },
+        {
+          "path": "bemarkdown/resource_profiles.py",
+          "bytes": 819,
+          "sha256": "a2ebcd62f6e4b3aacf29a8329747e5e32bc21c15e7305ccc769efdad67e6a3f4"
+        },
+        {
+          "path": "bemarkdown/scanner.py",
+          "bytes": 65617,
+          "sha256": "4aca3e724bcd26cd46278def858764f0361a8c51260362d34aae5cc61ae33a4b"
+        },
+        {
+          "path": "bemarkdown/serializer.py",
+          "bytes": 7747,
+          "sha256": "20b27d5a0c458fe4969b975cac2d5db50bdad2dff4696c2c77d13e8fa82fbc5c"
+        },
+        {
+          "path": "bemarkdown/shared_runtime_bridge.py",
+          "bytes": 1994,
+          "sha256": "0d88c635d0a3774b2d5197fd7231181eb2d02e5e32d5e38910d417c12990a62a"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/app.js",
+          "bytes": 5073,
+          "sha256": "20fcac8f092de371f8801fc5a204d9387797033408902ff72796635de687fb70"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/index.html",
+          "bytes": 3337,
+          "sha256": "74bc52819095f9d28528b0560d069e36b2b93519cd51961dae9f782118f796fc"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/LICENSE.txt",
+          "bytes": 1099,
+          "sha256": "3caebd18611959ca725ab976a004d408017eb1d7093d6c9b9b09c5a4790eaff8"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_AMS-Regular.woff2",
+          "bytes": 28076,
+          "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Caligraphic-Bold.woff2",
+          "bytes": 6912,
+          "sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Caligraphic-Regular.woff2",
+          "bytes": 6908,
+          "sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Fraktur-Bold.woff2",
+          "bytes": 11348,
+          "sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Fraktur-Regular.woff2",
+          "bytes": 11316,
+          "sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-Bold.woff2",
+          "bytes": 25324,
+          "sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-BoldItalic.woff2",
+          "bytes": 16780,
+          "sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-Italic.woff2",
+          "bytes": 16988,
+          "sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-Regular.woff2",
+          "bytes": 26272,
+          "sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Math-BoldItalic.woff2",
+          "bytes": 16400,
+          "sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Math-Italic.woff2",
+          "bytes": 16440,
+          "sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_SansSerif-Bold.woff2",
+          "bytes": 12216,
+          "sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_SansSerif-Italic.woff2",
+          "bytes": 12028,
+          "sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_SansSerif-Regular.woff2",
+          "bytes": 10344,
+          "sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Script-Regular.woff2",
+          "bytes": 9644,
+          "sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size1-Regular.woff2",
+          "bytes": 5468,
+          "sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size2-Regular.woff2",
+          "bytes": 5208,
+          "sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size3-Regular.woff2",
+          "bytes": 3624,
+          "sha256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size4-Regular.woff2",
+          "bytes": 4928,
+          "sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Typewriter-Regular.woff2",
+          "bytes": 13568,
+          "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/fonts/LICENSE.txt",
+          "bytes": 1079,
+          "sha256": "a7bd44abd8419bf78185be51f34216356af1adb0806ce39d6a9ca0940bd49b70"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/mathlive-fonts.css",
+          "bytes": 3012,
+          "sha256": "be6061a80fe44965402fb5fcfc9f33d07a28f3529b770c4540aad3cb2ac39f5c"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/mathlive-static.css",
+          "bytes": 13154,
+          "sha256": "0d0d6d95ae4f252f6b9ffe64933e499fa5625d66e6998bdcd63980847ea4a72f"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/mathlive.min.js",
+          "bytes": 843724,
+          "sha256": "e99e6d2fa19137e9abf13b58f34cc5d2455cea5067b8cd4018c270825caf1c27"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/sounds/keypress-delete.wav",
+          "bytes": 64252,
+          "sha256": "66ce5505c7a224196bad7bfea8bcfceefb1307c68977693c85277e674bf69ac9"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/sounds/keypress-return.wav",
+          "bytes": 49332,
+          "sha256": "3203e6b8cab71154ae09f8883e6bd40865125a0618675b360557badba96aae7c"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/sounds/keypress-spacebar.wav",
+          "bytes": 29824,
+          "sha256": "b4e698a82d66179fbb40d9594fcef2fdbb0e9f0091c880d919b646888c9d3e6d"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/sounds/keypress-standard.wav",
+          "bytes": 17924,
+          "sha256": "2a73d5303f5d80cd22ba991b6e6f2a9dd58c5bbff3b36f95b24348c81c172088"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/mathlive/sounds/plonk.wav",
+          "bytes": 71212,
+          "sha256": "bc0fc69c4c5536be9212aac02fcaafc345e7ba60e3702236846db545d66ea11a"
+        },
+        {
+          "path": "bemarkdown/static/formula_review/styles.css",
+          "bytes": 3098,
+          "sha256": "eaaec442cc6459193362f3d83b9fcac5e8d4a7075431f4b5e28cfdc4e53b1141"
+        },
+        {
+          "path": "bemarkdown/text_recognition_contract.py",
+          "bytes": 2811,
+          "sha256": "a17d5777eab552b122f92998693140ceaf7f6385b5540ad88d7aad9a9653b2d5"
+        },
+        {
+          "path": "bemarkdown/validator.py",
+          "bytes": 15261,
+          "sha256": "c54c571e1983e772c9713b4c936da83c274392291ece2e3498d12b1ffefe57c7"
+        },
+        {
+          "path": "bemarkdown/vision_evaluation_context.py",
+          "bytes": 9870,
+          "sha256": "60ad4cb1a1c26e1331fc2305ac490d1707337322c6022d5c87cb9b2554f40958"
+        },
+        {
+          "path": "bemarkdown/vision_recognition_evaluation.py",
+          "bytes": 22645,
+          "sha256": "408b12b39b3584efcfaf2a34a4aeaeb0b10d7025119c1c24ae1ffc8f711ffc01"
+        },
+        {
+          "path": "bemarkdown/vision_reference_evaluation.py",
+          "bytes": 39208,
+          "sha256": "031f87d54a546aaf36c5e53e820951f7af0109a7e212cd66bc7224f66705fe65"
+        },
+        {
+          "path": "bemarkdown/vision_reference_gate.py",
+          "bytes": 24733,
+          "sha256": "0105f041945ea509dffed6f5bb3452e0db8fecfd04bfb8a24ef7aa019a14f656"
+        },
+        {
+          "path": "bemarkdown/wmf.py",
+          "bytes": 11868,
+          "sha256": "ec42fbb0297c943f2f6105c4f3a0592fa79dacdbe696f7726618ee04887fe849"
+        },
+        {
+          "path": "bemarkdown/wmf_renderer.py",
+          "bytes": 15029,
+          "sha256": "708777b14388a6f22583fa09253ab0cdca333031ba03ebc4e3917665ed90862d"
+        }
+      ]
+    },
+    "runtime_import_closure": {
+      "schema": "bemarkdown-wheel-runtime-import-closure-v1",
+      "entry_modules": [
+        "bemarkdown",
+        "bemarkdown.__main__",
+        "bemarkdown.cli",
+        "bemarkdown.production",
+        "bemarkdown.pdf.workers.ch_svtrv2_rec",
+        "bemarkdown.pdf.workers.got_ocr2"
+      ],
+      "reachable_modules": [
+        "bemarkdown",
+        "bemarkdown.__main__",
+        "bemarkdown._vendor.omml2latex_parser",
+        "bemarkdown.agent_task_contract",
+        "bemarkdown.asset_contract",
+        "bemarkdown.batch",
+        "bemarkdown.cli",
+        "bemarkdown.config",
+        "bemarkdown.doctor",
+        "bemarkdown.docx_image_content",
+        "bemarkdown.docx_visual",
+        "bemarkdown.drawingml",
+        "bemarkdown.eq",
+        "bemarkdown.formula",
+        "bemarkdown.formula_ocr",
+        "bemarkdown.formula_runtime_owner",
+        "bemarkdown.formulanet_runtime",
+        "bemarkdown.ir",
+        "bemarkdown.model_registry",
+        "bemarkdown.model_runtime",
+        "bemarkdown.model_suite",
+        "bemarkdown.model_suite_runtime",
+        "bemarkdown.mtef_cache",
+        "bemarkdown.namespaces",
+        "bemarkdown.package",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.pdf.caption_order",
+        "bemarkdown.pdf.cff_glyph_bounds",
+        "bemarkdown.pdf.clean_markdown",
+        "bemarkdown.pdf.detection_batches",
+        "bemarkdown.pdf.diagram_bounds",
+        "bemarkdown.pdf.figure_formula_support",
+        "bemarkdown.pdf.figure_graphic_markers",
+        "bemarkdown.pdf.figure_label_debug",
+        "bemarkdown.pdf.figure_label_segments",
+        "bemarkdown.pdf.figure_labels",
+        "bemarkdown.pdf.figure_symbols",
+        "bemarkdown.pdf.figure_waveforms",
+        "bemarkdown.pdf.formula_containment",
+        "bemarkdown.pdf.formula_ink_bounds",
+        "bemarkdown.pdf.fraction_repair_runtime",
+        "bemarkdown.pdf.fraction_structure_repair",
+        "bemarkdown.pdf.got_batching",
+        "bemarkdown.pdf.graphics_render",
+        "bemarkdown.pdf.image_containment",
+        "bemarkdown.pdf.inline_atomic_superscript",
+        "bemarkdown.pdf.inline_math_candidates",
+        "bemarkdown.pdf.inline_math_repair",
+        "bemarkdown.pdf.inline_math_runtime",
+        "bemarkdown.pdf.isolated_image_content",
+        "bemarkdown.pdf.modular_pipeline",
+        "bemarkdown.pdf.native_column_order",
+        "bemarkdown.pdf.native_drawn_blanks",
+        "bemarkdown.pdf.native_font_unicode",
+        "bemarkdown.pdf.native_glyph_bounds",
+        "bemarkdown.pdf.native_image_appearance",
+        "bemarkdown.pdf.native_margin_notes",
+        "bemarkdown.pdf.native_margin_titles",
+        "bemarkdown.pdf.native_math",
+        "bemarkdown.pdf.native_visibility",
+        "bemarkdown.pdf.non_text_ownership",
+        "bemarkdown.pdf.ocr_character_geometry",
+        "bemarkdown.pdf.page_review",
+        "bemarkdown.pdf.page_visual_text_recovery",
+        "bemarkdown.pdf.pipeline_mode",
+        "bemarkdown.pdf.production_runtime",
+        "bemarkdown.pdf.production_three_model_live",
+        "bemarkdown.pdf.region_line_coverage",
+        "bemarkdown.pdf.ruled_writing_area",
+        "bemarkdown.pdf.source_evidence",
+        "bemarkdown.pdf.source_table_grid",
+        "bemarkdown.pdf.source_table_math",
+        "bemarkdown.pdf.table_bounds",
+        "bemarkdown.pdf.table_formula_review",
+        "bemarkdown.pdf.table_runtime",
+        "bemarkdown.pdf.table_source_markers",
+        "bemarkdown.pdf.text_containment",
+        "bemarkdown.pdf.text_evidence",
+        "bemarkdown.pdf.text_scope_review",
+        "bemarkdown.pdf.three_model_ocr",
+        "bemarkdown.pdf.visible_vectors",
+        "bemarkdown.pdf.vram_monitor",
+        "bemarkdown.pdf.workers",
+        "bemarkdown.pdf.workers.ch_svtrv2_rec",
+        "bemarkdown.pdf.workers.deferred_got",
+        "bemarkdown.pdf.workers.got_ocr2",
+        "bemarkdown.pdf_content_quality",
+        "bemarkdown.pdf_content_router",
+        "bemarkdown.pdf_document_ir",
+        "bemarkdown.pdf_formula_consensus",
+        "bemarkdown.pdf_formula_visual",
+        "bemarkdown.pdf_layout_fusion",
+        "bemarkdown.pdf_layout_runtime",
+        "bemarkdown.pdf_ocr_recovery",
+        "bemarkdown.pdf_output_audit",
+        "bemarkdown.pdf_region_ir",
+        "bemarkdown.pdf_source",
+        "bemarkdown.pdf_table_engine",
+        "bemarkdown.pipeline",
+        "bemarkdown.production",
+        "bemarkdown.production_gpu_closeout",
+        "bemarkdown.production_runtime",
+        "bemarkdown.release",
+        "bemarkdown.resource_profiles",
+        "bemarkdown.scanner",
+        "bemarkdown.serializer",
+        "bemarkdown.text_recognition_contract",
+        "bemarkdown.validator",
+        "bemarkdown.wmf",
+        "bemarkdown.wmf_renderer"
+      ],
+      "forbidden_reachable_modules": [],
+      "missing_entry_modules": [],
+      "parse_error_modules": [],
+      "import_edges": {
+        "bemarkdown": [
+          "bemarkdown.batch",
+          "bemarkdown.formula_ocr",
+          "bemarkdown.formulanet_runtime",
+          "bemarkdown.mtef_cache",
+          "bemarkdown.package",
+          "bemarkdown.pipeline",
+          "bemarkdown.production",
+          "bemarkdown.validator"
+        ],
+        "bemarkdown.__main__": [
+          "bemarkdown.cli"
+        ],
+        "bemarkdown.cli": [
+          "bemarkdown.batch",
+          "bemarkdown.config",
+          "bemarkdown.doctor",
+          "bemarkdown.package",
+          "bemarkdown.pdf_source",
+          "bemarkdown.production"
+        ],
+        "bemarkdown.production": [
+          "bemarkdown.config",
+          "bemarkdown.docx_image_content",
+          "bemarkdown.docx_visual",
+          "bemarkdown.formula_ocr",
+          "bemarkdown.mtef_cache",
+          "bemarkdown.package",
+          "bemarkdown.pdf.clean_markdown",
+          "bemarkdown.pdf.production_runtime",
+          "bemarkdown.pipeline",
+          "bemarkdown.resource_profiles"
+        ],
+        "bemarkdown.pdf.workers.ch_svtrv2_rec": [
+          "bemarkdown.model_registry",
+          "bemarkdown.paddlex_runtime",
+          "bemarkdown.text_recognition_contract"
+        ],
+        "bemarkdown.pdf.workers.got_ocr2": [
+          "bemarkdown.pdf.got_batching",
+          "bemarkdown.pdf.vram_monitor",
+          "bemarkdown.text_recognition_contract"
+        ],
+        "bemarkdown.batch": [
+          "bemarkdown.config",
+          "bemarkdown.formula_runtime_owner",
+          "bemarkdown.package",
+          "bemarkdown.pdf_source",
+          "bemarkdown.production"
+        ],
+        "bemarkdown.formula_ocr": [
+          "bemarkdown.formulanet_runtime",
+          "bemarkdown.ir",
+          "bemarkdown.model_registry"
+        ],
+        "bemarkdown.formulanet_runtime": [
+          "bemarkdown.model_registry",
+          "bemarkdown.model_runtime",
+          "bemarkdown.paddlex_runtime"
+        ],
+        "bemarkdown.mtef_cache": [
+          "bemarkdown.formula",
+          "bemarkdown.validator"
+        ],
+        "bemarkdown.package": [
+          "bemarkdown.namespaces"
+        ],
+        "bemarkdown.pipeline": [
+          "bemarkdown.asset_contract",
+          "bemarkdown.formula_ocr",
+          "bemarkdown.mtef_cache",
+          "bemarkdown.package",
+          "bemarkdown.scanner",
+          "bemarkdown.serializer"
+        ],
+        "bemarkdown.validator": [
+          "bemarkdown.formula"
+        ],
+        "bemarkdown.config": [],
+        "bemarkdown.doctor": [
+          "bemarkdown.asset_contract",
+          "bemarkdown.config",
+          "bemarkdown.model_registry",
+          "bemarkdown.model_suite",
+          "bemarkdown.model_suite_runtime",
+          "bemarkdown.mtef_cache",
+          "bemarkdown.paddlex_runtime",
+          "bemarkdown.production",
+          "bemarkdown.release",
+          "bemarkdown.wmf"
+        ],
+        "bemarkdown.pdf_source": [
+          "bemarkdown.pdf.native_image_appearance",
+          "bemarkdown.production"
+        ],
+        "bemarkdown.docx_image_content": [
+          "bemarkdown.asset_contract",
+          "bemarkdown.ir",
+          "bemarkdown.pdf.isolated_image_content",
+          "bemarkdown.pdf.production_runtime",
+          "bemarkdown.pdf_layout_runtime",
+          "bemarkdown.pdf_output_audit",
+          "bemarkdown.pdf_region_ir",
+          "bemarkdown.production",
+          "bemarkdown.resource_profiles"
+        ],
+        "bemarkdown.docx_visual": [
+          "bemarkdown.package",
+          "bemarkdown.production"
+        ],
+        "bemarkdown.pdf.clean_markdown": [],
+        "bemarkdown.pdf.production_runtime": [
+          "bemarkdown.formula_ocr",
+          "bemarkdown.pdf.diagram_bounds",
+          "bemarkdown.pdf.figure_label_debug",
+          "bemarkdown.pdf.figure_label_segments",
+          "bemarkdown.pdf.figure_labels",
+          "bemarkdown.pdf.figure_symbols",
+          "bemarkdown.pdf.fraction_repair_runtime",
+          "bemarkdown.pdf.inline_math_runtime",
+          "bemarkdown.pdf.modular_pipeline",
+          "bemarkdown.pdf.production_three_model_live",
+          "bemarkdown.pdf.source_evidence",
+          "bemarkdown.pdf.table_bounds",
+          "bemarkdown.pdf.table_formula_review",
+          "bemarkdown.pdf.table_runtime",
+          "bemarkdown.pdf.text_scope_review",
+          "bemarkdown.pdf_content_router",
+          "bemarkdown.pdf_document_ir",
+          "bemarkdown.pdf_layout_fusion",
+          "bemarkdown.pdf_layout_runtime",
+          "bemarkdown.pdf_output_audit",
+          "bemarkdown.pdf_region_ir",
+          "bemarkdown.resource_profiles"
+        ],
+        "bemarkdown.resource_profiles": [],
+        "bemarkdown.model_registry": [
+          "bemarkdown.config"
+        ],
+        "bemarkdown.paddlex_runtime": [],
+        "bemarkdown.text_recognition_contract": [],
+        "bemarkdown.pdf.got_batching": [],
+        "bemarkdown.pdf.vram_monitor": [],
+        "bemarkdown.formula_runtime_owner": [
+          "bemarkdown.formulanet_runtime"
+        ],
+        "bemarkdown.ir": [],
+        "bemarkdown.model_runtime": [],
+        "bemarkdown.formula": [
+          "bemarkdown._vendor.omml2latex_parser",
+          "bemarkdown.eq"
+        ],
+        "bemarkdown.namespaces": [],
+        "bemarkdown.asset_contract": [
+          "bemarkdown.ir"
+        ],
+        "bemarkdown.scanner": [
+          "bemarkdown.drawingml",
+          "bemarkdown.formula",
+          "bemarkdown.ir",
+          "bemarkdown.mtef_cache",
+          "bemarkdown.namespaces",
+          "bemarkdown.package",
+          "bemarkdown.validator",
+          "bemarkdown.wmf",
+          "bemarkdown.wmf_renderer"
+        ],
+        "bemarkdown.serializer": [
+          "bemarkdown.ir"
+        ],
+        "bemarkdown.model_suite": [
+          "bemarkdown.model_registry",
+          "bemarkdown.release"
+        ],
+        "bemarkdown.model_suite_runtime": [
+          "bemarkdown.model_registry",
+          "bemarkdown.model_runtime",
+          "bemarkdown.model_suite",
+          "bemarkdown.paddlex_runtime",
+          "bemarkdown.release"
+        ],
+        "bemarkdown.release": [
+          "bemarkdown",
+          "bemarkdown.asset_contract",
+          "bemarkdown.production"
+        ],
+        "bemarkdown.wmf": [],
+        "bemarkdown.pdf.native_image_appearance": [],
+        "bemarkdown.pdf.isolated_image_content": [
+          "bemarkdown.pdf.fraction_structure_repair"
+        ],
+        "bemarkdown.pdf_layout_runtime": [
+          "bemarkdown.model_registry",
+          "bemarkdown.paddlex_runtime",
+          "bemarkdown.pdf_region_ir"
+        ],
+        "bemarkdown.pdf_output_audit": [
+          "bemarkdown.formula",
+          "bemarkdown.pdf.clean_markdown",
+          "bemarkdown.pdf.figure_labels",
+          "bemarkdown.pdf_document_ir",
+          "bemarkdown.pdf_table_engine",
+          "bemarkdown.validator"
+        ],
+        "bemarkdown.pdf_region_ir": [],
+        "bemarkdown.pdf.diagram_bounds": [
+          "bemarkdown.pdf_region_ir"
+        ],
+        "bemarkdown.pdf.figure_label_debug": [],
+        "bemarkdown.pdf.figure_label_segments": [
+          "bemarkdown.pdf_content_router"
+        ],
+        "bemarkdown.pdf.figure_labels": [
+          "bemarkdown.formula_ocr",
+          "bemarkdown.formulanet_runtime",
+          "bemarkdown.pdf.figure_formula_support",
+          "bemarkdown.pdf.figure_graphic_markers",
+          "bemarkdown.pdf.figure_symbols",
+          "bemarkdown.pdf.figure_waveforms",
+          "bemarkdown.pdf.page_visual_text_recovery",
+          "bemarkdown.pdf_content_router",
+          "bemarkdown.text_recognition_contract"
+        ],
+        "bemarkdown.pdf.figure_symbols": [],
+        "bemarkdown.pdf.fraction_repair_runtime": [
+          "bemarkdown.pdf.fraction_structure_repair",
+          "bemarkdown.pdf.text_evidence",
+          "bemarkdown.pdf_content_quality"
+        ],
+        "bemarkdown.pdf.inline_math_runtime": [
+          "bemarkdown.pdf.inline_atomic_superscript",
+          "bemarkdown.pdf.inline_math_candidates",
+          "bemarkdown.pdf.inline_math_repair",
+          "bemarkdown.pdf.ocr_character_geometry",
+          "bemarkdown.pdf.text_evidence"
+        ],
+        "bemarkdown.pdf.modular_pipeline": [
+          "bemarkdown.pdf.figure_labels",
+          "bemarkdown.pdf.pipeline_mode",
+          "bemarkdown.pdf_content_router",
+          "bemarkdown.pdf_document_ir",
+          "bemarkdown.pdf_layout_fusion",
+          "bemarkdown.pdf_output_audit",
+          "bemarkdown.pdf_source",
+          "bemarkdown.pdf_table_engine",
+          "bemarkdown.production_gpu_closeout"
+        ],
+        "bemarkdown.pdf.production_three_model_live": [
+          "bemarkdown.agent_task_contract",
+          "bemarkdown.model_registry",
+          "bemarkdown.pdf.got_batching",
+          "bemarkdown.pdf.inline_math_runtime",
+          "bemarkdown.pdf.page_visual_text_recovery",
+          "bemarkdown.pdf.region_line_coverage",
+          "bemarkdown.pdf.text_evidence",
+          "bemarkdown.pdf.three_model_ocr",
+          "bemarkdown.pdf.workers",
+          "bemarkdown.pdf.workers.ch_svtrv2_rec",
+          "bemarkdown.pdf.workers.deferred_got",
+          "bemarkdown.pdf_content_router",
+          "bemarkdown.text_recognition_contract"
+        ],
+        "bemarkdown.pdf.source_evidence": [
+          "bemarkdown.pdf.native_drawn_blanks",
+          "bemarkdown.pdf.native_font_unicode",
+          "bemarkdown.pdf.native_glyph_bounds",
+          "bemarkdown.pdf.native_math",
+          "bemarkdown.pdf.native_visibility",
+          "bemarkdown.pdf.visible_vectors"
+        ],
+        "bemarkdown.pdf.table_bounds": [
+          "bemarkdown.pdf_region_ir"
+        ],
+        "bemarkdown.pdf.table_formula_review": [],
+        "bemarkdown.pdf.table_runtime": [
+          "bemarkdown.model_registry",
+          "bemarkdown.model_runtime",
+          "bemarkdown.paddlex_runtime",
+          "bemarkdown.pdf.source_table_grid",
+          "bemarkdown.pdf.table_source_markers",
+          "bemarkdown.pdf_content_router",
+          "bemarkdown.pdf_document_ir",
+          "bemarkdown.pdf_table_engine"
+        ],
+        "bemarkdown.pdf.text_scope_review": [],
+        "bemarkdown.pdf_content_router": [
+          "bemarkdown.formula_ocr",
+          "bemarkdown.formulanet_runtime",
+          "bemarkdown.model_registry",
+          "bemarkdown.model_runtime",
+          "bemarkdown.paddlex_runtime",
+          "bemarkdown.pdf.detection_batches",
+          "bemarkdown.pdf.formula_ink_bounds",
+          "bemarkdown.pdf.graphics_render",
+          "bemarkdown.pdf.image_containment",
+          "bemarkdown.pdf.native_font_unicode",
+          "bemarkdown.pdf.native_glyph_bounds",
+          "bemarkdown.pdf.native_margin_titles",
+          "bemarkdown.pdf.native_math",
+          "bemarkdown.pdf.non_text_ownership",
+          "bemarkdown.pdf.ocr_character_geometry",
+          "bemarkdown.pdf.page_review",
+          "bemarkdown.pdf.region_line_coverage",
+          "bemarkdown.pdf.ruled_writing_area",
+          "bemarkdown.pdf_content_quality",
+          "bemarkdown.pdf_formula_consensus",
+          "bemarkdown.pdf_formula_visual",
+          "bemarkdown.pdf_ocr_recovery",
+          "bemarkdown.production_runtime"
+        ],
+        "bemarkdown.pdf_document_ir": [
+          "bemarkdown.pdf.caption_order",
+          "bemarkdown.pdf.figure_labels",
+          "bemarkdown.pdf.formula_containment",
+          "bemarkdown.pdf.image_containment",
+          "bemarkdown.pdf.native_column_order",
+          "bemarkdown.pdf.native_margin_notes",
+          "bemarkdown.pdf.text_containment",
+          "bemarkdown.pdf_table_engine"
+        ],
+        "bemarkdown.pdf_layout_fusion": [],
+        "bemarkdown._vendor.omml2latex_parser": [],
+        "bemarkdown.eq": [],
+        "bemarkdown.drawingml": [
+          "bemarkdown.namespaces"
+        ],
+        "bemarkdown.wmf_renderer": [
+          "bemarkdown.wmf"
+        ],
+        "bemarkdown.pdf.fraction_structure_repair": [
+          "bemarkdown.pdf.inline_math_repair"
+        ],
+        "bemarkdown.pdf_table_engine": [
+          "bemarkdown.pdf.source_table_math"
+        ],
+        "bemarkdown.pdf.figure_formula_support": [
+          "bemarkdown.pdf.inline_math_repair"
+        ],
+        "bemarkdown.pdf.figure_graphic_markers": [],
+        "bemarkdown.pdf.figure_waveforms": [],
+        "bemarkdown.pdf.page_visual_text_recovery": [],
+        "bemarkdown.pdf.text_evidence": [
+          "bemarkdown.text_recognition_contract"
+        ],
+        "bemarkdown.pdf_content_quality": [],
+        "bemarkdown.pdf.inline_atomic_superscript": [
+          "bemarkdown.pdf.inline_math_repair"
+        ],
+        "bemarkdown.pdf.inline_math_candidates": [],
+        "bemarkdown.pdf.inline_math_repair": [],
+        "bemarkdown.pdf.ocr_character_geometry": [],
+        "bemarkdown.pdf.pipeline_mode": [
+          "bemarkdown.config"
+        ],
+        "bemarkdown.production_gpu_closeout": [
+          "bemarkdown.production_runtime"
+        ],
+        "bemarkdown.agent_task_contract": [],
+        "bemarkdown.pdf.region_line_coverage": [],
+        "bemarkdown.pdf.three_model_ocr": [
+          "bemarkdown.pdf.text_evidence",
+          "bemarkdown.text_recognition_contract"
+        ],
+        "bemarkdown.pdf.workers": [],
+        "bemarkdown.pdf.workers.deferred_got": [],
+        "bemarkdown.pdf.native_drawn_blanks": [
+          "bemarkdown.pdf.visible_vectors"
+        ],
+        "bemarkdown.pdf.native_font_unicode": [],
+        "bemarkdown.pdf.native_glyph_bounds": [
+          "bemarkdown.pdf.cff_glyph_bounds"
+        ],
+        "bemarkdown.pdf.native_math": [
+          "bemarkdown.pdf.native_glyph_bounds",
+          "bemarkdown.pdf.native_visibility"
+        ],
+        "bemarkdown.pdf.native_visibility": [
+          "bemarkdown.pdf.native_glyph_bounds"
+        ],
+        "bemarkdown.pdf.visible_vectors": [],
+        "bemarkdown.pdf.source_table_grid": [
+          "bemarkdown.pdf_table_engine"
+        ],
+        "bemarkdown.pdf.table_source_markers": [],
+        "bemarkdown.pdf.detection_batches": [],
+        "bemarkdown.pdf.formula_ink_bounds": [],
+        "bemarkdown.pdf.graphics_render": [],
+        "bemarkdown.pdf.image_containment": [],
+        "bemarkdown.pdf.native_margin_titles": [],
+        "bemarkdown.pdf.non_text_ownership": [],
+        "bemarkdown.pdf.page_review": [],
+        "bemarkdown.pdf.ruled_writing_area": [],
+        "bemarkdown.pdf_formula_consensus": [
+          "bemarkdown.formula_ocr",
+          "bemarkdown.formulanet_runtime"
+        ],
+        "bemarkdown.pdf_formula_visual": [],
+        "bemarkdown.pdf_ocr_recovery": [],
+        "bemarkdown.production_runtime": [],
+        "bemarkdown.pdf.caption_order": [],
+        "bemarkdown.pdf.formula_containment": [],
+        "bemarkdown.pdf.native_column_order": [],
+        "bemarkdown.pdf.native_margin_notes": [],
+        "bemarkdown.pdf.text_containment": [],
+        "bemarkdown.pdf.source_table_math": [
+          "bemarkdown.pdf.native_math"
+        ],
+        "bemarkdown.pdf.cff_glyph_bounds": [
+          "bemarkdown.pdf.native_glyph_bounds"
+        ]
+      },
+      "reachable_module_count": 110,
+      "closure_fingerprint": "398b7bf4532d4b79cdd6bcb5505f38f643399fe6535a108bb5618e1b9a3596d0",
+      "gate": "PASS"
+    }
+  },
+  "runtime": {
+    "manifest": {
+      "path": "runtime/RUNTIME_MANIFEST.json",
+      "sha256": "64cfe16f9e0473430f11f50c6572096ca88edf0fff46716157e0fe43fd5251f9"
+    },
+    "core_lock": {
+      "path": "runtime/requirements-core.lock",
+      "sha256": "03610e599221c2ea03278a0e9bc09bde146e906ee6245201f7f7f2e8e7824258"
+    },
+    "formula_ocr_lock": {
+      "path": "runtime/requirements-formula-ocr.lock",
+      "sha256": "4ca9fd86622bb3eb4e54b29cd1000f6ddb510e42d184455442b5848eb1e580ab"
+    },
+    "text_ensemble_lock": {
+      "path": "runtime/requirements-text-ensemble.lock",
+      "sha256": "a5bfb00da5290120dacaf5c752a334c63f9ad2eeed78ebb899e473dd3fe73e37"
+    }
+  },
+  "publication": {
+    "release_id": "education-mcp-public-base-20260913-v1",
+    "status": "VALIDATED_PUBLIC_BASE",
+    "distribution_scope": "PUBLIC_AGPL_3_0_ONLY_WITH_UPSTREAM_EXCEPTIONS",
+    "public_redistribution_ready": true,
+    "fully_offline_installer_ready": false,
+    "release_manifest": "RELEASE_MANIFEST.json"
+  },
+  "model_dependencies": {
+    "registry": "../../MODELS/MODEL_REGISTRY.json",
+    "dependency_suite": "runtime/pdf_production_suite.json",
+    "current_production": [
+      {
+        "model_id": "ch-svtrv2-rec",
+        "state": "INTEGRATED_VALIDATED"
+      },
+      {
+        "model_id": "got-ocr2-0",
+        "state": "INTEGRATED_VALIDATED"
+      },
+      {
+        "model_id": "pp-doclayout-plus-l",
+        "state": "MODEL_READY"
+      },
+      {
+        "model_id": "pp-formulanet-plus-l",
+        "state": "INTEGRATED_VALIDATED"
+      },
+      {
+        "model_id": "pp-lcnet-x1-0-table-cls",
+        "state": "MODEL_READY"
+      },
+      {
+        "model_id": "pp-ocrv6-medium-det",
+        "state": "MODEL_READY"
+      },
+      {
+        "model_id": "pp-ocrv6-medium-rec",
+        "state": "MODEL_READY"
+      },
+      {
+        "model_id": "rt-detr-l-wired-table-cell-det",
+        "state": "MODEL_READY"
+      },
+      {
+        "model_id": "rt-detr-l-wireless-table-cell-det",
+        "state": "MODEL_READY"
+      },
+      {
+        "model_id": "slanext-wired",
+        "state": "MODEL_READY"
+      },
+      {
+        "model_id": "slanext-wireless",
+        "state": "MODEL_READY"
+      }
+    ]
+  },
+  "production_config": "bemarkdown.toml"
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "ch-svtrv2-rec",
+  "display_name": "ch_SVTRv2_rec",
+  "engine": "text",
+  "task": "text_recognition",
+  "provider": "PaddlePaddle",
+  "upstream": "PaddlePaddle/ch_SVTRv2_rec",
+  "upstream_source": "PaddlePaddle/ch_SVTRv2_rec",
+  "upstream_revision": "UNRESOLVED",
+  "model_fingerprint": "bb4ea682c215607bf65df33f7038ffdba2cec1015428ca2d73ceb0eb45c30156",
+  "fingerprint_contract": "sha256-canonical-json-file-inventory-v1",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "runtime_profile": "win-x64-py311-cuda126",
+  "expected_device": "gpu:0",
+  "precision_baseline": "fp32",
+  "integration_status": "INTEGRATED_VALIDATED",
+  "license": {
+    "status": "UNRESOLVED",
+    "spdx": "UNRESOLVED",
+    "source_file": "UNRESOLVED"
+  },
+  "file_count": 3,
+  "total_bytes": 84371146,
+  "files": [
+    {
+      "path": "inference.json",
+      "bytes": 367710,
+      "sha256": "c304cc1f0bf86b878e85d515fce6bc65308ad275b882dc61096ece74a9d79815"
+    },
+    {
+      "path": "inference.pdiparams",
+      "bytes": 83949899,
+      "sha256": "2f9e8ea8852560f908e1a0fb497818477e5a3610f660ddb339b3dddb0c207116"
+    },
+    {
+      "path": "inference.yml",
+      "bytes": 53537,
+      "sha256": "a66ed58b298bc1976e37e7f0f861cba7163f0121032897fc7798f2fb4d4370bb"
+    }
+  ],
+  "provider_runtime_identity": {
+    "schema": "bemarkdown-ch-svtrv2-provider-runtime-identity-v1",
+    "model_fingerprint": "bb4ea682c215607bf65df33f7038ffdba2cec1015428ca2d73ceb0eb45c30156",
+    "fingerprint_contract": "sha256(canonical-json(file inventory))",
+    "registry_directory_fingerprint": "bb4ea682c215607bf65df33f7038ffdba2cec1015428ca2d73ceb0eb45c30156",
+    "file_count": 3,
+    "gate": "CH_SVTRV2_REC_IDENTITY_PASS"
+  }
+}

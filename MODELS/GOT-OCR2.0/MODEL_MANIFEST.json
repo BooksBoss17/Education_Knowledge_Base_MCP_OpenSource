@@ -1,0 +1,88 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "got-ocr2-0",
+  "display_name": "GOT-OCR2.0",
+  "engine": "text",
+  "task": "text_recognition",
+  "provider": "Torch/Transformers",
+  "upstream": "stepfun-ai/GOT-OCR-2.0-hf",
+  "upstream_source": "stepfun-ai/GOT-OCR-2.0-hf",
+  "upstream_revision": "d3017ef2c2c1395888c8d635c5e0508bcb0ac78d",
+  "model_fingerprint": "f10c112365ba5ed06461e4f9b9688929aa100804864121c16c3de2ab51971050",
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "runtime_profile": "win-x64-py311-cuda126",
+  "expected_device": "gpu:0",
+  "precision_baseline": "bf16",
+  "integration_status": "INTEGRATED_VALIDATED",
+  "license": {
+    "status": "UNRESOLVED",
+    "spdx": "UNRESOLVED",
+    "source_file": "UNRESOLVED"
+  },
+  "file_count": 8,
+  "total_bytes": 1139869676,
+  "files": [
+    {
+      "path": "config.json",
+      "bytes": 608,
+      "sha256": "cbe8aacd6cd84a2d58eafcd0045c6ac40e02e3a448f24b8cee51cc81d8bdccf2"
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 74,
+      "sha256": "31915c5a692f43c5765a20cfc5f9403bcd250f5721a0d931bb703169c08993b4"
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 1121114488,
+      "sha256": "6175ac7868a4e75735f5d59f78c465081ad3427eb4f312d072a0f1d16b333ba4"
+    },
+    {
+      "path": "preprocessor_config.json",
+      "bytes": 439,
+      "sha256": "ef9a0dc0935cac11f4230ca30d00a52bedfa52b6633e409e9fbd2ea56373aa7e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 12077,
+      "sha256": "706d6fe217d2f047ca68f47bdcf44ace4a0832491da396972c2c917944e84c18"
+    },
+    {
+      "path": "special_tokens_map.json",
+      "bytes": 213,
+      "sha256": "7c2368a3889fdfb37c24cabeb031b53f47934f357b54e56e8e389909a338ea47"
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 18702549,
+      "sha256": "36b382a3c48c9a143c30139dac6c8230ddfb0b46a3dc43082af6052abe99d9de"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 39228,
+      "sha256": "8b0542937d32a67da8ea2d1288b870e325be383a962c65d201864299560a2b8e"
+    }
+  ],
+  "provider_runtime_identity": {
+    "schema": "bemarkdown-got-ocr2-provider-runtime-identity-v1",
+    "model_revision": "d3017ef2c2c1395888c8d635c5e0508bcb0ac78d",
+    "weight_sha256": "6175ac7868a4e75735f5d59f78c465081ad3427eb4f312d072a0f1d16b333ba4",
+    "required_root_files": [
+      "config.json",
+      "generation_config.json",
+      "model.safetensors",
+      "preprocessor_config.json",
+      "README.md",
+      "special_tokens_map.json",
+      "tokenizer_config.json",
+      "tokenizer.json"
+    ],
+    "remote_code_required": false,
+    "precision": "bf16",
+    "batch_size": 1,
+    "do_sample": false,
+    "max_new_tokens": 256
+  }
+}

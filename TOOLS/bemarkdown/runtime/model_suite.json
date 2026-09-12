@@ -1,0 +1,125 @@
+{
+  "schema": "bemarkdown-model-suite-manifest-v1",
+  "suite_id": "bemarkdown-paddle-document-suite-v1",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "model_count": 9,
+  "models": [
+    {
+      "model_id": "pp-doclayout-plus-l",
+      "path": "PP-DocLayout_plus-L",
+      "engine": "layout",
+      "task": "layout_detection",
+      "required_by": [
+        "PDF_LAYOUT",
+        "PDF_TEXT",
+        "PDF_FORMULA",
+        "PDF_TABLE",
+        "PDF_IMAGE"
+      ],
+      "model_manifest_sha256": "d2f3d93b8a589101f55c7123c2347b35baab97d5bcd73df658c5c80c8151a157",
+      "model_fingerprint": "4cbd1c9582e8a738539fce3a28e355ed5627fddeea424cdb461e3b9bcdfd138d",
+      "integration_status": "MODEL_READY"
+    },
+    {
+      "model_id": "pp-formulanet-plus-l",
+      "path": "PP-FormulaNet_plus-L",
+      "engine": "formula",
+      "task": "formula_ocr",
+      "required_by": [
+        "DOCX_FORMULA",
+        "PDF_FORMULA"
+      ],
+      "model_manifest_sha256": "3487bb91436cc1213e36a569104184fd8c64f5458e9ff05786a9c181ff38b69c",
+      "model_fingerprint": "b215b9cfdebb18660cc6ab66951fa89a23463128be2b879a6e4f2c2d80939b4e",
+      "integration_status": "INTEGRATED_VALIDATED"
+    },
+    {
+      "model_id": "pp-lcnet-x1-0-table-cls",
+      "path": "PP-LCNet_x1_0_table_cls",
+      "engine": "table",
+      "task": "table_classification",
+      "required_by": [
+        "PDF_TABLE"
+      ],
+      "model_manifest_sha256": "edbff281aca1dc2618da738e27aa061a94f39c51833fa656e507af3c03720b86",
+      "model_fingerprint": "2726e9165bca93cfd959cae40f8207a3ad7191b2befbf983df2745501da5cb3e",
+      "integration_status": "MODEL_READY"
+    },
+    {
+      "model_id": "pp-ocrv6-medium-det",
+      "path": "PP-OCRv6_medium_det",
+      "engine": "text",
+      "task": "text_detection",
+      "required_by": [
+        "PDF_TEXT",
+        "PDF_TABLE"
+      ],
+      "model_manifest_sha256": "8c7924f496b679579fae4ef57202bc3da43e1305ed52af9a5aab4f941c50bacc",
+      "model_fingerprint": "2af289a93d683b56455ecc222e8956eb0f13579b6827fd84ede6e18c586506ab",
+      "integration_status": "MODEL_READY"
+    },
+    {
+      "model_id": "pp-ocrv6-medium-rec",
+      "path": "PP-OCRv6_medium_rec",
+      "engine": "text",
+      "task": "text_recognition",
+      "required_by": [
+        "PDF_TEXT",
+        "PDF_TABLE"
+      ],
+      "model_manifest_sha256": "77f7ca82a630b0fb8ce69d2f804de43a09489a1d036759bcbdd781bb07c28527",
+      "model_fingerprint": "049fe56c75fed8e8cb787f7700b66b88a2052a61cf61025dac0451848284b915",
+      "integration_status": "MODEL_READY"
+    },
+    {
+      "model_id": "rt-detr-l-wired-table-cell-det",
+      "path": "RT-DETR-L_wired_table_cell_det",
+      "engine": "table",
+      "task": "table_cell_detection",
+      "required_by": [
+        "PDF_TABLE"
+      ],
+      "model_manifest_sha256": "2f2f0fa621ac9f6020249bf1fff5c3e5aa729731815b5700368e24f6a53acef5",
+      "model_fingerprint": "169e8e283e4dc94fac3511d7ac3fed4b218790bc08bc8396b9d836345b4daa94",
+      "integration_status": "MODEL_READY"
+    },
+    {
+      "model_id": "rt-detr-l-wireless-table-cell-det",
+      "path": "RT-DETR-L_wireless_table_cell_det",
+      "engine": "table",
+      "task": "table_cell_detection",
+      "required_by": [
+        "PDF_TABLE"
+      ],
+      "model_manifest_sha256": "63d2514e46f57924371855163016f19752561ecf46f08f54ab4c4adf7f6e8d40",
+      "model_fingerprint": "d7687db27063e74bca76fef9c426ca01bc81b4f263c92c59e6eaebfadfeb4c0a",
+      "integration_status": "MODEL_READY"
+    },
+    {
+      "model_id": "slanext-wired",
+      "path": "SLANeXt_wired",
+      "engine": "table",
+      "task": "table_structure_recognition",
+      "required_by": [
+        "PDF_TABLE"
+      ],
+      "model_manifest_sha256": "60ca8ea6ce24ae764804ceec5441f0be496bd42fca3e58225dfc39c793b0dd6b",
+      "model_fingerprint": "5a2f8df793d066487815c3811be2035a837bc869dcae1e070f77c0a0615f3be9",
+      "integration_status": "MODEL_READY"
+    },
+    {
+      "model_id": "slanext-wireless",
+      "path": "SLANeXt_wireless",
+      "engine": "table",
+      "task": "table_structure_recognition",
+      "required_by": [
+        "PDF_TABLE"
+      ],
+      "model_manifest_sha256": "7fd33c3a6f683aabf8da5cab6292847fb0cdb9968d8a5cff4707dcaf843ac9f6",
+      "model_fingerprint": "f162960740c9819e364827bf3e6bf3e947097395a0bed12fa63a939d5873d639",
+      "integration_status": "MODEL_READY"
+    }
+  ],
+  "suite_fingerprint": "1521f6cccb7b01e7f2c189cc3e23d8f60f971e554f11d9041ddad8526c20c47a",
+  "suite_status": "MODEL_READY"
+}

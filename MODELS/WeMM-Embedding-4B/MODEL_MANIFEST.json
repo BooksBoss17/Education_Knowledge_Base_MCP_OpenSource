@@ -1,0 +1,163 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "wemm-embedding-4b",
+  "display_name": "WeMM-Embedding-4B",
+  "engine": "embedding",
+  "task": "multimodal_embedding",
+  "provider": "tencent",
+  "upstream": "tencent/WeMM-Embedding-4B",
+  "upstream_source": "tencent/WeMM-Embedding-4B",
+  "upstream_revision": "41a4fafdd26252ddff05c025413af7e61e26f08e",
+  "model_fingerprint": "bfd495ab12ab30819e8d5d966c138048ca01ab7ce9e2d9baa0c6aaaf2bf4281f",
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "integration_status": "MODEL_READY",
+  "runtime_contract": "NOT_INTEGRATED",
+  "expected_device": "NOT_VALIDATED",
+  "precision_baseline": "bfloat16",
+  "license": {
+    "status": "UPSTREAM_DECLARED_NOT_LEGALLY_REVIEWED",
+    "metadata": {
+      "base_model": [
+        "Qwen/Qwen3.5-4B"
+      ],
+      "language": [
+        "zh",
+        "en"
+      ],
+      "library_name": "transformers",
+      "license": "other",
+      "license_name": "apache-2.0",
+      "license_link": "https://huggingface.co/tencent/WeMM-Embedding-4B/blob/main/LICENSE",
+      "pipeline_tag": "feature-extraction",
+      "tags": [
+        "sentence-transformers",
+        "multimodal-embedding",
+        "text-embedding",
+        "image-embedding",
+        "video-embedding",
+        "mrl"
+      ]
+    },
+    "spdx": "Apache-2.0",
+    "source_file": "LICENSE"
+  },
+  "file_count": 17,
+  "total_bytes": 10367587468,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 50,
+      "sha256": "ee05350c7fda0af4da116020dd7b976d731de3beed4f5e717d5bcc95ead24550"
+    },
+    {
+      "path": "additional_chat_templates/sentence_transformers.jinja",
+      "bytes": 1452,
+      "sha256": "69c72e7d4579f377e15c79de4d4bf5964f929ac2cf8c1b1231f95940ed97cd97"
+    },
+    {
+      "path": "chat_template.jinja",
+      "bytes": 7755,
+      "sha256": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80"
+    },
+    {
+      "path": "config.json",
+      "bytes": 3058,
+      "sha256": "c7f7f7416997863d984010a7567bf1467108475d6982e132f99c067eb01e9a50"
+    },
+    {
+      "path": "config_sentence_transformers.json",
+      "bytes": 245,
+      "sha256": "7957a6bc6c8f20335abd7b4e55d433db830551b86be932400a6a1200a28d4bb6"
+    },
+    {
+      "path": "embedding_chat_template.jinja",
+      "bytes": 1086,
+      "sha256": "7c3df2aab83ab9096428ec27b6b99ad87c4790418b830d119957634f28c677ba"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 24546,
+      "sha256": "f0d0dad40901290d9b25a37e3b25c317b627001178aa1dd0b8963ee3ba5181e3"
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 10347541240,
+      "sha256": "880c33762729584656223d1235bf13d035b2a842c28eac9ae6ea50bbc3d1ac45"
+    },
+    {
+      "path": "modeling_st_wemm.py",
+      "bytes": 3180,
+      "sha256": "521d02c1c60ae727cc9dc6500cdb0b28c53b259e0ce3d37197920a33ba4dd333"
+    },
+    {
+      "path": "modeling_wemm_embedding.py",
+      "bytes": 1205,
+      "sha256": "ac255e1fad459cc3e68891d6c3327f4486922aed02fb3c5c13fb53277ba8e94f"
+    },
+    {
+      "path": "modules.json",
+      "bytes": 106,
+      "sha256": "be6481eec30eb56a0020baea14d5fc6d14a2134a44c6485e3595781cceb04f8f"
+    },
+    {
+      "path": "patch_sglang_video.py",
+      "bytes": 1983,
+      "sha256": "c20c73e803a634e5dc54c39bc1c20cec0e7929c0320121769268a3dfb2e58a2d"
+    },
+    {
+      "path": "processor_config.json",
+      "bytes": 1192,
+      "sha256": "d601e2fe0de1bc11852de3aa843f01a1677ca84f4dc743916c9ce4b8d30fb384"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7894,
+      "sha256": "bd412e67d5b3ea9f7230d00b5501d52046573c6e48e33653516ad0eaadb4a346"
+    },
+    {
+      "path": "sentence_bert_config.json",
+      "bytes": 950,
+      "sha256": "9d3d5f6695cf12784c13b03dbef305c80ee2bdf378abf5cb15ed032de578d00b"
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 19990378,
+      "sha256": "40e444c744512f423da4c8443c47c21e22ff76056ba4e9796a81c04c13a9daf0"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 1148,
+      "sha256": "35db43580d8c551641a5fe1d1daafb10e73d0a1243db18ff7bc00413a6152ff5"
+    }
+  ],
+  "validation": {
+    "upstream_file_integrity": "VERIFIED",
+    "inference": "NOT_RUN",
+    "release_id": "embedding-models-20260912-v1",
+    "safetensors": {
+      "status": "VERIFIED",
+      "tensor_count": 724,
+      "stored_parameter_count": 5173725696,
+      "dtypes": [
+        "BF16"
+      ]
+    }
+  },
+  "embedding": {
+    "max_dimension": 2560,
+    "modalities": [
+      "text",
+      "image",
+      "video",
+      "visual_document",
+      "interleaved_multimodal"
+    ],
+    "audio_supported": false
+  },
+  "runtime_notes": {
+    "status": "ASSETS_ONLY_NOT_INTEGRATED",
+    "upstream_python_executed": false,
+    "existing_bemarkdown_runtime_modified": false
+  }
+}

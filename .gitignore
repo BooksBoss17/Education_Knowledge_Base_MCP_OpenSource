@@ -1,0 +1,21 @@
+.local/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+!TOOLS/bemarkdown/dist/
+!TOOLS/bemarkdown/dist/*.whl
+.pytest_cache/
+*.log
+*.part
+*.installing
+MODELS/*/*
+!MODELS/*/MODEL_MANIFEST.json
+!MODELS/MODEL_REGISTRY.json
+# Keep downloaded payloads and their nested directories out of Git.
+MODELS/**/.cache/
+*.safetensors
+*.pdiparams
