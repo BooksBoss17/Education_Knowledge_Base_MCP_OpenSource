@@ -1,6 +1,6 @@
 {
   "schema": "education-public-file-inventory-v1",
-  "release_id": "education-mcp-public-base-20260913-v1",
+  "release_id": "education-mcp-public-base-20260913-v2",
   "license": "AGPL-3.0-only WITH separately licensed third-party components",
   "files": [
     {
@@ -30,8 +30,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 4137,
-      "sha256": "868f27fec54718039cc40df6afb06803fc9a6a3bfd50f51086a9833e014b40d7"
+      "bytes": 5594,
+      "sha256": "b8ad1bfe383c9480637b29450566b581ce83d6857652f1c89ae06ede48c45843"
     },
     {
       "path": "LICENSE",
@@ -125,8 +125,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6329,
-      "sha256": "2ba5ac8701af6c477320d6123f11d9460b03baf5fba517addf8abb17c5aea26f"
+      "bytes": 8944,
+      "sha256": "06e89961aaf0a4aaf6768f6b945b560249ef48db07ced84b8e1246045b454ee7"
     },
     {
       "path": "scripts/downloads.py",
@@ -165,8 +165,13 @@
     },
     {
       "path": "SKILLS/README.md",
-      "bytes": 424,
-      "sha256": "a36a116c4886eb7227bf769969a8767a1b5e42dfe236a5fbfd74dc97fe0f0705"
+      "bytes": 689,
+      "sha256": "11ba1c5bee10e349bf95df4245070503ad61777e0ab66d059650b003ee0b3079"
+    },
+    {
+      "path": "SKILLS/textbook-import/SKILL.md",
+      "bytes": 12140,
+      "sha256": "41069fd5f070021d3a54b6c231e58e626df3278f7646877edb25b4118c162576"
     },
     {
       "path": "SOURCE/bemarkdown/LICENSE",
@@ -1284,6 +1289,11 @@
       "sha256": "ff504d8639775a84bc2014dc848af4e6766c5b583048550c2e7250750462d155"
     },
     {
+      "path": "TOOLS/education_mcp/image_review.py",
+      "bytes": 4011,
+      "sha256": "74b9ae7f13882547eaaf3ddd31f50de19a193678285e173fe164da65a99de7ef"
+    },
+    {
       "path": "TOOLS/education_mcp/install.py",
       "bytes": 948,
       "sha256": "9d98cde268bd50cd90f9d4b0d3909c715cb1c059d96bd8716789d1cb303256b3"
@@ -1295,13 +1305,28 @@
     },
     {
       "path": "TOOLS/education_mcp/review_handoff.py",
-      "bytes": 17257,
-      "sha256": "03e1eedfd8dd23cba1e58a6a1f9a9c6f7372942c4d13c6754265b69148100af6"
+      "bytes": 18705,
+      "sha256": "baed170cd11f6e855e159735771c06b14ab36711aca992ba2d0841fe7d64d974"
+    },
+    {
+      "path": "TOOLS/education_mcp/semantic_review.py",
+      "bytes": 5194,
+      "sha256": "f1ae3fc8bbe4cc8bd336cf6f5e48917ba70429fe5925e1a45ccdb2b4f580581e"
     },
     {
       "path": "TOOLS/education_mcp/server.py",
-      "bytes": 40271,
-      "sha256": "a6f9366d619505b351b1168a3e23cd3009eadeb149c26fd9b9a381d85956cda7"
+      "bytes": 47358,
+      "sha256": "865f47ceff4dc76778e586faed0f95df3fa7095c1769af2b8219e76ffc26dd5f"
+    },
+    {
+      "path": "TOOLS/education_mcp/textbook_workflow.py",
+      "bytes": 18044,
+      "sha256": "076dd6a4fb513c28e2261f6bf1f4ec1d4080877203a530cdc2712c437a7d941d"
+    },
+    {
+      "path": "TOOLS/education_mcp/vision_gate.py",
+      "bytes": 3631,
+      "sha256": "1f1bfbbf3e47cb5e53e31e06137a38f3dc6febf8c07fd88df1f418387e19c7d8"
     },
     {
       "path": "TOOLS/education_mcp/workspace_manager.py",

@@ -10,6 +10,36 @@ import xml.etree.ElementTree as ET
 from posixpath import normpath
 
 
+def summarize_handoff(handoff):
+    """Keep every review item and source request; fold pixel-level boundary logs."""
+    result = copy.deepcopy(handoff)
+    result['schema'] = 'education-mcp-residual-ocr-handoff-summary-v1'
+    result['full_evidence_view'] = 'handoff'
+    result['summary_scope'] = 'All text candidates, table tasks and image-region reviews are retained. Only pixel-level boundary diagnostics are folded; use handoff for those details.'
+    for row in result.get('image_region_reviews', []):
+        details = row.pop('boundary_evidence', None)
+        if details is None:
+            continue
+        methods = []
+        def visit(value):
+            if isinstance(value, dict):
+                if value.get('schema'):
+                    summary = {key:child for key,child in value.items()
+                               if key in {'schema','status'} or isinstance(child, bool)}
+                    if 'blocking_regions' in value:
+                        summary['blocking_regions'] = value['blocking_regions']
+                    if summary not in methods:
+                        methods.append(summary)
+                for child in value.values():
+                    visit(child)
+            elif isinstance(value, list):
+                for child in value:
+                    visit(child)
+        visit(details)
+        row['boundary_summary'] = dict(methods=methods, pixel_diagnostics_view='handoff')
+    return result
+
+
 def _units(value):
     if isinstance(value, dict):
         candidate = value.get("agent_review_candidate")

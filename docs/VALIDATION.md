@@ -1,8 +1,29 @@
 # 本次发布验证范围
 
-验证日期：2026-09-13。基底：BeMarkdown 0.2.0、MCP 适配层 0.2.0。
+验证日期：2026-09-13。基底：BeMarkdown 0.2.0、MCP 适配层 0.2.0；同日将适配层更新至 0.4.0（见下节）。
 
-## 已验证
+## 适配层 0.4.0 更新
+
+`TOOLS/education_mcp/` 由 0.2.0（7 工具）更新为 0.4.0（11 工具），并新增
+`SKILLS/textbook-import/SKILL.md`：
+
+- 新增 `bemarkdown_vision` 视觉模型门禁、`textbook_organize` 教材整理、
+  `bemarkdown_convert_image` 段落图片局部转换、`bemarkdown_review_context`
+  上下文语义修复；`bemarkdown_read`/`bemarkdown_source`/`bemarkdown_review`
+  相应扩展。
+- 六个适配层 Python 文件与内部正式发布（release id `mcp-si-v1`，0.4.0，
+  其发布清单记录 101 项测试与一次真实转换验证）逐字节一致；
+  `install.py`、`launch.py`、`workspace_manager.py`、`workspace_template.json`
+  与基底原有文件本就相同，未改动。转换器 wheel、模型清单与运行时不变。
+- 本次更新在本基底上执行的验证：`scripts/verify_release.py` 全部通过
+  （含用户路径扫描、文件哈希清单、wheel 与 SOURCE 一致性、模型计划与权威
+  清单一致）、`tests/test_downloads.py` 通过、全部 Python 文件可编译。
+  未在本基底上重新运行 MCP SDK 端到端会话；教材导入的实机验收记录保留在
+  内部发布（2026-09-13 教材导入验证），其验收限制（不宣称全语料准确率）
+  继续适用。
+- `SKILLS/textbook-import/SKILL.md` 与内部正式发布逐字节一致，未改动内容。
+
+## 已验证（基底 0.2.0 发布时）
 
 | 检查 | 结果与范围 |
 | --- | --- |
