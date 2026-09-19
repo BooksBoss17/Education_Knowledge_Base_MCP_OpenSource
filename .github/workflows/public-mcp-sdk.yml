@@ -1,0 +1,44 @@
+name: public-mcp-sdk
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-mcp-sdk-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sdk-session:
+    name: sdk-session
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install official MCP SDK client
+        run: python -m pip install "mcp==2.2.0"
+
+      - name: Build isolated published-wheel runtime
+        shell: pwsh
+        run: |
+          python -m venv .mcp-smoke-runtime
+          $runtime = Join-Path $PWD ".mcp-smoke-runtime\Scripts\python.exe"
+          & $runtime -m pip install --upgrade pip
+          & $runtime -m pip install -r "TOOLS\bemarkdown\runtime\requirements-core.lock"
+          & $runtime -m pip install --no-deps "TOOLS\bemarkdown\dist\bemarkdown-0.2.0-py3-none-any.whl"
+          "RUNTIME_PYTHON=$runtime" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Run public MCP SDK acceptance session
+        run: python tests/test_mcp_sdk_session.py --runtime-python "$env:RUNTIME_PYTHON"

@@ -18,10 +18,45 @@
 - 本次更新在本基底上执行的验证：`scripts/verify_release.py` 全部通过
   （含用户路径扫描、文件哈希清单、wheel 与 SOURCE 一致性、模型计划与权威
   清单一致）、`tests/test_downloads.py` 通过、全部 Python 文件可编译。
-  未在本基底上重新运行 MCP SDK 端到端会话；教材导入的实机验收记录保留在
-  内部发布（2026-09-13 教材导入验证），其验收限制（不宣称全语料准确率）
-  继续适用。
+  2026-09-19 起另由公开仓库的 MCP SDK 状态检查覆盖 0.4.0 真实 stdio 会话
+  （见下节）；教材导入的实机验收记录保留在内部发布（2026-09-13 教材导入
+  验证），其验收限制（不宣称全语料准确率）继续适用。
 - `SKILLS/textbook-import/SKILL.md` 与内部正式发布逐字节一致，未改动内容。
+
+## 0.4.0 公共 MCP SDK 会话验收（2026-09-19）
+
+公开仓库新增 `tests/test_mcp_sdk_session.py` 与
+`.github/workflows/public-mcp-sdk.yml`，将此前只保留在 0.2.0 发布记录中的 MCP
+SDK 会话检查变成 pull request、`main` push 与手动触发都会执行的状态检查。
+
+自动化验收固定在当前官方稳定版 `mcp==2.2.0`、GitHub
+`windows-latest`、CPython 3.11 上执行。测试另建隔离 venv，只安装
+`requirements-core.lock` 与公开发布 wheel；服务必须从
+`TOOLS/education_mcp/launch.py` 真实启动，因此仍会执行适配层自己的已安装
+runtime/wheel 身份核对，而不是直接导入 `server.py` 绕过启动链。
+
+状态检查同时建立 `mode="auto"` 与 `mode="legacy"` 两次独立 stdio 会话，并要求：
+
+- 当前 SDK 的自动探测能回退到握手协议，两个会话均协商为 `2025-11-25`；
+- `serverInfo` 为 `education-knowledge-base` / `0.4.0`，`tools/list` 精确返回
+  11 个公开工具，不允许缺失或额外工具；
+- `knowledge_workspace inspect` 在全新临时工作区返回完整框架；
+  `bemarkdown_info` 返回 `installed_runtime.verified=true`，且公开 wheel 身份一致；
+- 在视觉验证前，对 8 个受门禁保护的工具各发起一次真实 SDK 调用，全部必须
+  以 `VISION_MODEL_REQUIRED` 拒绝，证明新增教材整理、局部图片转换、上下文修复
+  等入口已实际经过 0.4.0 路由，而不只是出现在工具清单中；
+- `bemarkdown_vision` 的 `challenge` 必须经 SDK 返回挑战元数据和一张可解码的
+  PNG 图片。CI 不读取服务内部答案，也不自动绕过视觉门禁。
+
+该自动检查的 GitHub Actions workflow/job 名称为 `public-mcp-sdk / sdk-session`。
+仓库的分支规则应将它设为 `main` 合并所需状态检查；若未配置分支保护，workflow
+仍会运行，但 GitHub 不会阻止管理员合并失败的提交。
+
+这项检查补的是**公开发布协议与启动链验收**，不替代 GPU/模型推理验收。需要
+发布 0.4.x 时，完整 Windows+GPU 环境仍应由真实视觉模型查看挑战图片并完成
+`verify`，随后至少用 `tests/make_fixtures.py` 生成的公开样本完成一次实际转换并
+核对 `status`、`read` 与原始来源；若发布声明覆盖教材导入，则还应在同一次
+已验证会话中走到 `textbook_organize preview`，并实际查看全部待入库图片。
 
 ## 已验证（基底 0.2.0 发布时）
 
