@@ -1037,6 +1037,7 @@ def _attach_caption_relations(blocks: list[dict[str, Any]], page_height: float) 
             caption["relations"]["caption_confidence"] = "UNKNOWN"
             continue
         scored = []
+        rejected = []
         for target in targets:
             if not _valid_bbox(target["bbox_pdf_pt"]):
                 continue
@@ -1044,7 +1045,16 @@ def _attach_caption_relations(blocks: list[dict[str, Any]], page_height: float) 
             vertical_gap = min(abs(cb[1] - tb[3]), abs(tb[1] - cb[3]))
             overlap = _horizontal_overlap(cb, tb)
             if vertical_gap <= max(36.0, page_height * 0.08) and overlap >= 0.25:
+                graphics = target.get("provenance", {}).get("route_provenance", {}).get("render_crop", {}).get("source_graphics_render", {})
+                if graphics.get("semantic_image_excluded_regions_pdf_pt"):
+                    # Residual pixels no longer own the excluded semantic figure.
+                    rejected.append({"node_id": target["node_id"],
+                                     "reason": "MASKED_GRAPHICS_RESIDUAL_NOT_A_CONFIRMED_FIGURE"})
+                    continue
                 scored.append((vertical_gap, -overlap, target["node_id"]))
+        if rejected:
+            caption.setdefault("provenance", {})["caption_candidate_filter"] = {
+                "version": "source-graphics-caption-eligibility-v1", "rejected": rejected}
         if not scored:
             caption["relations"]["caption_for"] = None
             caption["relations"]["caption_confidence"] = "UNKNOWN"

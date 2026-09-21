@@ -1170,12 +1170,19 @@ class PdfContentAdapterExecutor:
     def _image_crop(
         self, route: dict[str, Any], crop: dict[str, Any]
     ) -> dict[str, Any]:
+        from .pdf.prose_edge_crop import refine_prose_edge
+
+        route, crop = refine_prose_edge(route, crop, self.cropper)
         crop = self._source_graphics_crop(route, crop)
+        graphics = crop.get("source_graphics_render", {})
+        empty = graphics.get("post_exclusion_all_white") is True
+        residual = bool(graphics.get("semantic_image_excluded_regions_pdf_pt")) and not empty
         return self._content(
-            route, status="SUCCESS", binary_artifact_ref=crop["path"],
+            route, status="REVIEW_REQUIRED" if residual else "SUCCESS", binary_artifact_ref=crop["path"],
             provenance={"render_crop": crop},
-            quality_status=('MASKED_EMPTY_GRAPHICS_ROUTE'
-                if crop.get('source_graphics_render', {}).get('post_exclusion_all_white') else None),
+            quality_status=("MASKED_EMPTY_GRAPHICS_ROUTE" if empty else
+                            "GRAPHICS_RESIDUAL_REVIEW_REQUIRED" if residual else None),
+            review_reasons=["GRAPHICS_RESIDUAL_REVIEW_REQUIRED"] if residual else None,
         )
 
     def _table_deferred(
@@ -1344,6 +1351,10 @@ class PdfContentAdapterExecutor:
                 },
                 "native_text_trust": route["provenance"].get("native_text_trust"),
                 "source_profile": route["provenance"].get("source_profile"),
+                **({"prose_edge_refinement": copy.deepcopy(route["provenance"]["prose_edge_refinement"])}
+                   if "prose_edge_refinement" in route["provenance"] else {}),
+                **({"source_graphics_ownership": copy.deepcopy(route["provenance"]["source_graphics_ownership"])}
+                   if "source_graphics_ownership" in route["provenance"] else {}),
                 **({"table_content_ownership": copy.deepcopy(
                     route["provenance"]["table_content_ownership"]
                 )} if "table_content_ownership" in route["provenance"] else {}),
@@ -2078,6 +2089,7 @@ def plan_page_content(
         routes, source_evidence, page_record
     )
     from .pdf.graphics_render import protect_semantic_images_in_background_crops
+    from .pdf.prose_edge_crop import annotate_recovered_prose
     from .pdf.image_containment import close_near_contained_image_extents
     from .pdf.ruled_writing_area import preserve_empty_ruled_writing_areas
 
@@ -2086,6 +2098,7 @@ def plan_page_content(
     )
     close_near_contained_image_extents(routes)
     protect_semantic_images_in_background_crops(routes)
+    annotate_recovered_prose(routes, source_evidence, page_record)
     routes.sort(
         key=lambda route: (
             ROUTE_PRIORITY[route["adapter"]],

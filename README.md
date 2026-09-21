@@ -2,6 +2,8 @@
 
 面向教学知识库的本地 MCP。当前主要工具 **BeMarkdown** 将 DOCX、PDF 转成保留来源信息的中间 Markdown，供 agent 继续复核和整理。
 
+2026-09-22 更新：[图形残余归属、图题关联与保守顶部正文裁切](docs/FIGURE_OWNERSHIP_20260922.md)。
+
 自有代码采用 **AGPL-3.0-only**；第三方组件保留原许可证。完整条款见 [LICENSE](LICENSE)、[许可核查](docs/LICENSE_AUDIT.md) 和 [第三方声明](THIRD_PARTY_NOTICES.md)。
 
 ## 当前可以做什么

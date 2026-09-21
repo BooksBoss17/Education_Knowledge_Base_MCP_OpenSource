@@ -5,7 +5,7 @@
   "tool_version": "0.2.0",
   "tool_wheel": {
     "path": "dist/bemarkdown-0.2.0-py3-none-any.whl",
-    "sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295"
+    "sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5"
   },
   "profile": "profiles/win-x64-py311-cuda126.json",
   "platform": "Windows x64",
@@ -178,10 +178,10 @@
   },
   "wheel_reproducibility": {
     "byte_identical": true,
-    "first_sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295",
-    "second_sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295",
+    "first_sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5",
+    "second_sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5",
     "content_identical": true,
-    "content_sha256": "01f9b180f0f22517fa44bccf338b3314da71aec3369dd7dcd78ca11ff48d6d9c"
+    "content_sha256": "4e1dcc3a6239401ade8f3dc4a74e37816834dfea3a8abcecb5cc5a5bd38064f3"
   },
   "wheel_runtime_import_closure": {
     "schema": "bemarkdown-wheel-runtime-import-closure-v1",
@@ -261,6 +261,7 @@
       "bemarkdown.pdf.pipeline_mode",
       "bemarkdown.pdf.production_runtime",
       "bemarkdown.pdf.production_three_model_live",
+      "bemarkdown.pdf.prose_edge_crop",
       "bemarkdown.pdf.region_line_coverage",
       "bemarkdown.pdf.ruled_writing_area",
       "bemarkdown.pdf.source_evidence",
@@ -611,6 +612,7 @@
         "bemarkdown.pdf.non_text_ownership",
         "bemarkdown.pdf.ocr_character_geometry",
         "bemarkdown.pdf.page_review",
+        "bemarkdown.pdf.prose_edge_crop",
         "bemarkdown.pdf.region_line_coverage",
         "bemarkdown.pdf.ruled_writing_area",
         "bemarkdown.pdf_content_quality",
@@ -700,6 +702,9 @@
       "bemarkdown.pdf.native_margin_titles": [],
       "bemarkdown.pdf.non_text_ownership": [],
       "bemarkdown.pdf.page_review": [],
+      "bemarkdown.pdf.prose_edge_crop": [
+        "bemarkdown.pdf.graphics_render"
+      ],
       "bemarkdown.pdf.ruled_writing_area": [],
       "bemarkdown.pdf_formula_consensus": [
         "bemarkdown.formula_ocr",
@@ -720,8 +725,8 @@
         "bemarkdown.pdf.native_glyph_bounds"
       ]
     },
-    "reachable_module_count": 110,
-    "closure_fingerprint": "398b7bf4532d4b79cdd6bcb5505f38f643399fe6535a108bb5618e1b9a3596d0",
+    "reachable_module_count": 111,
+    "closure_fingerprint": "2aad86376385e9ad579cc8f682c7be3d9056bf2d0162526adb3d70c74564fecb",
     "gate": "PASS"
   }
 }

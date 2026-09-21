@@ -1,12 +1,17 @@
 {
   "schema": "education-public-file-inventory-v1",
-  "release_id": "education-mcp-public-base-20260919-v3",
+  "release_id": "education-mcp-public-figure-20260922-v1",
   "license": "AGPL-3.0-only WITH separately licensed third-party components",
   "files": [
     {
       "path": ".gitattributes",
       "bytes": 88,
       "sha256": "a50639f43ae8fecd6373ed28c80b120dcdad5ac9d644a6da3fba180ff223b82f"
+    },
+    {
+      "path": ".github/workflows/public-mcp-sdk.yml",
+      "bytes": 1798,
+      "sha256": "bc04e92ca9c49fea83fadf987bf61ca849ce75e0ad9fa8333c83fbde035dfb7c"
     },
     {
       "path": ".gitignore",
@@ -22,6 +27,11 @@
       "path": "docs/EXTENDING.md",
       "bytes": 2982,
       "sha256": "439ceeaa30c15c7c23cfce767d2a43f38a63968f18842fb52cd1585ca74fa906"
+    },
+    {
+      "path": "docs/FIGURE_OWNERSHIP_20260922.md",
+      "bytes": 1747,
+      "sha256": "b07b2119396b76e94881f258b44a08e71408d583cd660ecd62fc973726ddd0bc"
     },
     {
       "path": "docs/LICENSE_AUDIT.md",
@@ -125,8 +135,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 8944,
-      "sha256": "06e89961aaf0a4aaf6768f6b945b560249ef48db07ced84b8e1246045b454ee7"
+      "bytes": 9066,
+      "sha256": "5f5747991484c563864301ef4fd32d9d00957f71fe1386bf41b7f4237e4ceef4"
     },
     {
       "path": "scripts/downloads.py",
@@ -555,8 +565,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/graphics_render.py",
-      "bytes": 8521,
-      "sha256": "38b54ab8071d31fb1c3c4a748f239943f55217c2b77418ee37c08580a447feff"
+      "bytes": 9457,
+      "sha256": "e3e2b4e998a053aedb0dfa62bc26a55dc7f74a72ae60f5c4f9bc5f7b66b34032"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/image_containment.py",
@@ -692,6 +702,11 @@
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/production_three_model_live.py",
       "bytes": 54702,
       "sha256": "2f60f5d55d4bf0a34a09fceccd16c56d6b24a8416b3e720f4fc5fd5a2d72520a"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/prose_edge_crop.py",
+      "bytes": 5178,
+      "sha256": "d6bce272d8272439de92ae264422b264afa70594737ed46b855675f2239da818"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/reading_order_v2.py",
@@ -835,13 +850,13 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_content_router.py",
-      "bytes": 124192,
-      "sha256": "4a27521d20450c7c96d621223efc4eb6d7692935ba05c89469cc075c882787a5"
+      "bytes": 125170,
+      "sha256": "0f914eafde5d4efc0e433f463c5e5398c7863bd9d22a1306f170b06049e54199"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_document_ir.py",
-      "bytes": 101298,
-      "sha256": "8449b2e059826f3be5b3c4a1346ae98ee2b7850ebae8d240ee16957e1b91b4c5"
+      "bytes": 102016,
+      "sha256": "ce3d16993146d124017e19b5333056762f9e4b679d64282f75e8db61c5cf6053"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_dual_paddle_evidence.py",
@@ -1229,19 +1244,39 @@
       "sha256": "2ae0bd1158b9628fc0b0c6fba71452bec166fd3fedf42155c07ffd2e9240d12f"
     },
     {
+      "path": "tests/test_figure_ownership.py",
+      "bytes": 3065,
+      "sha256": "8ae66b3f8835123177a0a709bc088b9e53d617a0b2b0dfb53cbfdbe8d4d99c11"
+    },
+    {
+      "path": "tests/test_mcp_sdk_session.py",
+      "bytes": 5756,
+      "sha256": "a34e42e91d80f1fdde359f81b8543756794d92709f216d535723b925dcf9dc04"
+    },
+    {
+      "path": "tests/test_prose_edge_crop.py",
+      "bytes": 2935,
+      "sha256": "164b0bbc47e1617dea100e1f18c7c5b1f2c4cf6fbf1da9536823452a52f30d7a"
+    },
+    {
+      "path": "tests/test_source_graphics_render.py",
+      "bytes": 16594,
+      "sha256": "94fe166719423234a048e80cb017affa91515e3197bac501c437286d569467b3"
+    },
+    {
       "path": "THIRD_PARTY_NOTICES.md",
       "bytes": 1770,
       "sha256": "9a8a2aa2dcb61f9a0857bbe7d2db6d4e1279b18108ea477ae88af6c26409e34e"
     },
     {
       "path": "TOOLS/bemarkdown/dist/bemarkdown-0.2.0-py3-none-any.whl",
-      "bytes": 1371349,
-      "sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295"
+      "bytes": 1373988,
+      "sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5"
     },
     {
       "path": "TOOLS/bemarkdown/RELEASE_MANIFEST.json",
-      "bytes": 352,
-      "sha256": "2cdbc13212a01d3063f494207994af9c63123000be09e9182cdb8ea15cb04a52"
+      "bytes": 681,
+      "sha256": "283998706667e9a8e862c4f13c04047c08c4d4ef5bab02aa232c2c6597fb4004"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/model_suite.json",
@@ -1280,13 +1315,13 @@
     },
     {
       "path": "TOOLS/bemarkdown/runtime/RUNTIME_MANIFEST.json",
-      "bytes": 24770,
-      "sha256": "64cfe16f9e0473430f11f50c6572096ca88edf0fff46716157e0fe43fd5251f9"
+      "bytes": 24944,
+      "sha256": "5b1c89fc843a4ff3e79a3a71396d18fc80fb79d3dc76fb2e7aa22187f4cfdd58"
     },
     {
       "path": "TOOLS/bemarkdown/TOOL_MANIFEST.json",
-      "bytes": 65681,
-      "sha256": "ff504d8639775a84bc2014dc848af4e6766c5b583048550c2e7250750462d155"
+      "bytes": 66382,
+      "sha256": "38935eb237d27753ccccbc211a5eb3d44ef5665be2047d2b5d2ae13367b6bf81"
     },
     {
       "path": "TOOLS/education_mcp/image_review.py",
@@ -1337,16 +1372,6 @@
       "path": "TOOLS/education_mcp/workspace_template.json",
       "bytes": 1803,
       "sha256": "2464cf0309222c52f5940ceb21ef3aa0cbc010b8e02b7f6784510a096f125096"
-    },
-    {
-      "path": ".github/workflows/public-mcp-sdk.yml",
-      "bytes": 1309,
-      "sha256": "d8dd7d213f6e91d2860713eba24f93896cb22c07263bb50867f4dfba4ffef19a"
-    },
-    {
-      "path": "tests/test_mcp_sdk_session.py",
-      "bytes": 5756,
-      "sha256": "3fd6101f04b59fc6bffc8da74620c4a6ae183f9de6ab770882495dc91b11dd49"
     }
   ]
 }

@@ -59,12 +59,12 @@
   "build_commit": "588611b22c5afb97cf196a7b3d59e0a366130c91",
   "wheel": {
     "path": "dist/bemarkdown-0.2.0-py3-none-any.whl",
-    "sha256": "2f1635f23b04ce12fdadabe3f74efa81a968ed03d47444976d122ef5b0ddf295",
-    "bytes": 1371349,
+    "sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5",
+    "bytes": 1373988,
     "content_inventory": {
-      "content_sha256": "9a76bca2cd854cde4c336bd62db3a8d67a6ed333660179b2e8f4eb532c16218f",
-      "file_count": 212,
-      "total_uncompressed_bytes": 4456793,
+      "content_sha256": "4e1dcc3a6239401ade8f3dc4a74e37816834dfea3a8abcecb5cc5a5bd38064f3",
+      "file_count": 213,
+      "total_uncompressed_bytes": 4464693,
       "files": [
         {
           "path": "bemarkdown-0.2.0.dist-info/METADATA",
@@ -73,13 +73,13 @@
         },
         {
           "path": "bemarkdown-0.2.0.dist-info/RECORD",
-          "bytes": 20200,
-          "sha256": "4bc22366cf21dec3e56d38b40d155c64b27c1d77d921cf2ba373d30e4e8fa216"
+          "bytes": 20290,
+          "sha256": "e14c77c7abb30bb43507e4b5cc491ea3f111a21aa24dec78d9b5d73517ca7ee7"
         },
         {
           "path": "bemarkdown-0.2.0.dist-info/WHEEL",
           "bytes": 91,
-          "sha256": "4a63b1614ee9ccd281a804af409ec38d7dd719417dda5ac684c6f747afe28aa2"
+          "sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
         },
         {
           "path": "bemarkdown-0.2.0.dist-info/entry_points.txt",
@@ -463,8 +463,8 @@
         },
         {
           "path": "bemarkdown/pdf/graphics_render.py",
-          "bytes": 8521,
-          "sha256": "38b54ab8071d31fb1c3c4a748f239943f55217c2b77418ee37c08580a447feff"
+          "bytes": 9457,
+          "sha256": "e3e2b4e998a053aedb0dfa62bc26a55dc7f74a72ae60f5c4f9bc5f7b66b34032"
         },
         {
           "path": "bemarkdown/pdf/image_containment.py",
@@ -600,6 +600,11 @@
           "path": "bemarkdown/pdf/production_three_model_live.py",
           "bytes": 54702,
           "sha256": "2f60f5d55d4bf0a34a09fceccd16c56d6b24a8416b3e720f4fc5fd5a2d72520a"
+        },
+        {
+          "path": "bemarkdown/pdf/prose_edge_crop.py",
+          "bytes": 5178,
+          "sha256": "d6bce272d8272439de92ae264422b264afa70594737ed46b855675f2239da818"
         },
         {
           "path": "bemarkdown/pdf/reading_order_v2.py",
@@ -743,13 +748,13 @@
         },
         {
           "path": "bemarkdown/pdf_content_router.py",
-          "bytes": 124192,
-          "sha256": "4a27521d20450c7c96d621223efc4eb6d7692935ba05c89469cc075c882787a5"
+          "bytes": 125170,
+          "sha256": "0f914eafde5d4efc0e433f463c5e5398c7863bd9d22a1306f170b06049e54199"
         },
         {
           "path": "bemarkdown/pdf_document_ir.py",
-          "bytes": 101298,
-          "sha256": "8449b2e059826f3be5b3c4a1346ae98ee2b7850ebae8d240ee16957e1b91b4c5"
+          "bytes": 102016,
+          "sha256": "ce3d16993146d124017e19b5333056762f9e4b679d64282f75e8db61c5cf6053"
         },
         {
           "path": "bemarkdown/pdf_dual_paddle_evidence.py",
@@ -1206,6 +1211,7 @@
         "bemarkdown.pdf.pipeline_mode",
         "bemarkdown.pdf.production_runtime",
         "bemarkdown.pdf.production_three_model_live",
+        "bemarkdown.pdf.prose_edge_crop",
         "bemarkdown.pdf.region_line_coverage",
         "bemarkdown.pdf.ruled_writing_area",
         "bemarkdown.pdf.source_evidence",
@@ -1556,6 +1562,7 @@
           "bemarkdown.pdf.non_text_ownership",
           "bemarkdown.pdf.ocr_character_geometry",
           "bemarkdown.pdf.page_review",
+          "bemarkdown.pdf.prose_edge_crop",
           "bemarkdown.pdf.region_line_coverage",
           "bemarkdown.pdf.ruled_writing_area",
           "bemarkdown.pdf_content_quality",
@@ -1645,6 +1652,9 @@
         "bemarkdown.pdf.native_margin_titles": [],
         "bemarkdown.pdf.non_text_ownership": [],
         "bemarkdown.pdf.page_review": [],
+        "bemarkdown.pdf.prose_edge_crop": [
+          "bemarkdown.pdf.graphics_render"
+        ],
         "bemarkdown.pdf.ruled_writing_area": [],
         "bemarkdown.pdf_formula_consensus": [
           "bemarkdown.formula_ocr",
@@ -1665,15 +1675,15 @@
           "bemarkdown.pdf.native_glyph_bounds"
         ]
       },
-      "reachable_module_count": 110,
-      "closure_fingerprint": "398b7bf4532d4b79cdd6bcb5505f38f643399fe6535a108bb5618e1b9a3596d0",
+      "reachable_module_count": 111,
+      "closure_fingerprint": "2aad86376385e9ad579cc8f682c7be3d9056bf2d0162526adb3d70c74564fecb",
       "gate": "PASS"
     }
   },
   "runtime": {
     "manifest": {
       "path": "runtime/RUNTIME_MANIFEST.json",
-      "sha256": "64cfe16f9e0473430f11f50c6572096ca88edf0fff46716157e0fe43fd5251f9"
+      "sha256": "5b1c89fc843a4ff3e79a3a71396d18fc80fb79d3dc76fb2e7aa22187f4cfdd58"
     },
     "core_lock": {
       "path": "runtime/requirements-core.lock",
@@ -1689,7 +1699,7 @@
     }
   },
   "publication": {
-    "release_id": "education-mcp-public-base-20260913-v1",
+    "release_id": "education-mcp-public-figure-20260922-v1",
     "status": "VALIDATED_PUBLIC_BASE",
     "distribution_scope": "PUBLIC_AGPL_3_0_ONLY_WITH_UPSTREAM_EXCEPTIONS",
     "public_redistribution_ready": true,
@@ -1746,5 +1756,11 @@
       }
     ]
   },
-  "production_config": "bemarkdown.toml"
+  "production_config": "bemarkdown.toml",
+  "source_provenance": {
+    "public_baseline_commit": "470c7f65c6684bcfef836e8a5fec1e56c7962e4c",
+    "figure_patch_commit": "3c257ba825b7d658a7cb6c2c2738d04939359436",
+    "public_adapter_version_preserved": "0.4.0",
+    "scope": "Three Python modules patched, one prose edge module added; public adaptations preserved"
+  }
 }

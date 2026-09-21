@@ -136,6 +136,7 @@ def protect_semantic_images_in_background_crops(routes):
     source figure crop. Each figure keeps its native labels unchanged.
     """
     semantic_boxes = []
+    semantic_owners = []
     for route in routes:
         provenance = route.get("provenance", {})
         box = provenance.get("bbox_pdf_pt")
@@ -163,6 +164,15 @@ def protect_semantic_images_in_background_crops(routes):
                     box[3] + padding,
                 ]
             )
+            semantic_owners.append({
+                "route_id": route.get("route_id"),
+                "document_id": route.get("document_id"),
+                "page_index": route.get("page_index"),
+                "source_candidate_ids": list(route.get("input_candidate_ids", [])),
+                "source_region_ids": list(route.get("source_region_ids", [])),
+                "output_kind": route.get("output_kind"),
+                "bbox_pdf_pt": list(semantic_boxes[-1]),
+            })
     for route in routes:
         provenance = route.get("provenance", {})
         box = provenance.get("bbox_pdf_pt")
@@ -186,6 +196,13 @@ def protect_semantic_images_in_background_crops(routes):
             if route.get("output_kind") == "IMAGE":
                 route["adapter"] = "IMAGE_RENDER_CROP"
             provenance["source_graphics_exclude_regions"] = overlapping
+            provenance["source_graphics_ownership"] = {
+                "version": "source-graphics-ownership-v1",
+                "residual_route_id": route.get("route_id"),
+                "excluded_owners": [owner for owner in semantic_owners if owner["bbox_pdf_pt"] in overlapping],
+                "remaining_content": "UNCLASSIFIED_RESIDUAL",
+                "automatic_suppression_allowed": False,
+            }
         provenance.pop("source_graphics_preserve_regions", None)
 
 
