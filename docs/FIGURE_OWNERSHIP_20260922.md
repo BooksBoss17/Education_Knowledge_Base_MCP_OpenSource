@@ -22,3 +22,4 @@ GitHub Actions 同时检查这些回归用例和官方 MCP SDK 会话。
 
 升级现有部署时，拉取仓库更新后按 README 重新执行 setup；已运行的 MCP 会话需要重启，
 以载入新 wheel。保留现有知识库与工作区，不必重新导入已整理的教材。
+旧客户端配置的首次迁移、依赖复用和失败回退详见[安装与升级说明](INSTALLATION_UPGRADE.md)。

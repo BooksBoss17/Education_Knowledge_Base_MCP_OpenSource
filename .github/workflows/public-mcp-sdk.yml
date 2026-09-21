@@ -46,10 +46,14 @@ jobs:
           & $runtime -m pip install "pytest>=8,<9"
           "RUNTIME_PYTHON=$runtime" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Run installed-wheel figure regressions
+      - name: Run installed-wheel and installer regressions
         shell: pwsh
         run: |
-          & $env:RUNTIME_PYTHON -m pytest tests/test_figure_ownership.py tests/test_prose_edge_crop.py tests/test_source_graphics_render.py -q -p no:cacheprovider
+          & $env:RUNTIME_PYTHON -m pytest tests/test_figure_ownership.py tests/test_prose_edge_crop.py tests/test_source_graphics_render.py tests/test_installer.py -q -p no:cacheprovider
+
+      - name: Verify PowerShell installation preflight
+        shell: pwsh
+        run: .\setup.ps1 -VerifyOnly
 
       - name: Run public MCP SDK acceptance session
         run: python tests/test_mcp_sdk_session.py --runtime-python "$env:RUNTIME_PYTHON"

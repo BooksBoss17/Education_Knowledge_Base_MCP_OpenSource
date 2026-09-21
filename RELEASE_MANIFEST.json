@@ -1,6 +1,6 @@
 {
   "schema": "education-public-file-inventory-v1",
-  "release_id": "education-mcp-public-figure-20260922-v1",
+  "release_id": "education-mcp-public-setup-20260922-v1",
   "license": "AGPL-3.0-only WITH separately licensed third-party components",
   "files": [
     {
@@ -10,8 +10,8 @@
     },
     {
       "path": ".github/workflows/public-mcp-sdk.yml",
-      "bytes": 1798,
-      "sha256": "bc04e92ca9c49fea83fadf987bf61ca849ce75e0ad9fa8333c83fbde035dfb7c"
+      "bytes": 1942,
+      "sha256": "e285ada4f85ab0acf7ba003e1bd621669872531925cf908e875cbfd5f6561d47"
     },
     {
       "path": ".gitignore",
@@ -30,8 +30,13 @@
     },
     {
       "path": "docs/FIGURE_OWNERSHIP_20260922.md",
-      "bytes": 1747,
-      "sha256": "b07b2119396b76e94881f258b44a08e71408d583cd660ecd62fc973726ddd0bc"
+      "bytes": 1868,
+      "sha256": "afa3fc5a5361725e13383c149998a857d8baa804998d9d29530a55d3e1836713"
+    },
+    {
+      "path": "docs/INSTALLATION_UPGRADE.md",
+      "bytes": 3556,
+      "sha256": "b5dc85ece2c7409898d5c0e1f67aed3df67ab3e77444f756d12e071b60f4b31f"
     },
     {
       "path": "docs/LICENSE_AUDIT.md",
@@ -135,8 +140,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9066,
-      "sha256": "5f5747991484c563864301ef4fd32d9d00957f71fe1386bf41b7f4237e4ceef4"
+      "bytes": 9202,
+      "sha256": "489fa3602b97e7b788cccbcca7ac6003838d3449dc2d6ea6f1d73806f3a2316c"
     },
     {
       "path": "scripts/downloads.py",
@@ -159,19 +164,24 @@
       "sha256": "8f1263b7bd12f39cb0b98315fb8ad060a6e440ab3c468daae9b3f9bc19a24aca"
     },
     {
+      "path": "scripts/runtime_setup.py",
+      "bytes": 10268,
+      "sha256": "065c811fcbf596163f686b37cfef0bb48c4d289653e1c3e044bd9b379d26bcb7"
+    },
+    {
       "path": "scripts/setup.py",
-      "bytes": 9105,
-      "sha256": "d3f0d96fb9d859e9ee29ff04dd9055d572d45b17621d2423407679f5587042ec"
+      "bytes": 10050,
+      "sha256": "2e35e93adeb28929ae166781a98dd2e774afd6ae559fd101db93e1509c409d70"
     },
     {
       "path": "scripts/verify_release.py",
-      "bytes": 4524,
-      "sha256": "1d6815bba9fc39d800b01aeb95f60625c66d763cf1d53d030180cbfa8a11aa4f"
+      "bytes": 4672,
+      "sha256": "c4601cd07a0123ce51a7ee171dee114428b5e3688d311e7dd135ce2d046b774f"
     },
     {
       "path": "setup.ps1",
-      "bytes": 3818,
-      "sha256": "e5e734e78c19174b674910a53108722472b91ea35ac0c9c9da0ef3389445619a"
+      "bytes": 5506,
+      "sha256": "98d30b9a7682e7cdb731d5b9672b9389141cd1152a8b07547e43be8e116d44c2"
     },
     {
       "path": "SKILLS/README.md",
@@ -1249,9 +1259,14 @@
       "sha256": "8ae66b3f8835123177a0a709bc088b9e53d617a0b2b0dfb53cbfdbe8d4d99c11"
     },
     {
+      "path": "tests/test_installer.py",
+      "bytes": 15416,
+      "sha256": "b0c9f7c0b4cf46b4a29b68f15d3cba80a9bc8995ac2afe4fb53019429e955fa9"
+    },
+    {
       "path": "tests/test_mcp_sdk_session.py",
-      "bytes": 5756,
-      "sha256": "a34e42e91d80f1fdde359f81b8543756794d92709f216d535723b925dcf9dc04"
+      "bytes": 5850,
+      "sha256": "a6e0d5488b4fb9df5fc1aabcc2644c05560190bcced9ac2001485e18e93d1f19"
     },
     {
       "path": "tests/test_prose_edge_crop.py",
@@ -1335,13 +1350,18 @@
     },
     {
       "path": "TOOLS/education_mcp/launch.py",
-      "bytes": 1968,
-      "sha256": "3e5dafd933590b3db41b8033795fdb00928a26029ca24ff98ab4b168b425838e"
+      "bytes": 1854,
+      "sha256": "c67b509f1e02ae46e2b9a1328c0fb9fc870edf3da9f9d0cf789d2e80a38f3be6"
     },
     {
       "path": "TOOLS/education_mcp/review_handoff.py",
       "bytes": 18705,
       "sha256": "baed170cd11f6e855e159735771c06b14ab36711aca992ba2d0841fe7d64d974"
+    },
+    {
+      "path": "TOOLS/education_mcp/runtime_selection.py",
+      "bytes": 1171,
+      "sha256": "2707ac35ba1a6f1394a1290191abe37a8b94aded92348ea9fed7f44ecb7ec798"
     },
     {
       "path": "TOOLS/education_mcp/semantic_review.py",

@@ -1,14 +1,38 @@
 [CmdletBinding()]
 param(
     [switch]$AcceptExternalLicenses,
-    [ValidateSet('all','conversion','none')][string]$Models = 'all',
+    [ValidateSet('all','conversion','none')][string]$Models,
     [string]$Workspace,
     [string]$RuntimeDirectory,
+    [string]$DependencyRuntime,
     [string]$ModelCache,
-    [string]$PythonExe
+    [string]$PythonExe,
+    [switch]$VerifyOnly
 )
 $ErrorActionPreference = 'Stop'
 if ($env:OS -ne 'Windows_NT') { throw 'The current full release is validated on Windows x64 only.' }
+function Verify-PublicPackage {
+    $releaseRoot = [IO.Path]::GetFullPath($PSScriptRoot) + [IO.Path]::DirectorySeparatorChar
+    $manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'RELEASE_MANIFEST.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($manifest.schema -ne 'education-public-file-inventory-v1' -or -not $manifest.files) { throw 'Invalid or empty public release manifest' }
+    foreach ($entry in $manifest.files) {
+        $relative = [string]$entry.path
+        if ([IO.Path]::IsPathRooted($relative) -or $relative.Contains(':')) { throw "Unsafe release path: $relative" }
+        $path = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot $relative))
+        if (-not $path.StartsWith($releaseRoot, [StringComparison]::OrdinalIgnoreCase)) { throw "Unsafe release path: $relative" }
+        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing release file: $relative" }
+        $stream = [IO.File]::OpenRead($path)
+        $algorithm = [Security.Cryptography.SHA256]::Create()
+        try { $actualHash = [BitConverter]::ToString($algorithm.ComputeHash($stream)).Replace('-', '').ToLowerInvariant() }
+        finally { $stream.Dispose(); $algorithm.Dispose() }
+        if ((Get-Item -LiteralPath $path).Length -ne $entry.bytes -or $actualHash -ne $entry.sha256) {
+            throw "Release integrity check failed: $relative"
+        }
+    }
+    Write-Host 'Public release file integrity: PASS'
+}
+Verify-PublicPackage
+if ($VerifyOnly) { return }
 if (-not $AcceptExternalLicenses) {
     Write-Host 'Full installation may download NVIDIA CUDA/cuDNN and Microsoft Visual C++ runtime components under their upstream proprietary terms.'
     Write-Host "Read $PSScriptRoot\docs\LICENSE_AUDIT.md before continuing."
@@ -56,9 +80,11 @@ $officeCommand = Get-Command soffice -ErrorAction SilentlyContinue
 if ($officeCommand) { $officeCandidates += $officeCommand.Source }
 $office = $officeCandidates | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1
 if (-not $office) { Install-WingetPackage -Id 'TheDocumentFoundation.LibreOffice' }
-$arguments = @("$PSScriptRoot\scripts\setup.py", '--accept-external-licenses', '--models', $Models)
+$arguments = @('-E', '-s', '-X', 'utf8', "$PSScriptRoot\scripts\setup.py", '--accept-external-licenses')
+if ($Models) { $arguments += @('--models', $Models) }
 if ($Workspace) { $arguments += @('--workspace', $Workspace) }
 if ($RuntimeDirectory) { $arguments += @('--runtime-dir', $RuntimeDirectory) }
+if ($DependencyRuntime) { $arguments += @('--dependency-runtime', $DependencyRuntime) }
 if ($ModelCache) { $arguments += @('--model-cache', $ModelCache) }
 & $python @arguments
 if ($LASTEXITCODE -ne 0) { throw 'MCP setup failed. Read .local/logs and rerun to resume.' }

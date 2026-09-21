@@ -62,8 +62,7 @@ async def exercise(root: Path, runtime_python: Path, workspace: Path, mode: str)
             str(root),
             "--workspace",
             str(workspace),
-            "--runtime-python",
-            str(runtime_python),
+            *(["--runtime-python", str(runtime_python)] if runtime_python else []),
         ],
         cwd=str(root),
     )
@@ -133,11 +132,11 @@ async def main_async(root: Path, runtime_python: Path) -> list[dict]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--runtime-python", type=Path, required=True)
+    parser.add_argument("--runtime-python", type=Path, help="Omit to exercise the validated activation record")
     parser.add_argument("--mcp-root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     root = args.mcp_root.resolve(strict=True)
-    runtime_python = args.runtime_python.resolve(strict=True)
+    runtime_python = args.runtime_python.resolve(strict=True) if args.runtime_python else None
     summaries = asyncio.run(main_async(root, runtime_python))
     print(json.dumps({"status": "PASS", "sessions": summaries}, indent=2))
 

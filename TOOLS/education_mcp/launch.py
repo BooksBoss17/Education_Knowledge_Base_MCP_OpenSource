@@ -19,9 +19,11 @@ def main():
     manager.bootstrap()
     args.workspace = manager.root
     root = args.mcp_root.resolve(strict=True)
-    manifest = json.loads((root / "TOOLS/bemarkdown/TOOL_MANIFEST.json").read_text(encoding="utf-8"))
-    runtime_home = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "BeMarkdown/runtimes"
-    python = args.runtime_python or runtime_home / manifest["wheel"]["sha256"][:12] / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    resolver = runpy.run_path(str(Path(__file__).with_name('runtime_selection.py')))['resolve_runtime']
+    try:
+        python = resolver(root, args.runtime_python)
+    except ValueError as exc:
+        parser.error(str(exc))
     if not python.is_file():
         parser.error("Published BeMarkdown runtime is unavailable; configure --runtime-python or prepare that Tool's full runtime first")
     command = [str(python.resolve()), "-I", "-X", "utf8", str(Path(__file__).with_name("server.py")),

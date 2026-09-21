@@ -11,6 +11,9 @@ import urllib.parse
 import venv
 
 from downloads import download, safe_path, sha256, valid
+from verify_release import verify
+from runtime_setup import (activation_record, choose_tool_target, clean_env, dependency_contract,
+    ensure_dependencies, ensure_tool, python_at, select_workspace, verify_tool)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,7 +23,7 @@ def read(path):
 def write(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + '.tmp')
+    temporary = path.with_name(path.name + '.pending-' + os.urandom(4).hex())
     temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     os.replace(temporary, path)
 
@@ -29,7 +32,7 @@ def run(command, log, *, capture=False):
     with Path(log).open('wb') as stream:
         result = subprocess.run([str(x) for x in command], stdout=subprocess.PIPE if capture else stream,
                                 stderr=stream if capture else subprocess.STDOUT,
-                                creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
+                                env=clean_env(), creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0)
     if result.returncode:
         raise RuntimeError(f'Command failed with exit {result.returncode}; see {log}')
     return result.stdout.decode('utf-8-sig') if capture else None
@@ -66,21 +69,28 @@ def models(selection, cache, local_cache=None, workers=8):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--accept-external-licenses', action='store_true')
-    parser.add_argument('--models', choices=['all', 'conversion', 'none'], default='all')
-    parser.add_argument('--model-cache', type=Path, help='Optional existing MODELS directory; imported bytes are checked')
+    parser.add_argument('--models', choices=['all', 'conversion', 'none'])
+    parser.add_argument('--model-cache', type=Path, help='Optional existing MODELS root; only hash-matching files are reused')
     parser.add_argument('--runtime-dir', type=Path)
+    parser.add_argument('--dependency-runtime', type=Path, help='Reuse a compatible environment without changing it')
     parser.add_argument('--download-cache', type=Path)
     parser.add_argument('--workspace', type=Path)
     parser.add_argument('--download-workers', type=int, default=8, choices=range(1, 33))
     parser.add_argument('--models-only', action='store_true')
     args = parser.parse_args()
     if os.name != 'nt' or sys.version_info[:2] != (3, 11):
-        parser.error('The validated full runtime requires Windows x64 and CPython 3.11. Run setup.ps1.')
+        parser.error('The complete installer requires Windows and CPython 3.11. Use setup.ps1.')
     if not args.models_only and not args.accept_external_licenses:
-        parser.error('Full setup downloads NVIDIA proprietary runtime components. Read docs/LICENSE_AUDIT.md and pass --accept-external-licenses after accepting their upstream terms.')
+        parser.error('Read docs/LICENSE_AUDIT.md and accept external terms before full installation.')
+    verify(ROOT, installed=True)
     local = ROOT / '.local'
     cache = args.download_cache or Path(os.environ.get('LOCALAPPDATA', str(local))) / 'EducationMCP/downloads'
-    models(args.models, cache, args.model_cache, args.download_workers)
+    previous_state = read(local / 'setup-state.json') if (local / 'setup-state.json').is_file() else {}
+    previous = read(local / 'runtime-selection.json') if (local / 'runtime-selection.json').is_file() else {}
+    old_client = read(local / 'mcp-client.json') if (local / 'mcp-client.json').is_file() else {}
+    selection = args.models or previous_state.get('models', 'all')
+    workspace_path = select_workspace(args.workspace, previous_state, old_client)
+    models(selection, cache, args.model_cache, args.download_workers)
     if args.models_only:
         print('Selected model files verified.')
         return
@@ -92,57 +102,59 @@ def main():
     wheel = safe_path(ROOT / 'TOOLS/bemarkdown', manifest['wheel']['path'])
     if sha256(wheel) != manifest['wheel']['sha256']:
         raise ValueError('Tool wheel integrity check failed')
-    runtime = (args.runtime_dir or Path(os.environ.get('LOCALAPPDATA', str(local))) / 'BeMarkdown/runtimes' / manifest['wheel']['sha256'][:12]).resolve()
-    python = runtime / 'Scripts/python.exe'
-    state_path = local / 'setup-state.json'
-    state = dict(status='INSTALLING', started_at=time.time(), runtime=str(runtime), models=args.models)
-    write(state_path, state)
-    if not python.is_file():
-        venv.EnvBuilder(with_pip=True).create(runtime)
-    # Preserve Windows extended paths inside sys.prefix during wheel extraction.
-    # Torch carries deeply nested license files; none are removed or flattened.
-    install_python = str(python)
-    if os.name == 'nt' and not install_python.startswith('\\\\?\\'):
-        install_python = '\\\\?\\' + install_python
-    pip = [install_python, '-m', 'pip', '--disable-pip-version-check']
-    logs = local / 'logs' / time.strftime('%Y%m%dT%H%M%S')
+    home = Path(os.environ.get('LOCALAPPDATA', str(local))) / 'BeMarkdown/runtimes'
+    requested_target, target = choose_tool_target(args.runtime_dir, home / manifest['wheel']['sha256'][:12],
+        previous, manifest['wheel']['sha256'])
+    state = dict(status='INSTALLING', started_at=time.time(), models=selection, requested_runtime_root=str(requested_target))
+    logs = local / 'logs' / (time.strftime('%Y%m%dT%H%M%S') + '-' + os.urandom(4).hex())
     state['logs'] = str(logs)
-    write(state_path, state)
+    write(local / 'last-setup-attempt.json', state)
+    write(logs / 'previous-activation.json', previous)
     try:
-        print('Installing frozen Python dependencies; logs are in .local/logs.', flush=True)
-        run([*pip, 'install', '--no-deps', '-r', ROOT / 'scripts/requirements-pypi.lock'], logs / 'pypi.log')
-        run([*pip, 'install', '--no-deps', 'paddlepaddle-gpu==3.2.2', '--index-url', 'https://www.paddlepaddle.org.cn/packages/stable/cu126/'], logs / 'paddle.log')
-        # A failed prior extraction can leave METADATA without a RECORD. Overlay
-        # the same pinned wheels to repair that state without an uninstall step.
-        run([*pip, 'install', '--no-deps', '--ignore-installed', 'torch==2.13.0+cu130', 'torchvision==0.28.0+cu130', '--index-url', 'https://download.pytorch.org/whl/cu130'], logs / 'torch.log')
-        run([*pip, 'install', '--no-deps', '--force-reinstall', wheel], logs / 'bemarkdown.log')
-        check = subprocess.run([python, '-m', 'pip', 'check'], capture_output=True)
+        contract = dependency_contract(ROOT)
+        donors = [previous.get('dependency_runtime'), previous_state.get('dependency_runtime'), previous_state.get('runtime')]
+        dependencies, dependencies_reused = ensure_dependencies(ROOT, home, contract, donors, args.dependency_runtime, run, logs)
+        runtime, tool_reused = ensure_tool(target, dependencies, wheel, contract, run, logs)
+        python = python_at(runtime)
+        state.update(runtime=str(runtime), dependency_runtime=str(dependencies), dependency_fingerprint=contract['fingerprint'],
+                     dependencies_reused=dependencies_reused, tool_reused=tool_reused)
+        write(local / 'last-setup-attempt.json', state)
+        check = subprocess.run([python, '-I', '-X', 'utf8', '-m', 'pip', 'check'], capture_output=True, env=clean_env())
         output = (check.stdout + check.stderr).decode('utf-8', errors='replace').strip()
         lines = [line.strip() for line in output.splitlines() if line.strip()]
-        known_override = check.returncode == 1 and len(lines) == 1 and 'paddlepaddle-gpu' in lines[0] and 'nvidia-cudnn-cu12==9.5.1.17' in lines[0] and '9.9.0.52' in lines[0]
-        write(local / 'pip-check.json', dict(returncode=check.returncode, expected_cudnn_override=known_override, output=output))
-        if check.returncode and not known_override:
-            raise RuntimeError('Unexpected dependency conflict; see .local/pip-check.json')
-        print('Running full GPU and model validation...', flush=True)
-        doctor_text = run([python, '-I', '-X', 'utf8', '-m', 'bemarkdown', 'doctor', '--deep', '--json', '--tool-root', ROOT / 'TOOLS/bemarkdown', '--mcp-root', ROOT], logs / 'doctor.log', capture=True)
+        accepted = check.returncode == 1 and len(lines) == 1 and 'paddlepaddle-gpu' in lines[0] and 'nvidia-cudnn-cu12==9.5.1.17' in lines[0] and '9.9.0.52' in lines[0]
+        write(local / 'pip-check.json', dict(returncode=check.returncode, accepted_cudnn_metadata_override=accepted, output=output))
+        if check.returncode and not accepted:
+            raise RuntimeError('Unexpected dependency inconsistency; see .local/pip-check.json')
+        doctor_text = run([python, '-I', '-X', 'utf8', '-m', 'bemarkdown', 'doctor', '--deep', '--json',
+            '--tool-root', ROOT / 'TOOLS/bemarkdown', '--mcp-root', ROOT], logs / 'doctor.log', capture=True)
         doctor = json.loads(doctor_text)
         write(local / 'doctor.json', doctor)
         if doctor['readiness'] != 'READY_FULL':
             raise RuntimeError('Full GPU/model validation did not pass; see .local/doctor.json')
-        install = [python, ROOT / 'TOOLS/education_mcp/install.py', '--mcp-root', ROOT]
-        if args.workspace:
-            install += ['--workspace', args.workspace.resolve()]
+        if not verify_tool(runtime, wheel):
+            raise RuntimeError('Tool integrity changed during validation')
+        install = [python, '-I', '-X', 'utf8', ROOT / 'TOOLS/education_mcp/install.py', '--mcp-root', ROOT]
+        if workspace_path:
+            install += ['--workspace', workspace_path]
         workspace = json.loads(run(install, logs / 'workspace.log', capture=True))
         config = workspace['mcp_client_configuration']
-        config['mcpServers']['education']['args'] += ['--runtime-python', str(python)]
+        config['mcpServers']['education']['command'] = str(Path(sys._base_executable).resolve())
         write(local / 'mcp-client.json', config)
-        state.update(status='READY_FULL', completed_at=time.time(), client_configuration=str(local / 'mcp-client.json'))
-        write(state_path, state)
+        client_args = config['mcpServers']['education']['args']
+        state.update(status='READY_FULL', completed_at=time.time(), workspace=client_args[client_args.index('--workspace') + 1],
+                     client_configuration=str(local / 'mcp-client.json'))
+        write(local / 'setup-state.json', state)
         write(logs / 'setup-state.json', state)
+        write(local / 'last-setup-attempt.json', state)
+        # Activation is the final atomic write; failed preparation never changes the selector.
+        active = activation_record(wheel, runtime, dependencies, previous, previous_state, old_client)
+        active['requested_runtime_root'] = str(requested_target)
+        write(local / 'runtime-selection.json', active)
         print('READY_FULL. MCP client configuration: ' + str(local / 'mcp-client.json'))
     except BaseException as exc:
         state.update(status='FAILED', error=type(exc).__name__ + ': ' + str(exc))
-        write(state_path, state)
+        write(local / 'last-setup-attempt.json', state)
         write(logs / 'setup-state.json', state)
         raise
 

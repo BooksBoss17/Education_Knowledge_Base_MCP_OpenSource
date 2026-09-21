@@ -4,6 +4,8 @@
 
 2026-09-22 更新：[图形残余归属、图题关联与保守顶部正文裁切](docs/FIGURE_OWNERSHIP_20260922.md)。
 
+安装脚本现支持兼容依赖复用和验证后的运行时切换，详见[安装与升级说明](docs/INSTALLATION_UPGRADE.md)。
+
 自有代码采用 **AGPL-3.0-only**；第三方组件保留原许可证。完整条款见 [LICENSE](LICENSE)、[许可核查](docs/LICENSE_AUDIT.md) 和 [第三方声明](THIRD_PARTY_NOTICES.md)。
 
 ## 当前可以做什么

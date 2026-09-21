@@ -27,13 +27,14 @@ def safe(root, name):
 
 def verify(root=ROOT, installed=False):
     manifest = read(root / 'RELEASE_MANIFEST.json')
+    assert manifest.get('schema') == 'education-public-file-inventory-v1' and manifest.get('files'), 'Invalid or empty public release manifest'
     expected = {f['path']: f for f in manifest['files']}
     for name, entry in expected.items():
         path = safe(root, name)
         assert path.is_file() and path.stat().st_size == entry['bytes'], name
         assert sha(path) == entry['sha256'], name
-    actual = {p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()}
     if not installed:
+        actual = {p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()}
         extra = actual - set(expected) - {'RELEASE_MANIFEST.json'}
         extra = {n for n in extra if not n.startswith('.git/') and '__pycache__' not in Path(n).parts}
         assert not extra, sorted(extra)
