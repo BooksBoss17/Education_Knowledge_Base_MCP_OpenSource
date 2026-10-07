@@ -29,8 +29,8 @@ EXPECTED_TOOLS = {
     "textbook_organize",
 }
 EXPECTED_PROTOCOL = "2025-11-25"
-EXPECTED_SERVER = ("education-knowledge-base", "0.4.0")
-EXPECTED_WHEEL_SHA256 = "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5"
+EXPECTED_SERVER = ("education-knowledge-base", "0.5.4")
+EXPECTED_WHEEL_SHA256 = "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c"
 BLOCKED_CALLS = {
     "bemarkdown_convert": {"source": "not-used-before-vision-gate.pdf"},
     "bemarkdown_status": {"job_id": "0" * 32},
@@ -84,7 +84,7 @@ async def exercise(root: Path, runtime_python: Path, workspace: Path, mode: str)
         info_result = await client.call_tool("bemarkdown_info", {})
         assert not info_result.is_error
         info = text_json(info_result)
-        assert info["server_version"] == "0.4.0"
+        assert info["server_version"] == "0.5.4"
         assert info["installed_runtime"]["verified"] is True
         assert info["installed_runtime"]["wheel_sha256"] == EXPECTED_WHEEL_SHA256
         assert info["visual_model_requirement"]["verified"] is False

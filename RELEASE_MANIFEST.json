@@ -232,8 +232,8 @@
     },
     {
       "path": "scripts/setup.py",
-      "bytes": 10876,
-      "sha256": "6c087be0ddaffd48c7fa1cacc59222bd3171f06193295b9388e93199f8ef9aa0"
+      "bytes": 10965,
+      "sha256": "761006893b46d20aa740cf5ca3f8f94ab4a55f3a45011662b136d4cd6b7da541"
     },
     {
       "path": "scripts/verify_release.py",
@@ -1413,7 +1413,7 @@
     {
       "path": "tests/test_mcp_sdk_session.py",
       "bytes": 5850,
-      "sha256": "a6e0d5488b4fb9df5fc1aabcc2644c05560190bcced9ac2001485e18e93d1f19"
+      "sha256": "4f0f194f6795be63b4701fbd3b3fa5990e8a7f04ec41c8b38057f100915f7728"
     },
     {
       "path": "tests/test_prose_edge_crop.py",
@@ -1592,8 +1592,8 @@
     },
     {
       "path": "TOOLS/education_mcp/launch.py",
-      "bytes": 1968,
-      "sha256": "3e5dafd933590b3db41b8033795fdb00928a26029ca24ff98ab4b168b425838e"
+      "bytes": 1854,
+      "sha256": "c67b509f1e02ae46e2b9a1328c0fb9fc870edf3da9f9d0cf789d2e80a38f3be6"
     },
     {
       "path": "TOOLS/education_mcp/README.md",
@@ -1602,13 +1602,18 @@
     },
     {
       "path": "TOOLS/education_mcp/RELEASE_MANIFEST.json",
-      "bytes": 3203,
-      "sha256": "9a49e6847f7acd8c99d1723b86de5ae9f9682b95b84430a0234587a6d14e5ae6"
+      "bytes": 3073,
+      "sha256": "179d531b2b1332c5f51fcd8de0b85d86104ab52c4b32fd6d5e1a58adc49a5f7f"
     },
     {
       "path": "TOOLS/education_mcp/review_handoff.py",
       "bytes": 19033,
       "sha256": "fb59550525189249434c00161bf0a15bde98418fb76456847c7a4848344bb2f6"
+    },
+    {
+      "path": "TOOLS/education_mcp/runtime_selection.py",
+      "bytes": 1171,
+      "sha256": "2707ac35ba1a6f1394a1290191abe37a8b94aded92348ea9fed7f44ecb7ec798"
     },
     {
       "path": "TOOLS/education_mcp/screening_background_rules.py",
@@ -1709,6 +1714,8 @@
     "private_embedding_vectors_distributed": false,
     "binary_dependency_wheelhouse_distributed": false,
     "existing_managed_qwen_environment_version_probe": "PASS",
-    "cold_environment_installer": "command isolation tested; no fresh heavyweight download performed"
+    "cold_environment_installer": "command isolation tested; no fresh heavyweight download performed",
+    "publication_and_legacy_sdk_tests": 45,
+    "official_mcp_sdk_2_2_sessions": "auto and legacy PASS; 11 tools; vision gate preserved"
   }
 }

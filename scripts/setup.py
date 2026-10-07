@@ -102,8 +102,9 @@ def main():
     if args.models_only:
         print('Selected model files verified.')
         return
-    from install_qwen_runtime import ensure as ensure_isolated_qwen
-    ensure_isolated_qwen(ROOT / 'TOOLS/bemarkdown', Path(os.environ.get('LOCALAPPDATA', str(local))) / 'BeMarkdown', args.qwen_python)
+    if (ROOT / 'TOOLS/bemarkdown/runtime/requirements-qwen-ocr.lock').is_file():
+        from install_qwen_runtime import ensure as ensure_isolated_qwen
+        ensure_isolated_qwen(ROOT / 'TOOLS/bemarkdown', Path(os.environ.get('LOCALAPPDATA', str(local))) / 'BeMarkdown', args.qwen_python)
     office_candidates = [os.environ.get('BEMARKDOWN_SOFFICE'), shutil.which('soffice'), shutil.which('soffice.com')]
     office_candidates += [str(Path(os.environ[key]) / 'LibreOffice/program/soffice.com') for key in ('ProgramFiles', 'ProgramFiles(x86)') if os.environ.get(key)]
     if not any(path and Path(path).is_file() for path in office_candidates):
