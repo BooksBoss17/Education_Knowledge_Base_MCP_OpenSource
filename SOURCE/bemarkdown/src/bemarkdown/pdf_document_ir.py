@@ -417,6 +417,14 @@ def _atomized_content_row(
     projected["text"] = atom.payload.get("text")
     projected["latex"] = atom.payload.get("latex")
     projected["binary_artifact_ref"] = atom.payload.get("binary_artifact_ref")
+    receipt = projected.get('provenance', {}).get('native_text_source_receipt')
+    if receipt and atom.origin_type == 'NATIVE_LINE':
+        # A parent may contain many lines. Never carry its full character claim
+        # into every ordering atom. Partial fragments deliberately fail coverage.
+        line_id = atom.provenance.get('source_identity', {}).get('source_line_id')
+        receipt['lines'] = [line for line in receipt['lines'] if line['source_line_id'] == line_id]
+        receipt['decoded_text'] = projected['text']
+        receipt['decoded_text_sha256'] = hashlib.sha256((projected['text'] or '').encode('utf-8')).hexdigest()
     projected["source_candidate_ids"] = list(atom.source_candidate_ids)
     projected["source_region_ids"] = list(atom.source_region_ids)
     projected["source_unit_ids"] = list(atom.source_unit_ids)
@@ -1445,7 +1453,10 @@ def _preserve_native_paragraph_continuity(
                 ) or (
                     other.get("kind") == "FORMULA"
                     and other.get("provenance", {}).get("inline_native_line_id")
-                    == _atom_projection_metadata(group[-1]).get("source_identity", {}).get("source_line_id")
+                    in {
+                        _atom_projection_metadata(group[-1]).get("source_identity", {}).get("source_line_id"),
+                        _atom_projection_metadata(candidate).get("source_identity", {}).get("source_line_id"),
+                    }
                 )
                 for other in pending[:index]
             ):
@@ -1513,6 +1524,20 @@ def _merge_text_atom_blocks(
         result["content"]["text"] = "\n".join(
             str(block.get("content", {}).get("text") or "") for block in group
         )
+        receipts = [block.get('provenance', {}).get('route_provenance', {}).get('native_text_source_receipt')
+                    for block in group]
+        target_provenance = result['provenance']['route_provenance']
+        if all(receipt and receipt.get('document_id') == document_id
+               and receipt.get('page_index') == block['page_index']
+               and receipt.get('decoded_text') == block['content'].get('text')
+               for block, receipt in zip(group, receipts, strict=True)):
+            merged_receipt = copy.deepcopy(receipts[0])
+            merged_receipt['lines'] = [copy.deepcopy(line) for receipt in receipts for line in receipt['lines']]
+            merged_receipt['decoded_text'] = result['content']['text']
+            merged_receipt['decoded_text_sha256'] = hashlib.sha256(result['content']['text'].encode('utf-8')).hexdigest()
+            target_provenance['native_text_source_receipt'] = merged_receipt
+        else:
+            target_provenance.pop('native_text_source_receipt', None)
         result["source_content_ids"] = sorted(
             {value for block in group for value in block["source_content_ids"]}
         )

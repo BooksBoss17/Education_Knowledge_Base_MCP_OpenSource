@@ -1,0 +1,11 @@
+[workspace]
+output_root = "../../../../tmp/bemarkdown"
+models_root = "../../../MODELS"
+
+[pdf_pipeline]
+default = "modular_primary"
+paddleocr_vl = "experimental_only"
+vision_agent = "disabled"
+production_suite_id = "bemarkdown-pdf-production-suite-v1"
+shared_text_ensemble_runtime = true
+independent_quality_validation = "PENDING_ZCODE"

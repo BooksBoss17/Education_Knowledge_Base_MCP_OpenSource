@@ -1,0 +1,158 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "manifest_version": "bemarkdown-model-manifest-v1",
+  "model_id": "xiaomi-ocr-0",
+  "display_name": "Xiaomi-OCR-0",
+  "engine": "text",
+  "task": "text_recognition",
+  "provider": "Torch/Transformers",
+  "upstream": "SeerRay-Lab/Xiaomi-OCR-0",
+  "upstream_source": "SeerRay-Lab/Xiaomi-OCR-0",
+  "upstream_revision": "e4d1c4a6804bd9ef342b93d705a73af003e2ef4e",
+  "model_fingerprint": "b5bbe0d95086cfbab127e127fbfda56e11bcf6bb1c3df069ce7fd5075cab7977",
+  "fingerprint_contract": "sha256-canonical-json-file-inventory-v1",
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "runtime_profile": "win-x64-py312-cuda130-qwen",
+  "expected_device": "gpu:0",
+  "precision_baseline": "bf16",
+  "integration_status": "INTEGRATED_VALIDATED",
+  "license": {
+    "status": "VERIFIED_FROM_MODEL_CARD_METADATA",
+    "spdx": "Apache-2.0",
+    "source_file": "README.md"
+  },
+  "file_count": 26,
+  "total_bytes": 1773842400,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 2359,
+      "sha256": "c4c3e489d81d97261d3e8645ad08c7214065f7a87717fe47ab580eeb62ec216f"
+    },
+    {
+      "path": "assets/data-engine.png",
+      "bytes": 1667808,
+      "sha256": "2039bb9644202d740b0c9a1b18f6aca609a42cecdfcb47dbff5609459b3bf058"
+    },
+    {
+      "path": "assets/omni-parameters.png",
+      "bytes": 172566,
+      "sha256": "8da4c633f90ada29a521fd77808c16263e774e41fe3c7ec1959ac0e740e1143f"
+    },
+    {
+      "path": "assets/real5-parameters.png",
+      "bytes": 140852,
+      "sha256": "bfa91aa17f3b5ca793e0d81dfad6c1d30b4922d26d571fd728e6ce8582da401d"
+    },
+    {
+      "path": "assets/takeaway-parsing-stages.png",
+      "bytes": 93008,
+      "sha256": "ff1e78c464591bf6f541b2f775b8e938a8cf754e302b8b2a6ba9107e3157ad3b"
+    },
+    {
+      "path": "assets/takeaway-training-compute.png",
+      "bytes": 127074,
+      "sha256": "014cdb237b4900b8baa096158059c6fac60e70eebd24dd2ca721e7230a29b54e"
+    },
+    {
+      "path": "assets/vqa-parameters.png",
+      "bytes": 180411,
+      "sha256": "477cab447278c778fb841a656181098a6d82365e7cbc7471bfb8da878da7a50d"
+    },
+    {
+      "path": "assets/wild-parameters.png",
+      "bytes": 166086,
+      "sha256": "3571c5c3e107902192d2aaa74186661dc52e4504f07e69d85372beb2f4ee6709"
+    },
+    {
+      "path": "chat_template.jinja",
+      "bytes": 7755,
+      "sha256": "273d8e0e683b885071fb17e08d71e5f2a5ddfb5309756181681de4f5a1822d80"
+    },
+    {
+      "path": "config.json",
+      "bytes": 2747,
+      "sha256": "2eb95982069a24336fe66b3a0869ea5a711aba7566787d4a599654907ecc070c"
+    },
+    {
+      "path": "example_pics/dense-equations.gif",
+      "bytes": 2452638,
+      "sha256": "dc2aad77ecafbaf79e288a635871d4512feeb61510c95cb42f6d6ea34bc156b0"
+    },
+    {
+      "path": "example_pics/dense-equations.jpg",
+      "bytes": 401147,
+      "sha256": "2443d2013aba42d06e84b475ff1831a8f90f9f595351bb0cf260d224f18fdda5"
+    },
+    {
+      "path": "example_pics/dense-equations.md",
+      "bytes": 4606,
+      "sha256": "0ffe15e55ae20cc929d0a1e34a96125de2194bf17592156ffdd7e8e986678efc"
+    },
+    {
+      "path": "example_pics/handwrite-formula.gif",
+      "bytes": 807861,
+      "sha256": "77400cfdcc04b7612cd1182b65b0bfe1c008d0b00853db73ab1427e7257698de"
+    },
+    {
+      "path": "example_pics/handwrite-formula.jpg",
+      "bytes": 247100,
+      "sha256": "8233498668b683fbe298de9748722df477d53f64b606b26e7a6010d2fb238b75"
+    },
+    {
+      "path": "example_pics/handwrite-formula.md",
+      "bytes": 2152,
+      "sha256": "8c2000e42273622bb56bcb7c1336532f1415a71212e8549619d8c71bbb4a4b65"
+    },
+    {
+      "path": "example_pics/qianziwen.jpeg",
+      "bytes": 295671,
+      "sha256": "cd5552707cfc463bb035ce45bcc916d31be2dbcc8b519beda5250e00ffc46ff5"
+    },
+    {
+      "path": "example_pics/qianziwen.md",
+      "bytes": 83,
+      "sha256": "a1ca8ab3425ab671cc044e5373fac77aa406fdc36555a0b783e2445938980e8b"
+    },
+    {
+      "path": "example_pics/receipt.jpg",
+      "bytes": 99714,
+      "sha256": "8fd7cc75f05395a41bbdaee4a6b09f9f3561bf5f05a6cac36d8b5c7eeecf9170"
+    },
+    {
+      "path": "example_pics/receipt.md",
+      "bytes": 530,
+      "sha256": "921f1ed9cc27bb57777a1efa2d4f4d2fbd50b4cc19f1aeaa921aabf42b47e19d"
+    },
+    {
+      "path": "model.safetensors",
+      "bytes": 1746937856,
+      "sha256": "d4551e9f6127ac9e35cff7b4f7a72a90410e03e6c8676a36f0e2b7eaeb5d5348"
+    },
+    {
+      "path": "processor_config.json",
+      "bytes": 1191,
+      "sha256": "d89ef49ce9cd37fbf510158e13c1ef063d9286411c1ec9049932dbe0487143b1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 20819,
+      "sha256": "7f7634ffca8cebe9ac6a388f16e37d819bb05ea6aeec9f0a5ab416930a1fabf2"
+    },
+    {
+      "path": "README_zh.md",
+      "bytes": 19876,
+      "sha256": "ed8d832eb745967dca606e2364a1cce257c5721e549124fc0bcf2c54676f2c50"
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 1165,
+      "sha256": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b"
+    }
+  ]
+}

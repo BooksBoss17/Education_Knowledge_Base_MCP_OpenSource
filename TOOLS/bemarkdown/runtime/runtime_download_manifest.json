@@ -1,8 +1,69 @@
 {
   "schema": "bemarkdown-runtime-download-manifest-v1",
   "core_offline_bundle": {
-    "complete": false,
-    "files": []
+    "complete": true,
+    "files": [
+      {
+        "path": "beautifulsoup4-4.15.0-py3-none-any.whl",
+        "bytes": 109924,
+        "sha256": "d6f88de62e1d4e38ecb1077eb9724cd0eff29d2a08ca16a401e9b9e93f117cf9",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "lxml-6.1.2-cp311-cp311-win_amd64.whl",
+        "bytes": 4032771,
+        "sha256": "b3db5497af55f7a557c95265dd3b91c75dc56364a7b59f258c45fa5576dce058",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "mathml2latex-0.2.12-py3-none-any.whl",
+        "bytes": 44762,
+        "sha256": "bf9b04ad49e1d345a072206f3b6f12b54865e6478dfb4f27b6e9be59525932f4",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "mathtypejx-0.1.0-py3-none-any.whl",
+        "bytes": 149187,
+        "sha256": "8458024fa35bf54b947fa5844f589552d01cb489fc143f6bfeb63a777c2a096a",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "olefile-0.47-py2.py3-none-any.whl",
+        "bytes": 114565,
+        "sha256": "543c7da2a7adadf21214938bb79c83ea12b473a4b6ee4ad4bf854e7715e13d1f",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "pillow-12.1.0-cp311-cp311-win_amd64.whl",
+        "bytes": 7031469,
+        "sha256": "806f3987ffe10e867bab0ddad45df1148a2b98221798457fa097ad85d6e8bc75",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "pymupdf-1.27.2.3-cp310-abi3-win_amd64.whl",
+        "bytes": 19249102,
+        "sha256": "d20f68ef15195e073071dbc4ae7455257c7889af7584e39df490c0a92728526e",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "python_docx-1.2.0-py3-none-any.whl",
+        "bytes": 252987,
+        "sha256": "3fd478f3250fbbbfd3b94fe1e985955737c145627498896a8a6bf81f4baf66c7",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "soupsieve-2.9.2-py3-none-any.whl",
+        "bytes": 37370,
+        "sha256": "8089a26fd974ca7a1f30276d3d8492ab266ab15af581642dfe8aa162e0c1c823",
+        "source": "PyPI or pinned upstream VCS"
+      },
+      {
+        "path": "typing_extensions-4.15.0-py3-none-any.whl",
+        "bytes": 44614,
+        "sha256": "f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548",
+        "source": "PyPI or pinned upstream VCS"
+      }
+    ]
   },
   "formula_ocr_offline_bundle": {
     "complete": false,

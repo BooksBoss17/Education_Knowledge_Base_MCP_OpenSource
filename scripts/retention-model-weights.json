@@ -1,0 +1,114 @@
+{
+  "schema": "bemarkdown-retention-release-weights-v1",
+  "release_tag": "v1.0.0-b200",
+  "repo": "BooksBoss17/BeMarkdown-Retention-B200",
+  "license": "Apache-2.0",
+  "files": [
+    {
+      "path": "B200-Q4_K_M.gguf",
+      "bytes": 2783446432,
+      "sha256": "04a3a93d42ccb74fca20225c8568912039d458ff40d99bdbaece35d996c807de",
+      "parts": [
+        {
+          "name": "B200-Q4_K_M.gguf.part01-1",
+          "bytes": 402653184,
+          "sha256": "84796d677f0bc55494f91185469d04129167e487df21618a7ccc480c1e6c4d39",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-1"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-2",
+          "bytes": 402653184,
+          "sha256": "fb2cccb5a9693db86360eec8a482e28aff9c1078034a06bd0bb5333bc2df3392",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-2"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-3",
+          "bytes": 402653184,
+          "sha256": "ba5ddae0dc0f44684688613d72e49f36b561d5088784c886bf7d4f08dc4384db",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-3"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-4-01",
+          "bytes": 67108864,
+          "sha256": "449d3927f169df075a75fc5d5bd0d4b2d634c45336fffbaed42284f955b31e66",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-4-01"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-4-02",
+          "bytes": 67108864,
+          "sha256": "6ca0d083031417dbe640e70f33bb742c9a8f32c2b4535d357d8717749097d40f",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-4-02"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-4-03",
+          "bytes": 67108864,
+          "sha256": "2d8a19de2bd51faf4b98bea0972fe18b58511ae11b9576b25a54266e2523dd58",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-4-03"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-4-04",
+          "bytes": 67108864,
+          "sha256": "19c0369ccbdadca182748363b9d25b1b17084ccbf3d3bdd52c3a55d6e0c5b694",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-4-04"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-4-05",
+          "bytes": 67108864,
+          "sha256": "274aa42a1162c9ca522ed17967750ad17a75402748d4e78e4c5ecb1c47924220",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-4-05"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part01-4-06",
+          "bytes": 67108864,
+          "sha256": "44de085109a39ec9f6ca4f9c585dc799687243759fb25a4ab084bb8064611aaf",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part01-4-06"
+        },
+        {
+          "name": "B200-Q4_K_M.gguf.part02",
+          "bytes": 1172833696,
+          "sha256": "81c73e193512f7f9dc68e840303f4d5e63903118c0eb67841e082ce743b18afa",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/B200-Q4_K_M.gguf.part02"
+        }
+      ]
+    },
+    {
+      "path": "mmproj-F16.gguf",
+      "bytes": 672423040,
+      "sha256": "f09979e4cc9b96df37110605c49becd7ab353cd3f1b0e6fafc9937dc5b708d0e",
+      "parts": [
+        {
+          "name": "mmproj-F16.gguf",
+          "bytes": 672423040,
+          "sha256": "f09979e4cc9b96df37110605c49becd7ab353cd3f1b0e6fafc9937dc5b708d0e",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/mmproj-F16.gguf"
+        }
+      ]
+    },
+    {
+      "path": "adapter/adapter_model.safetensors",
+      "bytes": 121957008,
+      "sha256": "5ba6f8a44f4dd50e37429a46e4f108b92afd9105cc90dd7deebc325ea74296ba",
+      "parts": [
+        {
+          "name": "adapter_model.safetensors",
+          "bytes": 121957008,
+          "sha256": "5ba6f8a44f4dd50e37429a46e4f108b92afd9105cc90dd7deebc325ea74296ba",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/adapter_model.safetensors"
+        }
+      ]
+    },
+    {
+      "path": "adapter/adapter_config.json",
+      "bytes": 1136,
+      "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b",
+      "parts": [
+        {
+          "name": "adapter_config.json",
+          "bytes": 1136,
+          "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b",
+          "url": "https://github.com/BooksBoss17/BeMarkdown-Retention-B200/releases/download/v1.0.0-b200/adapter_config.json"
+        }
+      ]
+    }
+  ]
+}

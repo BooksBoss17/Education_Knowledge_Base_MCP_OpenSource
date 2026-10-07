@@ -71,7 +71,8 @@ def build_handoff(source, markdown, report, document_ir=None):
     source = Path(source)
     document_ir = document_ir or {}
     source_type = source.suffix.lower()
-    pagination = source_type == '.docx' and report.get('input_transform', {}).get('route') == 'DOCX_SCREENSHOT_PDF'
+    image_pdf = report.get('input_transform', {}).get('route') == 'RASTER_IMAGE_PDF'
+    pagination = image_pdf or (source_type == '.docx' and report.get('input_transform', {}).get('route') == 'DOCX_SCREENSHOT_PDF')
     pages = {p["page_index"]: p for p in document_ir.get("pages", [])}
     spans = {s["node_id"]: s for s in report.get("markdown_render", {}).get("node_spans", [])}
     original_text = markdown.decode("utf-8")
@@ -133,7 +134,7 @@ def build_handoff(source, markdown, report, document_ir=None):
             if region and item["source_request"]:
                 item["source_request"]["region"] = region
             if pagination:
-                item['coordinate_space'] = 'DOCX_PAGINATION_PDF_POINTS'
+                item['coordinate_space'] = 'EXIF_NORMALIZED_IMAGE_PDF_POINTS' if image_pdf else 'DOCX_PAGINATION_PDF_POINTS'
                 if item['source_request'] and region:
                     item['source_request']['source_view'] = 'pagination'
                 else:
@@ -201,7 +202,8 @@ def _table_contexts(markup, markdown, span=None):
 
 
 def _table_content_reviews(source, markdown, report, document_ir, media_by_relationship, media_sizes):
-    pagination = source.suffix.lower() == '.docx' and report.get('input_transform', {}).get('route') == 'DOCX_SCREENSHOT_PDF'
+    image_pdf = report.get('input_transform', {}).get('route') == 'RASTER_IMAGE_PDF'
+    pagination = image_pdf or (source.suffix.lower() == '.docx' and report.get('input_transform', {}).get('route') == 'DOCX_SCREENSHOT_PDF')
     pages = {p['page_index']: p for p in document_ir.get('pages', [])}
     spans = {s['node_id']: s for s in report.get('markdown_render', {}).get('node_spans', [])}
     owners = [(block, None) for block in document_ir.get('blocks', [])] if source.suffix.lower() == '.pdf' or pagination else [
@@ -229,7 +231,7 @@ def _table_content_reviews(source, markdown, report, document_ir, media_by_relat
             request = dict(kind='image', page=page_index+1, dpi=288, region=region) if region and isinstance(page_index, int) else None
             coordinates = 'PDF_POINTS'
             if pagination:
-                coordinates = 'DOCX_PAGINATION_PDF_POINTS'
+                coordinates = 'EXIF_NORMALIZED_IMAGE_PDF_POINTS' if image_pdf else 'DOCX_PAGINATION_PDF_POINTS'
                 if request:
                     request['source_view'] = 'pagination'
             identity = [str(source), page_index, block.get('node_id')]
@@ -300,7 +302,7 @@ def _image_region_reviews(report, media_by_relationship, media_sizes=None, docum
             page = pages.get(index, {})
             region = _crop(review['source_bbox_pdf_pt'], page.get('width_pt', 0), page.get('height_pt', 0))
             request = dict(kind='image', page=index+1, dpi=288)
-            if report.get('input_transform', {}).get('route') == 'DOCX_SCREENSHOT_PDF':
+            if report.get('input_transform', {}).get('route') in {'DOCX_SCREENSHOT_PDF', 'RASTER_IMAGE_PDF'}:
                 request['source_view'] = 'pagination'
             if region:
                 request['region'] = region

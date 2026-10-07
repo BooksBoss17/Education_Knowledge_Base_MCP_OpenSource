@@ -55,3 +55,14 @@ FormulaNet 原清单中含有 9 个 Hugging Face 下载缓存文件。公开包�
 - 随包 MathLive：MIT；KaTeX 字体许可另行保留，见 [第三方声明](../THIRD_PARTY_NOTICES.md)。
 
 全部 110 个已安装 Python 分发包的版本和许可证元数据保存在 [runtime-components.json](../licenses/runtime-components.json)。环境构建工具也列入清单，不等于全部由转换代码直接调用。部分元数据采用复合 SPDX 表达式或完整许可正文，应查看该组件自己的条款，不能仅凭名称推定。
+
+
+
+
+
+
+
+
+
+
+2026-10-07: BeMarkdown-Retention-B200 weights and independent downloader: Apache-2.0, derived from Qwen/Qwen3.5-4B; datasets are not redistributed. OvisOCR2 and Xiaomi-OCR-0 use pinned Apache-2.0 model artifacts. NVIDIA and Microsoft binaries remain external.

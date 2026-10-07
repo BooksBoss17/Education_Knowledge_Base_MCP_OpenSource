@@ -1,6 +1,7 @@
 """Conservative native-text visibility from PDF paint order and opaque rectangles."""
 
 from .native_glyph_bounds import character_key
+from .text_trace import safe_text_trace
 
 
 def _single_rectangle(drawing):
@@ -61,7 +62,7 @@ def hidden_native_characters(page):
     """
     if not hasattr(page, "get_texttrace") or getattr(page, "rotation", 0) != 0:
         return {}
-    trace = page.get_texttrace()
+    trace = safe_text_trace(page)
     covers = opaque_rectangles_in_paint_order(page)
     if not covers and not any(s.get("type") == 3 or s.get("opacity") == 0 for s in trace):
         return {}

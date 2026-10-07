@@ -1,14 +1,10 @@
 {
   "schema": "education-public-tool-release-v1",
-  "release_id": "education-mcp-public-figure-20260922-v1",
-  "source_baseline_commit": "86b857c7f897dc7a5493f141986851bc9e128b05",
-  "wheel_sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5",
+  "release_id": "retention-assets-aspect-padding-20261007-v1",
   "status": "VALIDATED_PUBLIC_BASE",
-  "source_directory": "../../SOURCE/bemarkdown",
-  "source_provenance": {
-    "public_baseline_commit": "470c7f65c6684bcfef836e8a5fec1e56c7962e4c",
-    "figure_patch_commit": "3c257ba825b7d658a7cb6c2c2738d04939359436",
-    "public_adapter_version_preserved": "0.4.0",
-    "scope": "Three Python modules patched, one prose edge module added; public adaptations preserved"
-  }
+  "source": "../../SOURCE/bemarkdown",
+  "wheel_sha256": "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c",
+  "internal_wheel_sha256": "e6f39ef0d490c49d029b86794fd09f28158677684a647f78eb33bac971bec86b",
+  "byte_normalization": "CRLF to LF in text wheel members; Python source semantics preserved",
+  "retention_model_connected": false
 }

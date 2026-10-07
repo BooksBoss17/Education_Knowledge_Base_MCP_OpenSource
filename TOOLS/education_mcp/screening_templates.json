@@ -1,0 +1,7 @@
+{
+  "schema": "screening-retrieval-templates-v1",
+  "status": "NOT_CONFIGURED_PUBLIC",
+  "preprocessing": "white-alpha-composite RGB thumbnail384 pad32 v1",
+  "templates": [],
+  "private_samples_distributed": false
+}

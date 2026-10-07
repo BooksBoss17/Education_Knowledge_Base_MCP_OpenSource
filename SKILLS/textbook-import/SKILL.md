@@ -9,6 +9,16 @@ description: 将用户指定的教材通过 Education Knowledge Base MCP 转换�
 
 ## 导入与来源
 
+图片筛选是本流程的正式步骤。初次转换完成后，先调用 `textbook_organize(action="screen_images", screening_model="rules", screening_view="triage")`，再按用户要求或需要使用 `screening_model="wemm"`，轮询同一任务。triage 保留疑似装饰和低信息图片，即使它们被来源保护标为 CONTENT_REVIEW；这些标签是优先检查依据，不是删除许可。`candidates` 只显示没有被保护否决的候选，不能用它替代完整的 triage 核查。默认 `all` 可查看按 SHA 合并的全量图片组。整包总数、核查队列、候选数、已观察数与实际排除数分别报告，不能把队列或去重数当作筛除成功数。
+
+先读取 `automatic_background_actions` 和 `automatic_background_omission_occurrences`，并保存 `background_rules` 的证据报告路径。这些是当前 Markdown 身份下、逐引用位置的自动动作，不是按图片 SHA 整组删除许可。`preview` 会重新核验并应用符合条件的动作，返回 `automatic_background_omissions` 与 `background_rules_report`；不要把旧的自动动作复制进人工 `plan.image_actions`，也不要为同一自动排除背景重新派发人工分类任务。模板缺失、证据不足或结果为空时，继续原有候选核查流程，不据此推断没有装饰。
+
+自动背景动作与按 SHA 分组的保护标签分开读取：同组其他引用位置、报告中要求保留的 owner 图片，以及这些图片原有的裁剪边界／识别待审项，仍须保留并处理；不能因为背景被移除就清除关联示意图的 `REVIEW_REQUIRED`。人工 KEEP、未知或识别决定优先。自动证据不算 agent 亲眼观察，不得据此填写 `images_checked=true`；仍按下文的真实观察与发布要求报告。
+
+对其余候选仍须核对实际资产及原页。确认无教学内容、无未转换内容后，用 `review_images` 记录明确决定和具体来源依据；后续同源、同页/部分、同资产 SHA 的整理会自动复用该决定，无需重复观察。同一图片在不同页或不同教材不继承排除许可。`KEEP` 可撤回此前排除。未知内容、公式/表格图片和科学图残片保留并进入识别或待审，不得为减少图片数而删除。
+
+筛选返回成功不代表已经逐图视觉验收；原有 `images_checked` 和未解决项必须如实填写。需要单图补转时可把实际图片交 `bemarkdown_convert`，保留其独立 job 与产物身份，不能把补转成功直接算成内容复核通过。详细字段和审计位置见 MCP 适配器的 `IMAGE_SCREENING.md`。
+
 本 MCP 仅支持可接收图片的视觉模型。首次连接、切换模型或空闲超过 30 分钟时，先调用 `bemarkdown_vision(action="challenge")`，实际查看返回图片，从左到右读出六个符号，再用 `action="verify"`、返回的 `challenge_id` 和 `answer` 验证。没有图片输入时切换视觉模型，不能猜测或通过读取服务内部数据绕过检查。验证失败或过期不影响已有转换任务，重新验证后继续查询同一个 job。
 
 1. 从用户意图、封面和出版信息确认资料为教材。调用 `bemarkdown_convert(source=原路径, material_type="textbook", book_title=教材名)`。书名宜含版本、学科和册次，避免不同版本混淆。
@@ -31,7 +41,7 @@ description: 将用户指定的教材通过 Education Knowledge Base MCP 转换�
 
 ## 图片检查：保留教学信息
 
-调用 `textbook_organize(action="inspect")` 取得当前 SHA、章节候选和图片 ID。用 `action="contact_sheet"` 分批检查全部图片；按 `next_offset` 继续。清单中有 `source_request` 时直接用这些参数调用 `bemarkdown_source`，无需翻查大报告寻找原页。缩略图不清楚时用 `bemarkdown_read(kind="asset", asset_name=...)` 查看单图，再对照原页。修改 reviewed Markdown 后重新 inspect，旧图片 ID 和行号不能继续使用。
+调用 `textbook_organize(action="inspect")` 取得当前 SHA、章节候选和图片 ID。优先检查 triage 图片：每个 SHA 组选择一个引用 ID，使用 `action="contact_sheet", image_ids=[...], base_sha256=当前SHA` 集中查看，每批最多24张。随后从 `screening_view="all"` 检查尚未观察的不同 SHA 组；同一 SHA 的图片像素不用重复读取，但不同引用位置的上下文仍分别判断。不要只看 triage 就填写全图完成。清单中有 `source_request` 时直接用这些参数调用 `bemarkdown_source`，无需翻查大报告寻找原页。缩略图不清楚时用 `bemarkdown_read(kind="asset", asset_name=...)` 查看单图，再对照原页。修改 reviewed Markdown 后重新 inspect，旧图片 ID 和行号不能继续使用。
 
 `images_checked=true` 表示已实际看到并检查全部图片像素，不能用读过图片清单、文件名或返回成功代替。出现 `image unavailable`、模型不支持图片、图片未送达或尚未看完时，填写 `images_checked=false`，在 unresolved 中记录 major 原因，只生成 preview；解决图像输入并完成复核后才能 publish。
 
@@ -76,9 +86,13 @@ description: 将用户指定的教材通过 Education Knowledge Base MCP 转换�
 
 示例行号和图片 ID 不能照抄。section kind 可用 `front/introduction/chapter/appendix/afterword`；图片默认保留，不用逐个列 keep。遗留事项格式为 `{"severity":"minor或major","description":"具体内容及来源位置"}`，不能用空话代替实际复核。
 
+`inspect` 还返回 `source_page_anchors`。有 `VERIFIED` 且 `at_line_start=true` 的来源页锚点时，为该章节同时填写 `source_node_id`、`source_page_index`，并将 `start_line` 设为对应的 `current_start_line`。每次 `bemarkdown_review` 后都重新读取锚点并重建全部章节边界：前文只增删一行，也会移动后面的章节。接口会拒绝“当前 Markdown SHA 配旧章节行号”的有锚点计划。若修订导致边界无法唯一追溯，会标为不可用，必须重新核对来源与当前行号，不能猜测替代节点；没有渲染节点映射的旧路线仍须人工重新核对边界。锚点验证只证明边界位置，不代表修订后的文字语义已经验收。
+
 提交前再核对：每个 `remove_decoration` 的图片本身确实无字无示意信息；每个纯标题图片已转成文字而不是因正文重复而跳过；已知且能按原页直接确认的乱码和重复文字已修复。原页确为表格且只有原图时，不能仅因保留了图片就把未转写事项降为 minor；应完成转写或留在 preview。若自动 TABLE 分类其实是含箭头、连线和空间关系的结构示意图，则以原页证据纠正分类并按示意图保留，不宣称完成了表格识别。
 
-先调用 `textbook_organize(action="preview", job_id=..., base_sha256=..., plan=...)`，核对章节数、顺序、全文覆盖和图片动作，再用同一计划 `publish`。preview 可保存视觉复核未完成或有重大遗留的草案，publish 会拒绝它们；源文件、原始 Markdown 或当前修订版身份变化时需重新核查。已有入库文件不同则停止覆盖，使用明确的新版本名称。
+先调用 `textbook_organize(action="preview", job_id=..., base_sha256=..., plan=...)`，核对章节数、顺序、全文覆盖和图片动作，再用同一计划 `publish`。preview 可保存视觉复核未完成或有重大遗留的草案，publish 会拒绝它们；源文件、原始 Markdown 或当前修订版身份变化时需重新核查。
+
+修订同一任务已经入库的教材时，保持原书名，读取 `.education-mcp/textbook-imports/<书名与来源ID>.json` 并计算文件字节 SHA256。先 preview，再调用 `textbook_organize(action="revise", job_id=..., base_sha256=..., plan=..., expected_import_sha256=...)`。revise 仍要求完成视觉核查且没有 major 遗留；同时检查旧清单、已入库章节和图片是否被修改。它把旧书、旧图和旧清单保存在 `tmp/textbook-revisions/<短身份>/<事务ID>/`，保留逐步操作日志，成功后返回 recovery 路径；普通失败会回滚。若留下 revision.lock 或 RECOVERY_REQUIRED，先检查日志和文件，不删除锁重试，不手工覆盖。`publish` 不承担覆盖功能；不同源文件或不同转换任务不能借 revise 替换旧书。
 
 输出采用 `KNOWLEDGE_BASE/TEXTBOOKS/<书名与来源ID>/00-封面与目录.md`、后续章节和后记；图片集中于 `TEXTBOOKS/DIAGRAMS/<书名与来源ID>/`，使用标准 `![说明](相对路径)`，同内容图片按哈希复用。各文件保留来源路径和 SHA；导入计划与处理记录位于工作区 `.education-mcp/textbook-imports/`。脚本负责复制和切分，不要求 agent 重写整本书，也不加载新的 GPU 模型。
 

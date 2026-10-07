@@ -95,6 +95,7 @@ def extract_production_pdf_source_evidence(
 def _native_text_lines(
     page: Any, *, hidden_characters=None, font_unicode_cache=None
 ) -> list[dict[str, Any]]:
+    from .native_character_sources import raw_character_record, raw_character_ref
     from .native_font_unicode import native_font_unicode_issues, normalized_font_name
     from .native_glyph_bounds import character_key, page_native_ink_map
     from .native_visibility import hidden_native_characters
@@ -112,8 +113,12 @@ def _native_text_lines(
             continue
         valid_lines = []
         for line_index, line in enumerate(block.get("lines", [])):
-            for span in line.get("spans", []):
+            for raw_span_index, span in enumerate(line.get("spans", [])):
                 characters = span.get("chars", [])
+                for raw_char_index, char in enumerate(characters):
+                    char['_source_character_record'] = raw_character_record(
+                        char, span, raw_character_ref(block_index, line_index,
+                                                     raw_span_index, raw_char_index, len(characters)))
                 characters = [char for char in characters if not char.get("origin")
                               or character_key(char.get("c", ""), char["origin"]) not in hidden_characters]
                 span["chars"] = characters
@@ -167,6 +172,7 @@ def _native_text_lines(
                         and _valid_bbox(char.get("bbox"))
                     ],
                     "text": str(span.get("text", "")),
+                    "source_characters": [char['_source_character_record'] for char in span.get('chars', [])],
                 }
                 for span_index, span in enumerate(spans)
             ]

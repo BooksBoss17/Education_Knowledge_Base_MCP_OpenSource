@@ -24,8 +24,9 @@ DEFAULT_RUNTIME_ENTRY_MODULES = (
     "bemarkdown.__main__",
     "bemarkdown.cli",
     "bemarkdown.production",
-    "bemarkdown.pdf.workers.ch_svtrv2_rec",
-    "bemarkdown.pdf.workers.got_ocr2",
+    "bemarkdown.pdf.adaptive_ocr_live",
+    "bemarkdown.pdf.qwen_stage",
+    "bemarkdown.pdf.workers.qwen_ocr",
 )
 
 
@@ -278,7 +279,7 @@ def build_publication_rc_manifest(
     ):
         _require_lower_hex(name, value, length)
     managed = list(managed_model_ids)
-    if managed != ["ch-svtrv2-rec", "got-ocr2-0"]:
+    if managed not in (["ch-svtrv2-rec", "got-ocr2-0"], ["ovis-ocr2", "xiaomi-ocr-0"]):
         raise ValueError("managed_model_ids must be the frozen B/C model pair")
 
     tool_root = rc_root / "TOOLS" / "bemarkdown"

@@ -263,6 +263,8 @@ def convert_docx(
         package, output_dir, report, mtef_cache_context=cache_context
     ).scan()
     report["timing"]["scan_seconds"] = time.perf_counter() - scan_started
+    from .blank_images import prune_docx
+    prune_docx(document, output_dir, report)
 
     if formula_ocr == "auto":
         if formula_ocr_adapter is None:
@@ -276,6 +278,7 @@ def convert_docx(
             document, output_dir, report,
             formula_runtime=getattr(formula_ocr_adapter, 'loaded_runtime', None))
 
+    prune_docx(document, output_dir, report)
     AssetFinalizer(output_dir, report["source"]["sha256"], report).finalize(document)
 
     markdown_path = output_dir / "document.md"

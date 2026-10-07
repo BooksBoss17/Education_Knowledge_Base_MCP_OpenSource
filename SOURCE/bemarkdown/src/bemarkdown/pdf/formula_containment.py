@@ -1,5 +1,6 @@
 """Conserve overlapping layout formula evidence without repeated presentation."""
 
+import math
 import re
 
 
@@ -12,14 +13,59 @@ def _tokens(latex):
 
 
 def _contains(outer, inner):
-    return bool(
-        outer
-        and inner
-        and outer[0] <= inner[0] + 0.25
+    if not outer or not inner or len(outer) != 4 or len(inner) != 4:
+        return False
+    if not all(math.isfinite(v) for v in (*outer, *inner)):
+        return False
+    if any(box[2] <= box[0] or box[3] <= box[1] for box in (outer, inner)):
+        return False
+    # Preserve the previously supported strict-containment tolerance.
+    if (
+        outer[0] <= inner[0] + 0.25
         and outer[1] <= inner[1] + 0.25
         and outer[2] >= inner[2] - 0.25
         and outer[3] >= inner[3] - 0.25
+    ):
+        return True
+    # Layout boxes can differ by a fraction of a PDF point. A fixed 0.25 pt
+    # limit missed the same complete equation in real overlapping detections.
+    # Bound both absolute drift and relative coverage: tiny adjacent formulas
+    # must not be swallowed by a tolerance larger than their own geometry.
+    tolerance = 0.5
+    if not (
+        outer[0] <= inner[0] + tolerance
+        and outer[1] <= inner[1] + tolerance
+        and outer[2] >= inner[2] - tolerance
+        and outer[3] >= inner[3] - tolerance
+    ):
+        return False
+    overlap = max(0, min(outer[2], inner[2]) - max(outer[0], inner[0])) * max(
+        0, min(outer[3], inner[3]) - max(outer[1], inner[1])
     )
+    return overlap / ((inner[2] - inner[0]) * (inner[3] - inner[1])) >= 0.99
+
+
+def _complete_structured_rhs(large, small, outer, inner):
+    """Match an entire root/fraction RHS at the same source right edge.
+
+    Nested subexpressions, bare symbols and neighboring repeated expressions
+    are not sufficient evidence for suppressing a second detector result.
+    """
+    if not small or small[0] not in {r"\sqrt", r"\frac", r"\dfrac", r"\tfrac"}:
+        return False
+    if abs(outer[2] - inner[2]) > 0.5:
+        return False
+    depth, equals = 0, []
+    for index, token in enumerate(large):
+        if token == "{":
+            depth += 1
+        elif token == "}":
+            depth -= 1
+            if depth < 0:
+                return False
+        elif token == "=" and depth == 0:
+            equals.append(index)
+    return depth == 0 and len(equals) == 1 and equals[0] > 0 and large[equals[0] + 1:] == small
 
 
 def deduplicate_page_formulas(blocks):
@@ -65,18 +111,25 @@ def deduplicate_page_formulas(blocks):
                     for i in range(len(large) - len(small) + 1)
                 )
             )
-            if matches:
+            rhs_match = _complete_structured_rhs(
+                large, small, candidate["bbox_pdf_pt"], child["bbox_pdf_pt"]
+            )
+            if matches or rhs_match:
                 owner = candidate
+                basis = ("CONTAINED_LAYOUT_AND_IDENTICAL_COMPLETE_EXPRESSION" if matches
+                         else "CONTAINED_LAYOUT_AND_IDENTICAL_COMPLETE_STRUCTURED_RHS")
                 break
         if owner is None:
             owners.append(child)
             continue
         child["visibility"] = "SUPPRESSED_DUPLICATE"
         child["provenance"]["source_formula_containment"] = {
-            "version": "source-formula-containment-v1",
+            "version": "source-formula-containment-v3",
             "owner_node_id": owner["node_id"],
-            "basis": "CONTAINED_LAYOUT_AND_IDENTICAL_COMPLETE_EXPRESSION",
+            "basis": basis,
             "source_evidence_retained": True,
+            "max_edge_drift_pdf_pt": 0.5,
+            "minimum_child_area_coverage_for_extended_tolerance": 0.99,
         }
         suppressed.append(child)
     ids = {b["node_id"] for b in suppressed}

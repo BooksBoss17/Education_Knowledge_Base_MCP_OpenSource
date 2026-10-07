@@ -12,6 +12,7 @@ from .config import OutputRootConfigurationError
 from .formula_runtime_owner import FormulaRuntimeOwner
 from .package import InvalidDocxError
 from .pdf_source import PdfInspectionError
+from .image_input import InvalidRasterImageError
 from .production import (
     ExistingPackageError,
     PackageValidationError,
@@ -23,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _failure_kind(exc: Exception) -> str:
-    if isinstance(exc, (InvalidDocxError, PdfInspectionError, UnsupportedDocumentError, FileNotFoundError)):
+    if isinstance(exc, (InvalidDocxError, PdfInspectionError, InvalidRasterImageError, UnsupportedDocumentError, FileNotFoundError)):
         return 'INVALID_INPUT'
     if isinstance(exc, OutputRootConfigurationError):
         return 'ENVIRONMENT'

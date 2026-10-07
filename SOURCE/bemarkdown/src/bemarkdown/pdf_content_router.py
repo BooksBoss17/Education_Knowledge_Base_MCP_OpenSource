@@ -10,6 +10,7 @@ from collections.abc import Callable, Mapping
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
+from .paddle_memory import predict_with_bounded_cache
 
 from .pdf.non_text_ownership import (
     NonTextOwnershipRegion,
@@ -582,6 +583,7 @@ class PdfContentAdapterExecutor:
         source_evidence: dict[str, Any],
         ownership_regions: tuple[NonTextOwnershipRegion, ...] = (),
     ) -> dict[str, Any]:
+        from .pdf.native_character_sources import native_text_source_receipt
         selected = set(route["provenance"].get("native_text_evidence_ids", []))
         selected.update(route["provenance"].get("evidence_ids", []))
         rows = [
@@ -628,6 +630,7 @@ class PdfContentAdapterExecutor:
             confidence=None,
             provenance={
                 "raw_source_lines": raw,
+                "native_text_source_receipt": native_text_source_receipt(route, rows, text),
                 "raw_source_lines_before_exclusion": raw_before_exclusion,
                 "normalized_source_lines": normalized,
                 "normalization_types": sorted(set(normalizations)),
@@ -887,6 +890,7 @@ class PdfContentAdapterExecutor:
         return latex, crop
 
     def _formula(self, route: dict[str, Any], crop: dict[str, Any]) -> dict[str, Any]:
+        from .pdf.native_math import native_formula_source_receipt
         from .formula_ocr import FormulaOcrSafetyGate
         from .formulanet_runtime import FormulaOcrOutputValidator
 
@@ -1083,6 +1087,9 @@ class PdfContentAdapterExecutor:
                 if native_latex
                 else "FORMULANET",
                 "semantic_auto_correction_used": False,
+                **({"native_formula_source_receipt": native_formula_source_receipt(
+                    route, raw_latex
+                )} if native_latex else {}),
             },
             formula_visual_verification=verification,
             formula_consensus_verification=consensus,
@@ -1674,7 +1681,7 @@ class PaddleXPdfOcrRuntime:
 
         self._ensure_loaded()
         path = Path(crop["path"])
-        det_results = list(self._det_model.predict(str(path), batch_size=1))
+        det_results = list(predict_with_bounded_cache(self._det_model, str(path), batch_size=1))
         if len(det_results) != 1:
             raise RuntimeError(
                 "PP-OCR detector must return exactly one result per crop"
@@ -1719,7 +1726,7 @@ class PaddleXPdfOcrRuntime:
                 if not line_path.exists():
                     line_path.write_bytes(line_bytes)
                 rec_results = list(
-                    self._rec_model.predict(str(line_path), batch_size=1)
+                    predict_with_bounded_cache(self._rec_model, str(line_path), batch_size=1)
                 )
                 if len(rec_results) != 1:
                     raise RuntimeError(
@@ -1826,7 +1833,7 @@ class PaddleXPdfOcrRuntime:
                 recognized = predict_positioned_batch(self._rec_model,
                     [Path(line['line_crop_ref']) for line in ordered], batch_size=rec_batch_size)
             else:
-                recognized = list(self._rec_model.predict(
+                recognized = list(predict_with_bounded_cache(self._rec_model,
                     [line["line_crop_ref"] for line in ordered], batch_size=rec_batch_size
                 ))
             if len(recognized) != len(ordered):
@@ -1858,7 +1865,7 @@ class PaddleXPdfOcrRuntime:
 
         self._ensure_loaded()
         path = Path(crop["path"])
-        rec_results = list(self._rec_model.predict(str(path), batch_size=1))
+        rec_results = list(predict_with_bounded_cache(self._rec_model, str(path), batch_size=1))
         if len(rec_results) != 1:
             raise RuntimeError(
                 "PP-OCR recognizer must return exactly one direct-rec result"

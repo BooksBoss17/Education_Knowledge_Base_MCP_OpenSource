@@ -20,6 +20,7 @@ from ...model_registry import (
     model_inventory_fingerprint,
 )
 from ...paddlex_runtime import import_paddlex_for_paddle_provider
+from ...paddle_memory import predict_with_bounded_cache
 from ...text_recognition_contract import normalize_text
 
 MODEL_NAME = "ch_SVTRv2_rec"
@@ -92,7 +93,7 @@ def recognize_rows(model, rows, *, batch_size=1, short_batch_size=1, batching_me
         try:
             if batching_metrics is not None:
                 batching_metrics['predict_attempts'] = batching_metrics.get('predict_attempts', 0) + 1
-            predictions = list(model.predict([str(path) for _, path in chunk], batch_size=batch_size))
+            predictions = list(predict_with_bounded_cache(model, [str(path) for _, path in chunk], batch_size=batch_size))
             if len(predictions) != len(chunk):
                 raise RuntimeError('CH_SVTR_BATCH_CARDINALITY')
         except Exception:  # noqa: BLE001 - third-party batch failure retries individual inputs
@@ -104,7 +105,7 @@ def recognize_rows(model, rows, *, batch_size=1, short_batch_size=1, batching_me
             try:
                 if batching_metrics is not None:
                     batching_metrics['predict_attempts'] = batching_metrics.get('predict_attempts', 0) + 1
-                predictions = list(model.predict(str(chunk[0][1]), batch_size=1))
+                predictions = list(predict_with_bounded_cache(model, str(chunk[0][1]), batch_size=1))
                 if len(predictions) != 1:
                     raise RuntimeError('CH_SVTR_SCALAR_CARDINALITY')
             except Exception as exc:  # noqa: BLE001 - preserve each provider failure as data
@@ -158,7 +159,7 @@ def run(
         raise RuntimeError("CH_SVTRV2_REC_GPU_RUNTIME_FAILED")
     warm_started = time.perf_counter()
     for _row, path in resolved[: min(warmup_count, len(resolved))]:
-        list(model.predict(str(path), batch_size=1))
+        list(predict_with_bounded_cache(model, str(path), batch_size=1))
     warmup_seconds = time.perf_counter() - warm_started
     try:
         paddle.device.cuda.reset_max_memory_allocated()

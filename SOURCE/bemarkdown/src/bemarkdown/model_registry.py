@@ -15,7 +15,7 @@ MODEL_MANIFEST_NAME = "MODEL_MANIFEST.json"
 MODEL_MANIFEST_SCHEMA = "bemarkdown-model-manifest-v1"
 MODEL_REVISION = "0809597a77f735bfb35354edb632f2e6dff606f3"
 MODEL_EXPECTED_FINGERPRINT = (
-    "b215b9cfdebb18660cc6ab66951fa89a23463128be2b879a6e4f2c2d80939b4e"
+    "8e9fdf987b922e1df25cf76114491b61258bc26896a7c6d62220c488840ac123"
 )
 MODEL_RUNTIME_PROFILE = "win-x64-py311-cuda126"
 MODEL_RUNTIME_CONTRACT = "bemarkdown-runtime-contract-v1"
@@ -142,6 +142,20 @@ PADDLE_MODEL_CATALOG = {spec.model_id: spec for spec in _PADDLE_MODEL_SPECS}
 
 _PDF_EXTENSION_MODEL_SPECS = (
     ModelSpec(
+        'ovis-ocr2', 'OvisOCR2', 'text', 'text_recognition',
+        '1fc9221b7823a371d6e97f92d527cc847e24e107', ('PDF_TEXT',),
+        'INTEGRATED_VALIDATED', provider='Torch/Transformers',
+        upstream_source_override='ATH-MaaS/OvisOCR2', precision_baseline='bf16',
+        fingerprint_contract=CANONICAL_JSON_INVENTORY_FINGERPRINT_CONTRACT,
+    ),
+    ModelSpec(
+        'xiaomi-ocr-0', 'Xiaomi-OCR-0', 'text', 'text_recognition',
+        'e4d1c4a6804bd9ef342b93d705a73af003e2ef4e', ('PDF_TEXT',),
+        'INTEGRATED_VALIDATED', provider='Torch/Transformers',
+        upstream_source_override='SeerRay-Lab/Xiaomi-OCR-0', precision_baseline='bf16',
+        fingerprint_contract=CANONICAL_JSON_INVENTORY_FINGERPRINT_CONTRACT,
+    ),
+    ModelSpec(
         "ch-svtrv2-rec",
         "ch_SVTRv2_rec",
         "text",
@@ -173,6 +187,13 @@ _PDF_EXTENSION_MODEL_SPECS = (
 
 MODEL_CATALOG = {
     spec.model_id: spec for spec in (*_PADDLE_MODEL_SPECS, *_PDF_EXTENSION_MODEL_SPECS)
+}
+
+# Historical IDs remain resolvable only for explicit replay tooling. They are
+# not requirements of the active production suite and may be absent in MCP.
+RETIRED_TEXT_MODEL_IDS = frozenset({'ch-svtrv2-rec','got-ocr2-0'})
+PDF_PRODUCTION_MODEL_CATALOG = {
+    key:value for key,value in MODEL_CATALOG.items() if key not in RETIRED_TEXT_MODEL_IDS
 }
 
 

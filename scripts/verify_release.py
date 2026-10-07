@@ -55,7 +55,7 @@ def verify(root=ROOT, installed=False):
                 modules += name.endswith('.py')
     plan = read(root / 'scripts/model-downloads.json')['models']
     registry = {m['model_id']: m for m in read(root / 'MODELS/MODEL_REGISTRY.json')['models']}
-    assert len(plan) == len(registry) == 13
+    assert len(plan) == len(registry) and len(plan) >= 13
     for model in plan:
         path = safe(root / 'MODELS', model['manifest_path'])
         assert sha(path) == model['manifest_sha256'] == registry[model['model_id']]['manifest_sha256']

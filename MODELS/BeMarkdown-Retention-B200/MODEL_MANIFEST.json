@@ -1,0 +1,90 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "model_id": "bemarkdown-retention-b200",
+  "display_name": "BeMarkdown-Retention-B200",
+  "task": "image_retention",
+  "provider": "llama.cpp / PEFT",
+  "source": {
+    "repo_id": "Qwen/Qwen3.5-4B",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "derived_repo": "BooksBoss17/BeMarkdown-Retention-B200"
+  },
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "model_fingerprint": "623e63e65901b0e2bcd69229032b339c5277e66f0de880818696c47febe44fb6",
+  "file_count": 8,
+  "total_bytes": 3577842851,
+  "files": [
+    {
+      "path": "adapter/adapter_config.json",
+      "bytes": 1136,
+      "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b"
+    },
+    {
+      "path": "adapter/adapter_model.safetensors",
+      "bytes": 121957008,
+      "sha256": "5ba6f8a44f4dd50e37429a46e4f108b92afd9105cc90dd7deebc325ea74296ba"
+    },
+    {
+      "path": "B200-Q4_K_M.gguf",
+      "bytes": 2783446432,
+      "sha256": "04a3a93d42ccb74fca20225c8568912039d458ff40d99bdbaece35d996c807de"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "mmproj-F16.gguf",
+      "bytes": 672423040,
+      "sha256": "f09979e4cc9b96df37110605c49becd7ab353cd3f1b0e6fafc9937dc5b708d0e"
+    },
+    {
+      "path": "model-decision-system.txt",
+      "bytes": 1491,
+      "sha256": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878"
+    },
+    {
+      "path": "NOTICE",
+      "bytes": 451,
+      "sha256": "d37bb194fe0102beed6c0050f914aa7cd0cefeb01d31539f84a17a6bec7d3ac4"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1935,
+      "sha256": "324e6b63ea644bde1fc410f1b067d16dd7641f6ee62db27266929323abef415e"
+    }
+  ],
+  "license": {
+    "spdx": "Apache-2.0",
+    "source_file": "LICENSE",
+    "upstream_verified_from": "Qwen model card metadata at pinned revision"
+  },
+  "runtime_contract": "bemarkdown-runtime-contract-v1",
+  "device_policy": "gpu:0",
+  "release_id": "retention-assets-aspect-padding-20261007-v1",
+  "integration": {
+    "state": "ASSETS_ONLY_NOT_INTEGRATED",
+    "bemarkdown_connected": false,
+    "auto_deletion_enabled": false
+  },
+  "frozen_policy": {
+    "checkpoint": "B200 step200",
+    "quantization": "Q4_K_M",
+    "mmproj": "F16",
+    "threshold": 0.8,
+    "aggregation": "K>U>D",
+    "unknown": "retain",
+    "aspect_padding": ">200; minimum short edge32; no resize/crop"
+  },
+  "validation": {
+    "dev_count": 1535,
+    "accuracy_u_wrong": 0.9674267100977199,
+    "output_keep_precision": 0.9496567505720824,
+    "necessary_recall": 0.9987966305655837,
+    "false_deletions": 1,
+    "unresolved": 33,
+    "numeric_quality_goal_met": false,
+    "independent_generalization_certified": false
+  }
+}

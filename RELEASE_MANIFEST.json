@@ -1,7 +1,9 @@
 {
   "schema": "education-public-file-inventory-v1",
-  "release_id": "education-mcp-public-setup-20260922-v1",
-  "license": "AGPL-3.0-only WITH separately licensed third-party components",
+  "release_id": "retention-assets-aspect-padding-20261007-v1",
+  "license": "AGPL-3.0-only WITH third-party exceptions; standalone model Apache-2.0",
+  "source_formal_commit": "41093d3a2497600db39dca9c0087f32353236da3",
+  "model_connected": false,
   "files": [
     {
       "path": ".gitattributes",
@@ -15,8 +17,8 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 344,
-      "sha256": "60c9aee4422ffb4fdef85f65aff9833f2fa6f87a1bcb75780a9de1039f76f6a5"
+      "bytes": 723,
+      "sha256": "03c824d32bd7c1648afd0791020b4c2e8b8781829a84e394b86b630b1b39e524"
     },
     {
       "path": "docs/BEMARKDOWN_TECHNICAL_SCHEME.md",
@@ -40,8 +42,13 @@
     },
     {
       "path": "docs/LICENSE_AUDIT.md",
-      "bytes": 5351,
-      "sha256": "257982675737e2f2cfcba49f9c1d45e2cd4fc95a3db71433ae276cc952c33ee8"
+      "bytes": 5621,
+      "sha256": "dda102dd05d3091bd0a7650e418f37fbea70e4723d14da1359e05126aa9e8f27"
+    },
+    {
+      "path": "docs/RELEASE_20261007.md",
+      "bytes": 1969,
+      "sha256": "d3b5ef9d424b7cf1f37ce82813d48afeab216bbe039d7bb2f66f0593c6192ab7"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -60,13 +67,43 @@
     },
     {
       "path": "licenses/model-sources.json",
-      "bytes": 9031,
-      "sha256": "1071d31b164f17515783173433628bb48973c2b5841043d4afd9e837705faa1e"
+      "bytes": 4365,
+      "sha256": "a17308850ce2efd355bb63ea3ab5577ce7232439cb83b4dcf837d9eb5a4235c9"
     },
     {
       "path": "licenses/runtime-components.json",
       "bytes": 210739,
       "sha256": "19193cf94f3c2dca0034079ffb103cdf86c90110e4bf3381faadee886c0c64de"
+    },
+    {
+      "path": "MODELS/BeMarkdown-Retention-B200/adapter/adapter_config.json",
+      "bytes": 1136,
+      "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b"
+    },
+    {
+      "path": "MODELS/BeMarkdown-Retention-B200/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "MODELS/BeMarkdown-Retention-B200/model-decision-system.txt",
+      "bytes": 1491,
+      "sha256": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878"
+    },
+    {
+      "path": "MODELS/BeMarkdown-Retention-B200/MODEL_MANIFEST.json",
+      "bytes": 2862,
+      "sha256": "d89e095063245cea71b3bbd0c978c2ee465125ef20e97bdb24289055314570c1"
+    },
+    {
+      "path": "MODELS/BeMarkdown-Retention-B200/NOTICE",
+      "bytes": 451,
+      "sha256": "d37bb194fe0102beed6c0050f914aa7cd0cefeb01d31539f84a17a6bec7d3ac4"
+    },
+    {
+      "path": "MODELS/BeMarkdown-Retention-B200/README.md",
+      "bytes": 1935,
+      "sha256": "324e6b63ea644bde1fc410f1b067d16dd7641f6ee62db27266929323abef415e"
     },
     {
       "path": "MODELS/ch_SVTRv2_rec/MODEL_MANIFEST.json",
@@ -80,13 +117,18 @@
     },
     {
       "path": "MODELS/MODEL_REGISTRY.json",
-      "bytes": 6972,
-      "sha256": "bc7563cd542c0d14265cfe3c42cf742ac9901d3569102441be6cb2ec1f2cf110"
+      "bytes": 7521,
+      "sha256": "b69dcc2a22a419b03a8eec6b917a8d05af9065e88ae3a094cf6ec46386c7df2a"
+    },
+    {
+      "path": "MODELS/OvisOCR2/MODEL_MANIFEST.json",
+      "bytes": 3439,
+      "sha256": "0ff056f4bc62cbc915d78b5e887364b2aa2cfa50cab7bef453e101fd8a9746fb"
     },
     {
       "path": "MODELS/PP-DocLayout_plus-L/MODEL_MANIFEST.json",
-      "bytes": 1908,
-      "sha256": "d2f3d93b8a589101f55c7123c2347b35baab97d5bcd73df658c5c80c8151a157"
+      "bytes": 1909,
+      "sha256": "37cff78dd54bbf05e7766cf7fb5055dfc5ce09f7ebe9527446de5b9e66f06f17"
     },
     {
       "path": "MODELS/PP-FormulaNet_plus-L/MODEL_MANIFEST.json",
@@ -95,53 +137,63 @@
     },
     {
       "path": "MODELS/PP-LCNet_x1_0_table_cls/MODEL_MANIFEST.json",
-      "bytes": 1922,
-      "sha256": "edbff281aca1dc2618da738e27aa061a94f39c51833fa656e507af3c03720b86"
+      "bytes": 1923,
+      "sha256": "5a2ca7172cb61654ecfac9eebabbb66b7fa23509c04d38c33fbf9648dfafa449"
     },
     {
       "path": "MODELS/PP-OCRv6_medium_det/MODEL_MANIFEST.json",
-      "bytes": 1755,
-      "sha256": "8c7924f496b679579fae4ef57202bc3da43e1305ed52af9a5aab4f941c50bacc"
+      "bytes": 1756,
+      "sha256": "0ba9a50bb7e08e846bf4f91718ce81e3d608e315a479dd987ba943f07c6d6f71"
     },
     {
       "path": "MODELS/PP-OCRv6_medium_rec/MODEL_MANIFEST.json",
-      "bytes": 1760,
-      "sha256": "77f7ca82a630b0fb8ce69d2f804de43a09489a1d036759bcbdd781bb07c28527"
+      "bytes": 1761,
+      "sha256": "93c36950261bdc39a073baf1157831dd1623fe6c00738c41b9ce009ce4a46303"
     },
     {
       "path": "MODELS/Qwen3-Embedding-4B/MODEL_MANIFEST.json",
-      "bytes": 4136,
-      "sha256": "803a3021b79578f701fa45815cc5d71a1d0d65784d51022fb18925b81ac9119d"
+      "bytes": 4001,
+      "sha256": "017b026143583f65c272a89b735c47e65e8eb7d5a85cb4d18aa45d559639198e"
     },
     {
       "path": "MODELS/RT-DETR-L_wired_table_cell_det/MODEL_MANIFEST.json",
-      "bytes": 1956,
-      "sha256": "2f2f0fa621ac9f6020249bf1fff5c3e5aa729731815b5700368e24f6a53acef5"
+      "bytes": 1957,
+      "sha256": "12ccdbf20d5b0f78b26cf5a12de5425e62d179a04bd9945798507829a147280b"
     },
     {
       "path": "MODELS/RT-DETR-L_wireless_table_cell_det/MODEL_MANIFEST.json",
-      "bytes": 1968,
-      "sha256": "63d2514e46f57924371855163016f19752561ecf46f08f54ab4c4adf7f6e8d40"
+      "bytes": 1969,
+      "sha256": "6253be530e886f1f48093f77117037973574ce5af2a5278af5994f4b65fe0a12"
     },
     {
       "path": "MODELS/SLANeXt_wired/MODEL_MANIFEST.json",
-      "bytes": 1894,
-      "sha256": "60ca8ea6ce24ae764804ceec5441f0be496bd42fca3e58225dfc39c793b0dd6b"
+      "bytes": 1895,
+      "sha256": "0e5d8af8d7ff73724752c6160423559279bce070d84e5e1052065042e387324d"
     },
     {
       "path": "MODELS/SLANeXt_wireless/MODEL_MANIFEST.json",
-      "bytes": 1906,
-      "sha256": "7fd33c3a6f683aabf8da5cab6292847fb0cdb9968d8a5cff4707dcaf843ac9f6"
+      "bytes": 1907,
+      "sha256": "d3e535f783a84990ad4093ebd9de0a685a60d6098ae8edafeaaee37a1a6e2cd3"
     },
     {
       "path": "MODELS/WeMM-Embedding-4B/MODEL_MANIFEST.json",
-      "bytes": 4999,
-      "sha256": "b05156e8f6ead25b2b78c70879074d26a55fe039c083d073aedbf6b55c3a9223"
+      "bytes": 4836,
+      "sha256": "30e0c09079ad88bdf3b5c067d162af12b97bf86df428e33a9af6c60d8b9c7c2a"
+    },
+    {
+      "path": "MODELS/Xiaomi-OCR-0/MODEL_MANIFEST.json",
+      "bytes": 5154,
+      "sha256": "c63298b42ccadc5daebf93537f41fa76477b8fc84a7751cda1cd813f903f87b5"
     },
     {
       "path": "README.md",
-      "bytes": 9202,
-      "sha256": "489fa3602b97e7b788cccbcca7ac6003838d3449dc2d6ea6f1d73806f3a2316c"
+      "bytes": 9421,
+      "sha256": "1a7e1eb5a02d69edf5bd65845621c5731b68da6046e6e4e3d04287cba0eb2789"
+    },
+    {
+      "path": "scripts/download_retention_model.py",
+      "bytes": 3823,
+      "sha256": "5b817b0b3fd82223528de191cdf9a63a97d648ccf2e5ba296560e4ac49c9a49c"
     },
     {
       "path": "scripts/downloads.py",
@@ -154,14 +206,24 @@
       "sha256": "f868ef87891c5f18d3312195811d193b69f66087640882588ef3334ab0de8c4e"
     },
     {
+      "path": "scripts/install_qwen_runtime.py",
+      "bytes": 3271,
+      "sha256": "3905c4520116f9d289a6fc3ec2c6e65b19a7685061a9172b7518f5a15024d0f8"
+    },
+    {
       "path": "scripts/model-downloads.json",
-      "bytes": 22176,
-      "sha256": "53125da7bbe3fd6fb6b94e8f7efa26c8e6df11f5a8cbca45b1f45177c22f7ad2"
+      "bytes": 29665,
+      "sha256": "f07241e4649d062924ba5909ded5fa4b894e9ce035d725660f57014df5b526a3"
     },
     {
       "path": "scripts/requirements-pypi.lock",
       "bytes": 2101,
       "sha256": "8f1263b7bd12f39cb0b98315fb8ad060a6e440ab3c468daae9b3f9bc19a24aca"
+    },
+    {
+      "path": "scripts/retention-model-weights.json",
+      "bytes": 5056,
+      "sha256": "d4393ccd49426370b806b59655ec7a277911ad3343bd20aa6c35df37755276b3"
     },
     {
       "path": "scripts/runtime_setup.py",
@@ -170,18 +232,23 @@
     },
     {
       "path": "scripts/setup.py",
-      "bytes": 10050,
-      "sha256": "2e35e93adeb28929ae166781a98dd2e774afd6ae559fd101db93e1509c409d70"
+      "bytes": 10876,
+      "sha256": "6c087be0ddaffd48c7fa1cacc59222bd3171f06193295b9388e93199f8ef9aa0"
     },
     {
       "path": "scripts/verify_release.py",
-      "bytes": 4672,
-      "sha256": "c4601cd07a0123ce51a7ee171dee114428b5e3688d311e7dd135ce2d046b774f"
+      "bytes": 4686,
+      "sha256": "0a1b185058677e04a4766498bf30967b1defad42eea8290fb34da9bbbb00e183"
     },
     {
       "path": "setup.ps1",
       "bytes": 5506,
       "sha256": "98d30b9a7682e7cdb731d5b9672b9389141cd1152a8b07547e43be8e116d44c2"
+    },
+    {
+      "path": "SKILLS/.gitkeep",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
     },
     {
       "path": "SKILLS/README.md",
@@ -190,8 +257,8 @@
     },
     {
       "path": "SKILLS/textbook-import/SKILL.md",
-      "bytes": 12140,
-      "sha256": "41069fd5f070021d3a54b6c231e58e626df3278f7646877edb25b4118c162576"
+      "bytes": 16549,
+      "sha256": "8ff393df33ac5e2c1935cae6471d5c33d25e167221ccdfd6decd3a7cfe53d3a7"
     },
     {
       "path": "SOURCE/bemarkdown/LICENSE",
@@ -255,8 +322,13 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/batch.py",
-      "bytes": 3918,
-      "sha256": "63d369c747c767291ec7f4d2b1596e2f52799dd7826a739c2d5800f4ca139b5c"
+      "bytes": 3992,
+      "sha256": "b873959e3ba41796609b81bfc6f4fc2778f1f0dd5cf664932560830017451a48"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/blank_images.py",
+      "bytes": 5979,
+      "sha256": "1c9bb75e2e3a2c3f4363daacdf7fbe25fa45c55b74d1f6623ef76a8ff24a0295"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/blind_vision_formula.py",
@@ -275,8 +347,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/cli.py",
-      "bytes": 10418,
-      "sha256": "9c6af10d00102de1db652c630ea747a2996359bdd24e19d0f63ccd07d5dbd96d"
+      "bytes": 10504,
+      "sha256": "d65d269ffa16c64d534b3f319ebd881f6ef301478569dc71819f1d16a86d25db"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/config.py",
@@ -295,8 +367,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/doctor.py",
-      "bytes": 19726,
-      "sha256": "066ae8382019d494e09ef1c6d6cec9f77d7252a004d896862e781710f639a81f"
+      "bytes": 23634,
+      "sha256": "c5a9fd16024fd89301947e602125c9af17664067a0b45a199bf472fb2e560646"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/docx_census.py",
@@ -315,8 +387,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/docx_image_content.py",
-      "bytes": 24254,
-      "sha256": "707a56d9ff001647b47cac18ac1bf51d0bdfba60b51a2555c1e9b7968720457e"
+      "bytes": 23825,
+      "sha256": "6af6358523632e83da2d38f9a9ceb948d6c0d350a045fbf2303eb755e6477c16"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/docx_visual.py",
@@ -332,6 +404,26 @@
       "path": "SOURCE/bemarkdown/src/bemarkdown/eq.py",
       "bytes": 8969,
       "sha256": "92c9578a173e2f4ad7b8a5f66876bfc9e61765a605560fa9e213fb6e528ca4b6"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/figure_benchmark/__init__.py",
+      "bytes": 79,
+      "sha256": "31500d1bb0eafe931f4593509d52ea72aa006fe7deb9d08a39822e48214b9f93"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/figure_benchmark/__main__.py",
+      "bytes": 4258,
+      "sha256": "a744a04c20a1ebe04b86ca99c6f8e621d4ac6b984516cde970e462823121dfbe"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/figure_benchmark/core.py",
+      "bytes": 17266,
+      "sha256": "8bb1497f17ed2717d306fa2fe6df236dce403f04d7cda1124a6b5c5ef0f6a5a6"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/figure_benchmark/runner.py",
+      "bytes": 10226,
+      "sha256": "67417e79e4c6d3b508c0fca60a3481f67687db0ffe1ca6f959a850f50c6c2676"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/formula.py",
@@ -380,13 +472,18 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/formulanet_runtime.py",
-      "bytes": 13181,
-      "sha256": "a235880c31053c946816d024c0ae7ac8bfa2fd00de85a5ed740e8324bdac56f6"
+      "bytes": 13096,
+      "sha256": "d56bd3dc63dadf9b97509792dfeaa493e4cd38b2d8d3205587487521e0a15363"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/fresh_reference_pass.py",
       "bytes": 13434,
       "sha256": "ca4718913295ffdd731695b22aa6d3cfbfdb296daa779ec41ac540e57a58da6a"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/image_input.py",
+      "bytes": 5217,
+      "sha256": "8d4281411beb1a66bd013c1306c00b9e7d78926d9e04dc43ef55125f22bd6dc9"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/ir.py",
@@ -405,8 +502,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/model_registry.py",
-      "bytes": 18902,
-      "sha256": "dcfe9889e5add31eed5f06aee9983eec5e5ff7cac9e27b373bb564796ea97d76"
+      "bytes": 20003,
+      "sha256": "1ca842ef82c50542b1deee8e18422aa21c92e5fbeb818930608671c862e8a9f0"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/model_runtime.py",
@@ -415,8 +512,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/model_suite.py",
-      "bytes": 9320,
-      "sha256": "9f6706fb497ca30cf99f1cb1d1526921436a3d6938f87a9dc081e1f7497c5f17"
+      "bytes": 9414,
+      "sha256": "4c2c2123eb7e2d4fc7c3bcdc6009eb7238f6a207c1e8013dce869be35aab1c24"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/model_suite_runtime.py",
@@ -469,6 +566,11 @@
       "sha256": "c0b61667201d5aa4e3eb4ee1c692956c47887ae2ac746af31b5f85a801cf7c18"
     },
     {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/paddle_memory.py",
+      "bytes": 1632,
+      "sha256": "54a2cd512c2a1d061a3605d55cf3b30765787513b5dde3b38cb2bba817e36cea"
+    },
+    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/paddlex_runtime.py",
       "bytes": 4512,
       "sha256": "250fc0cda134c01c943fb2d1271b745b70be770f8243e61c457480503c0783d5"
@@ -479,9 +581,24 @@
       "sha256": "1c32067277c92b4f6150b197762b100a2d715722bbc87523ea6ae1675e599ea3"
     },
     {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/adaptive_ocr.py",
+      "bytes": 10371,
+      "sha256": "9054e7d0ee12d8adefdfa1ac8e6ccd69ae6c9d2e9ba53583b8fb3b4102fff0f2"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/adaptive_ocr_live.py",
+      "bytes": 4877,
+      "sha256": "4fb271794ca62c968fd2425bd2b0c7d1770bd2e14e284220060b29c57b2d1b81"
+    },
+    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/adaptive_pipeline.py",
       "bytes": 6947,
       "sha256": "3209a59484e11188e3768d04f2dcf12b21ceb45467cf159c8971e402a1c83fe3"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/background_vector_rules.py",
+      "bytes": 4921,
+      "sha256": "5c28f734fd2089644f18ae86267b7d10cecaf2f03833f03c276224ad5fb549b9"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/caption_order.py",
@@ -490,18 +607,18 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/cff_glyph_bounds.py",
-      "bytes": 3456,
-      "sha256": "283aaa41b3b39dcf9a87b3ae218c1a973c461e9358229bef8b9442064c84daf8"
+      "bytes": 3497,
+      "sha256": "062ae9800d24155b68317971967fa2de864a272e29a6bf63add6eb8592cc5788"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/clean_markdown.py",
-      "bytes": 7121,
-      "sha256": "8fe638ec66ded8f0a0edd878f2ade838d9876c290652cdc2a4b996bfb0f06cf4"
+      "bytes": 7143,
+      "sha256": "74991a56f92a4f14bdd63e28c6bd702c895e4a158f34a49ba47ebe7a30268415"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/detection_batches.py",
-      "bytes": 3282,
-      "sha256": "147d7f2008ad74d82d46aa4994bd0dcfd4bb85e0e2bb247bea7d0d1964cebfad"
+      "bytes": 3377,
+      "sha256": "13e366f299e2dab03668fe36a5b7f0e1a8d27bafff0f6a928014decf49b5da8b"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/diagram_bounds.py",
@@ -550,8 +667,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/formula_containment.py",
-      "bytes": 2881,
-      "sha256": "5a6722eb0903188e0c0b6925d982a60945807a6f8a3e2a923bcfe1d47fc600e9"
+      "bytes": 5218,
+      "sha256": "54f44ea6ec9c63bfe48f0787419663e8c31629aad9b7a9d7d8a7c053c57e8a79"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/formula_ink_bounds.py",
@@ -575,8 +692,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/graphics_render.py",
-      "bytes": 9457,
-      "sha256": "e3e2b4e998a053aedb0dfa62bc26a55dc7f74a72ae60f5c4f9bc5f7b66b34032"
+      "bytes": 10463,
+      "sha256": "3ad213bec56076f86d4bf1fd7a758c1de1ba68d1d084c22ca0a061bf8ec1de13"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/image_containment.py",
@@ -614,9 +731,24 @@
       "sha256": "e1024817961bf7db228fccf318eb61dc0d52c0b7fdd69492f3a2508cf91f79a1"
     },
     {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_character_sources.py",
+      "bytes": 2387,
+      "sha256": "4c0aae6914d1a0555aa27b6b7a5e77b4915bfc9b9a838708c48dd666083260c7"
+    },
+    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_column_order.py",
       "bytes": 11449,
       "sha256": "43017e27fedcfd630431474feb31f8cfd2cb58715c40aa44cd152ab2c94d929e"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_delivery_coverage.py",
+      "bytes": 7828,
+      "sha256": "18f0585abc583f91d9e16f024f47f71f370321d1ae154c1a56573f5f7b1e1dfe"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_delivery_spans.py",
+      "bytes": 2877,
+      "sha256": "049ad2a3b69596caebe84a8db18234a0e03fef7896cc9fd6757e9eaa16ed4eab"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_drawn_blanks.py",
@@ -640,8 +772,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_glyph_bounds.py",
-      "bytes": 5147,
-      "sha256": "4642753f01440dc0d6bd3ad7ceecdc7b2531a4de4155a6f70687ae258b88fc2e"
+      "bytes": 5188,
+      "sha256": "679eb699fb4d0c697e59ed6cdf889f3402b7183e15a2a69e76fce8a2ab5eacef"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_image_appearance.py",
@@ -660,13 +792,18 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_math.py",
-      "bytes": 29574,
-      "sha256": "46767e19e86e2c749acfa7db5a665fefbb739174d6aefe05c6a368a154bf9f2e"
+      "bytes": 33748,
+      "sha256": "cf3857e4f44aed154d016ab4fcbb8336747700b28e53e099c0929ac7a077bbb2"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_paint_receipt.py",
+      "bytes": 6142,
+      "sha256": "df4e6c804052af555b634b36d2826ef9d01daf084dabaae924ae2c28c13b7aab"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/native_visibility.py",
-      "bytes": 4565,
-      "sha256": "02e2fe584bd1fac5be7255183f2eddac884e9495630bfb1fe563e27c8869ae19"
+      "bytes": 4606,
+      "sha256": "55b75d007d0a6d6aabe6579b7e4583e75c78f713152381cc705248e840af9226"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/non_text_ownership.py",
@@ -680,8 +817,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/ocr_character_geometry.py",
-      "bytes": 6479,
-      "sha256": "4a1634c43ea9f0201165a645d13c7e29ac35202db392a7f72580fba7cbdadbc4"
+      "bytes": 6558,
+      "sha256": "e2c56aba80692960f367bc8a1821dbd0e4792681c4dcfeae25774ba85256aa5c"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/page_review.py",
@@ -705,8 +842,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/production_runtime.py",
-      "bytes": 38741,
-      "sha256": "36297ba20a3e92821942e1c2229dc2f836ab7df3486c99a47919cf1f905a24fa"
+      "bytes": 38114,
+      "sha256": "a2ce7349bb1bc26d4507c36f6f4bb9689cfde48dd649f9073c5a5724403dec04"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/production_three_model_live.py",
@@ -717,6 +854,11 @@
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/prose_edge_crop.py",
       "bytes": 5178,
       "sha256": "d6bce272d8272439de92ae264422b264afa70594737ed46b855675f2239da818"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/qwen_stage.py",
+      "bytes": 4006,
+      "sha256": "f878dbadbb4e7fe77b8a8a51c1dd86612ed4d39c4dcd7cb267b0277e345569de"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/reading_order_v2.py",
@@ -745,8 +887,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/source_evidence.py",
-      "bytes": 12145,
-      "sha256": "3dce4e723af7405cf36c73d9cb3e999fe2ede7561520cdced7c2df71f44fb64b"
+      "bytes": 12691,
+      "sha256": "af3ade9dac381a25ba1f416126c93d87ee619366b72159234a2665ffea45018c"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/source_table_grid.py",
@@ -804,6 +946,11 @@
       "sha256": "8f3dd6f14f264444f9330cd452defd148d6fdb47a7204f1ca1689a6b590a7316"
     },
     {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/text_trace.py",
+      "bytes": 1476,
+      "sha256": "19b25ded8dc91c684cf8d2cca93c6a8516c45fdc61d37494fe0497427723130d"
+    },
+    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/three_model_ocr.py",
       "bytes": 35629,
       "sha256": "c2a042a2293f2090a8c95265c2415b27e0af5b3101df10bbe1c9f74b696dce37"
@@ -835,8 +982,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/workers/ch_svtrv2_rec.py",
-      "bytes": 13385,
-      "sha256": "757095318cd5c1904414a2057ce294759e081e144101c26c70fb6b4f9da2007a"
+      "bytes": 13251,
+      "sha256": "0478519376debdefa209281dc5e05242d581870a923a9b96c45183e931268d66"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/workers/deferred_got.py",
@@ -847,6 +994,11 @@
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/workers/got_ocr2.py",
       "bytes": 21815,
       "sha256": "c93c9b46c9dcfdc257a299a1c0930f5dd5ddc026496151253de93e53e4b60ae3"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/pdf/workers/qwen_ocr.py",
+      "bytes": 8450,
+      "sha256": "55ac4d1f60d05c15eac3a24da9e26d5247be37807c49bdc34a1dc4343a7da67d"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_census.py",
@@ -860,13 +1012,13 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_content_router.py",
-      "bytes": 125170,
-      "sha256": "0f914eafde5d4efc0e433f463c5e5398c7863bd9d22a1306f170b06049e54199"
+      "bytes": 125706,
+      "sha256": "e31dcc6b68496f8327f9d67bc119c34ea8df55def920525f4de21b90046bdaf2"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_document_ir.py",
-      "bytes": 102016,
-      "sha256": "ce3d16993146d124017e19b5333056762f9e4b679d64282f75e8db61c5cf6053"
+      "bytes": 101600,
+      "sha256": "9d09348c83d5bf872937ce9a4af57abda5514763ffcc8a2e5d9474cee173a9b5"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_dual_paddle_evidence.py",
@@ -905,8 +1057,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_layout_runtime.py",
-      "bytes": 17277,
-      "sha256": "8eefd5f437e33cf66985f82c319078103c36c75c79d94403920fd5c0d0dc304c"
+      "bytes": 17350,
+      "sha256": "e7a07d685f6f40912776c36c7d5160965dec757c964a70f8ce678bfeacffd251"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_ocr_recovery.py",
@@ -930,8 +1082,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_table_engine.py",
-      "bytes": 41702,
-      "sha256": "30277bc2292045157757c2eb8eca988f858574ed8ec54b2ebc9a8440775e1583"
+      "bytes": 40812,
+      "sha256": "967ea394759183ed674e2ff6477273480b71df605b929cace617dd3813af58fb"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pdf_visual_text_gate.py",
@@ -965,8 +1117,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pipeline.py",
-      "bytes": 15322,
-      "sha256": "9d2ebaa26d4c610fcfa05b24938e096e122590125c19c73cef7a0e33e6489a32"
+      "bytes": 15453,
+      "sha256": "fa392b1bb12f77936786eb72ee2f1bdde62a4d285b2ac8c6821060bf36e89e75"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/pp_error_root_cause_audit_v1.py",
@@ -975,8 +1127,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/production.py",
-      "bytes": 27120,
-      "sha256": "dca9168df058ede41895343b49a56a3785cf36c81a26ede3d3b235af39d5fc56"
+      "bytes": 27636,
+      "sha256": "6e98c42164dfad82f083a495a3a9c9d2aa0280ceb3eaf849bdf4ad9357975f6c"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/production_audit_orchestration.py",
@@ -1010,8 +1162,8 @@
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/release.py",
-      "bytes": 20875,
-      "sha256": "0b9d604a837dde4a945139a66ddbfa8907aec5cf3d1ca210cc10527ab2b72fdd"
+      "bytes": 20941,
+      "sha256": "6365669307e78f301af93e43681c727fb2961cc52ee006dcc618768f5fb6da03"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/resource_audit.py",
@@ -1149,11 +1301,6 @@
       "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
     },
     {
-      "path": "SOURCE/bemarkdown/src/bemarkdown/static/formula_review/mathlive/fonts/LICENSE.txt",
-      "bytes": 1079,
-      "sha256": "a7bd44abd8419bf78185be51f34216356af1adb0806ce39d6a9ca0940bd49b70"
-    },
-    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/static/formula_review/mathlive/LICENSE.txt",
       "bytes": 1099,
       "sha256": "3caebd18611959ca725ab976a004d408017eb1d7093d6c9b9b09c5a4790eaff8"
@@ -1274,49 +1421,114 @@
       "sha256": "164b0bbc47e1617dea100e1f18c7c5b1f2c4cf6fbf1da9536823452a52f30d7a"
     },
     {
+      "path": "tests/test_retention_distribution.py",
+      "bytes": 5896,
+      "sha256": "112795c040a9593c26279f4bbde989070331e5a09da87f61a5b1cfc140d22a05"
+    },
+    {
       "path": "tests/test_source_graphics_render.py",
       "bytes": 16594,
       "sha256": "94fe166719423234a048e80cb017affa91515e3197bac501c437286d569467b3"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 1770,
-      "sha256": "9a8a2aa2dcb61f9a0857bbe7d2db6d4e1279b18108ea477ae88af6c26409e34e"
+      "bytes": 2040,
+      "sha256": "69edce6e04a9ca59decee94300e12bc39e4c523dc12324beacc7e175f351f0ce"
+    },
+    {
+      "path": "TOOLS/bemarkdown/bemarkdown.toml",
+      "bytes": 41,
+      "sha256": "c60918037cc58f16605c5dcfe0c297c7746c445ed753dccda4713545284e17dc"
+    },
+    {
+      "path": "TOOLS/bemarkdown/config/bemarkdown.example.toml",
+      "bytes": 336,
+      "sha256": "a169587d90c69e0a7a01213a85573131d2f1e75a439c5e65f93c394dafeaf7a5"
     },
     {
       "path": "TOOLS/bemarkdown/dist/bemarkdown-0.2.0-py3-none-any.whl",
-      "bytes": 1373988,
-      "sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5"
+      "bytes": 1409842,
+      "sha256": "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/ADAPTIVE_OCR.md",
+      "bytes": 2456,
+      "sha256": "dbc6d031e8b3a55695af6722f08f2f203cd5980a356dcbbbfec973da3f010524"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/CONVERSION_CONTRACT.md",
+      "bytes": 5013,
+      "sha256": "3cc36426e0b59a3bbba430ff1c127ae526366cc25bbf5529afd1ed76ccb4fd1c"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/EXTREME_ASPECT_MODEL_INPUT.md",
+      "bytes": 2105,
+      "sha256": "064483f25950bfdb95a0ea60dc855d713eb9be72b66534b23464ff26b6fa7092"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/FIGURE_OWNERSHIP_RELEASE_20260922.md",
+      "bytes": 1513,
+      "sha256": "a136611643a34839e84373b59156c76eb347b6911d33c56a7368b6c73a213d2f"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/IMAGE_INPUT.md",
+      "bytes": 2130,
+      "sha256": "3f213d242cbea3719dfbcaa233537f3c9049af8e56e94ae230beaf4897c848c1"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/KNOWN_LIMITATIONS.md",
+      "bytes": 3565,
+      "sha256": "3a9014990970f333ee137c2be177b24348d54b5e2c82ce13be10bd7828634f74"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/PRODUCTION_RUNTIME.md",
+      "bytes": 8191,
+      "sha256": "fb339e7973cda5384b63bf709b6e74f7d0a7f30062de0707f6b7558b80bdbdc9"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/README.md",
+      "bytes": 1508,
+      "sha256": "76841248371a64e9d7dca3a3131e7a6ffe7140fc79807b56ab0fc8c214d895d1"
+    },
+    {
+      "path": "TOOLS/bemarkdown/docs/THIRD_PARTY_NOTICES.md",
+      "bytes": 4986,
+      "sha256": "7b60f9bb01aeec0aa996c4e85eafc2720ff23bab8b61f650964bbe6569d75e2f"
     },
     {
       "path": "TOOLS/bemarkdown/RELEASE_MANIFEST.json",
-      "bytes": 681,
-      "sha256": "283998706667e9a8e862c4f13c04047c08c4d4ef5bab02aa232c2c6597fb4004"
+      "bytes": 504,
+      "sha256": "10bc9c2dc201ea6171456c25aef66cec56888235cee19515db2d17b8f8f02c1c"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/model_suite.json",
       "bytes": 4497,
-      "sha256": "b94c4a60e6715dc1862e116970864a917bdfc7311f5276d30530e3d106f76aab"
+      "sha256": "8d36905d9235d958f8730904a6071886111b979bbf637bed83d5d636a369c949"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/pdf_production_suite.json",
-      "bytes": 5357,
-      "sha256": "fd87ccd0674dc0f66d9f64f38f0c974125b318f74c79f1ce19d2a1fd931e8ff1"
+      "bytes": 5352,
+      "sha256": "3ee40cf31172fb6e33eb6b3f83c8b17c1ef25720b3c7b9317c8bd62267f1c3c9"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/profiles/win-x64-py311-cuda126.json",
-      "bytes": 1255,
-      "sha256": "9fd8c8eac734b2628d80473654584d005257a0707cfe1dee844824378cd3645d"
+      "bytes": 1253,
+      "sha256": "ea8b306d89e53d8e2ecddd42fba3d9f86510d57fb2c977747322b64e284ee44d"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/requirements-core.lock",
-      "bytes": 411,
-      "sha256": "03610e599221c2ea03278a0e9bc09bde146e906ee6245201f7f7f2e8e7824258"
+      "bytes": 334,
+      "sha256": "ba23bf99c4564e4c469f225166a6ece871ce29b58a3a1a66f173b4b2b7c33104"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/requirements-formula-ocr.lock",
       "bytes": 1936,
       "sha256": "4ca9fd86622bb3eb4e54b29cd1000f6ddb510e42d184455442b5848eb1e580ab"
+    },
+    {
+      "path": "TOOLS/bemarkdown/runtime/requirements-qwen-ocr.lock",
+      "bytes": 228,
+      "sha256": "c64cd37ba17f8874f475f28de3b79f78131fb699d71352d3543bacea7ce4e11d"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/requirements-text-ensemble.lock",
@@ -1325,23 +1537,53 @@
     },
     {
       "path": "TOOLS/bemarkdown/runtime/runtime_download_manifest.json",
-      "bytes": 702,
-      "sha256": "f974c5393e14e8a5e1a2062bdc76c2cbca3033486d17f60e15b70bba5418170a"
+      "bytes": 3029,
+      "sha256": "c6bc54186439683d117b5bcd2b7c21a867b31f9087e26427a6b187e3a8b63e9e"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/RUNTIME_MANIFEST.json",
-      "bytes": 24944,
-      "sha256": "5b1c89fc843a4ff3e79a3a71396d18fc80fb79d3dc76fb2e7aa22187f4cfdd58"
+      "bytes": 26503,
+      "sha256": "6cf6b219d6eff602550144b1c5b94335f1ec2458701969ce8434c123cbe5ed69"
+    },
+    {
+      "path": "TOOLS/bemarkdown/scripts/bootstrap.ps1",
+      "bytes": 593,
+      "sha256": "995aa053226429f5bfc11976d491f4df296453460ff50af2838e19d59c6a24fe"
+    },
+    {
+      "path": "TOOLS/bemarkdown/scripts/bootstrap_runtime.py",
+      "bytes": 7094,
+      "sha256": "444872334585e887b737749ba0186feb3e11d1648aeec8c5bade51f29da7731e"
     },
     {
       "path": "TOOLS/bemarkdown/TOOL_MANIFEST.json",
-      "bytes": 66382,
-      "sha256": "38935eb237d27753ccccbc211a5eb3d44ef5665be2047d2b5d2ae13367b6bf81"
+      "bytes": 74696,
+      "sha256": "04f593e285c1439843674d49bab7d78cafcc3f9fab96a4de195d721820f84078"
+    },
+    {
+      "path": "TOOLS/education_mcp/asset_screening.py",
+      "bytes": 13256,
+      "sha256": "e3f0ed9818f1f5e8379b88bda682d118a6ad9b07fcf5d55725f6e5e161e2554b"
+    },
+    {
+      "path": "TOOLS/education_mcp/atomic_files.py",
+      "bytes": 903,
+      "sha256": "b25301470331a273020c5899c4e2f135c179e6b1213becdbcb792c646f916b7d"
+    },
+    {
+      "path": "TOOLS/education_mcp/image_occurrences.py",
+      "bytes": 7056,
+      "sha256": "c43c499fa30e5c9906b72c524513402f45dc16f74448052f64751f49f29426cc"
     },
     {
       "path": "TOOLS/education_mcp/image_review.py",
       "bytes": 4011,
       "sha256": "74b9ae7f13882547eaaf3ddd31f50de19a193678285e173fe164da65a99de7ef"
+    },
+    {
+      "path": "TOOLS/education_mcp/IMAGE_SCREENING.md",
+      "bytes": 9208,
+      "sha256": "3fb4dbbaf96bd1e23237be5b53063251f3f77d929627175a72ced4515c426a22"
     },
     {
       "path": "TOOLS/education_mcp/install.py",
@@ -1350,18 +1592,78 @@
     },
     {
       "path": "TOOLS/education_mcp/launch.py",
-      "bytes": 1854,
-      "sha256": "c67b509f1e02ae46e2b9a1328c0fb9fc870edf3da9f9d0cf789d2e80a38f3be6"
+      "bytes": 1968,
+      "sha256": "3e5dafd933590b3db41b8033795fdb00928a26029ca24ff98ab4b168b425838e"
+    },
+    {
+      "path": "TOOLS/education_mcp/README.md",
+      "bytes": 16860,
+      "sha256": "ac2268beae0938602aa490d48e1bb540450e89f764c3a9018a5a1b048aa333e8"
+    },
+    {
+      "path": "TOOLS/education_mcp/RELEASE_MANIFEST.json",
+      "bytes": 3203,
+      "sha256": "9a49e6847f7acd8c99d1723b86de5ae9f9682b95b84430a0234587a6d14e5ae6"
     },
     {
       "path": "TOOLS/education_mcp/review_handoff.py",
-      "bytes": 18705,
-      "sha256": "baed170cd11f6e855e159735771c06b14ab36711aca992ba2d0841fe7d64d974"
+      "bytes": 19033,
+      "sha256": "fb59550525189249434c00161bf0a15bde98418fb76456847c7a4848344bb2f6"
     },
     {
-      "path": "TOOLS/education_mcp/runtime_selection.py",
-      "bytes": 1171,
-      "sha256": "2707ac35ba1a6f1394a1290191abe37a8b94aded92348ea9fed7f44ecb7ec798"
+      "path": "TOOLS/education_mcp/screening_background_rules.py",
+      "bytes": 12743,
+      "sha256": "70c1ad562244b29dd4c2dc6aa319b66c9508192dec8608850642ccdc62de348f"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_decisions.py",
+      "bytes": 4928,
+      "sha256": "7244a7beeb570c6c1fdc29967d2ff4b38cf5a28d9e863601b8d20df4c665dcec"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_model_worker.py",
+      "bytes": 8304,
+      "sha256": "a7b966eaf59e08d89cd62961634b380cf84cadd65aea5a625ae4c469da863deb"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_pixels.py",
+      "bytes": 668,
+      "sha256": "e95ab488f035ead4087c6a1645494b0cd760f986813ca217145c5e7133b2aa92"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_resources.py",
+      "bytes": 1370,
+      "sha256": "57a2bbb66234aefc870da8a4eedb43386f771613b30b917f852873e3b0ed2c54"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_service.py",
+      "bytes": 11491,
+      "sha256": "847f1bda190268582cf9584893ca6e83d59dd016ee9991a90b115f4d9edb9666"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_similarity.py",
+      "bytes": 4048,
+      "sha256": "1ecd7f8f87d639c46aac298ebcf8d270a03fab331fc06ed83e718658927cb656"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_source_guard.py",
+      "bytes": 4221,
+      "sha256": "81637195b179712c1f80b71e00b076d2f83903cec2a39685531cfec33e23044c"
+    },
+    {
+      "path": "TOOLS/education_mcp/screening_templates.json",
+      "bytes": 217,
+      "sha256": "6029cace1601862ff020f5ddf9871d21b525bba6208e041352f5d3ea048051fd"
+    },
+    {
+      "path": "TOOLS/education_mcp/section_anchors.py",
+      "bytes": 4660,
+      "sha256": "ad2e566c990053ffabe93853e82ae17e158f9f88a87b1aeed9a9afe0a151c4e2"
+    },
+    {
+      "path": "TOOLS/education_mcp/SEMANTIC_IMAGE_REVIEW_20260913.md",
+      "bytes": 3237,
+      "sha256": "168f51a3853fa681b8f4be581956877e06082f5383de62ab5e11ecdee0741bcc"
     },
     {
       "path": "TOOLS/education_mcp/semantic_review.py",
@@ -1370,13 +1672,18 @@
     },
     {
       "path": "TOOLS/education_mcp/server.py",
-      "bytes": 47358,
-      "sha256": "865f47ceff4dc76778e586faed0f95df3fa7095c1769af2b8219e76ffc26dd5f"
+      "bytes": 51453,
+      "sha256": "5d393e366b590032fae101407e79a771acea5c63acdb87a4e33f63eaa9a99ab5"
+    },
+    {
+      "path": "TOOLS/education_mcp/textbook_revision.py",
+      "bytes": 7317,
+      "sha256": "890bab90970c4f9dd111e20f8e210ead16cfe6e6fc259c9c4ee93b4e18999e2d"
     },
     {
       "path": "TOOLS/education_mcp/textbook_workflow.py",
-      "bytes": 18044,
-      "sha256": "076dd6a4fb513c28e2261f6bf1f4ec1d4080877203a530cdc2712c437a7d941d"
+      "bytes": 30065,
+      "sha256": "ce0d8ae88d695bad97e123e02f8c8eff28e4e82a300df47817554603524a1c67"
     },
     {
       "path": "TOOLS/education_mcp/vision_gate.py",
@@ -1390,8 +1697,18 @@
     },
     {
       "path": "TOOLS/education_mcp/workspace_template.json",
-      "bytes": 1803,
-      "sha256": "2464cf0309222c52f5940ceb21ef3aa0cbc010b8e02b7f6784510a096f125096"
+      "bytes": 1762,
+      "sha256": "48e33974a49a16bddbc58f20601c6fc3714ecd1f5f8aa59929080847ed4c67a5"
     }
-  ]
+  ],
+  "verification": {
+    "private_paths_and_secrets": "PASS",
+    "licenses": "AGPL code; Apache model and independent downloader; prior exceptions retained",
+    "publication_tests": 10,
+    "padding_tests": 41,
+    "private_embedding_vectors_distributed": false,
+    "binary_dependency_wheelhouse_distributed": false,
+    "existing_managed_qwen_environment_version_probe": "PASS",
+    "cold_environment_installer": "command isolation tested; no fresh heavyweight download performed"
+  }
 }

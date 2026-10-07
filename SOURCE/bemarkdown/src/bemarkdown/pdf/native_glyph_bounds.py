@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import struct
 from functools import lru_cache
+from .text_trace import safe_text_trace
 
 
 @lru_cache(maxsize=32)
@@ -66,7 +67,7 @@ def page_native_ink_map(page):
         candidates.setdefault(name.split('+')[-1], set()).add(xref)
     metrics = {}
     output = page_cff_ink_map(page)
-    for span in page.get_texttrace():
+    for span in safe_text_trace(page):
         if tuple(span['dir']) != (1.0, 0.0) or span['type'] != 0:
             continue
         name = span['font'].split('+')[-1]

@@ -40,3 +40,14 @@ license route.
 
 The public distribution includes no private textbook/exam test corpus, student
 records, internal task transcripts, Python environment, driver, or model weight.
+
+
+
+
+
+
+
+
+
+
+2026-10-07: BeMarkdown-Retention-B200 weights and independent downloader: Apache-2.0, derived from Qwen/Qwen3.5-4B; datasets are not redistributed. OvisOCR2 and Xiaomi-OCR-0 use pinned Apache-2.0 model artifacts. NVIDIA and Microsoft binaries remain external.

@@ -1,0 +1,6 @@
+BeMarkdown-Retention-B200
+Copyright 2026 BooksBoss17.
+Derivative of Qwen/Qwen3.5-4B, revision 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, Apache-2.0, Qwen Team.
+LoRA fine-tuning and GGUF conversion/quantization are modified artifacts, not official Qwen releases.
+Weights and original utilities: Apache-2.0. Training datasets are not redistributed or relicensed.
+llama.cpp is a separate MIT-licensed runtime; no NVIDIA or Microsoft binaries are bundled.

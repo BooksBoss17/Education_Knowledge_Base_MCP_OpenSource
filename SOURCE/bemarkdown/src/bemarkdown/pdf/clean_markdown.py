@@ -22,7 +22,7 @@ def _native_line_ids(block):
 def _joinable(first, second):
     if first is None or second is None or first.get('page_index') != second.get('page_index'):
         return False
-    if first.get('kind') not in ('TEXT', 'FORMULA') or second.get('kind') not in ('TEXT', 'FORMULA'):
+    if first.get('kind') not in ('TEXT', 'CAPTION', 'FORMULA') or second.get('kind') not in ('TEXT', 'CAPTION', 'FORMULA'):
         return False
     # The source line identity, not mere neighboring placement, establishes an
     # inline relationship. Scanned/display math stays in separate blocks.

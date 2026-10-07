@@ -9,9 +9,13 @@ from __future__ import annotations
 
 
 def render_source_graphics(
-    page, bbox, dpi, *, preserve_regions=(), exclude_regions=(), omit_native_prose=True
+    page, bbox, dpi, *, preserve_regions=(), exclude_regions=(), omit_native_prose=True,
+    omit_raster_paint=False, collect_text_receipt=True,
 ):
     import fitz
+    from .native_paint_receipt import NativePaintReceipt
+    if omit_raster_paint and not omit_native_prose:
+        raise ValueError('RASTER_ABSENCE_PROBE_REQUIRES_GRAPHICS_FILTER')
 
     if not omit_native_prose:
         clip, matrix = fitz.Rect(bbox), fitz.Matrix(dpi / 72, dpi / 72)
@@ -48,6 +52,13 @@ def render_source_graphics(
                     and omit_native_prose
                 ):
                     device.omitted_text_operations += 1
+                    if device.paint_receipt is not None:
+                        device.paint_receipt.record(
+                            name, args[1], args[3] if name == 'stroke_text' else args[2]
+                        )
+                    return None
+                if omit_raster_paint and name in {'fill_image', 'fill_image_mask'}:
+                    device.omitted_raster_operations += 1
                     return None
                 if name == "fill_text":
                     args = list(args)
@@ -77,6 +88,8 @@ def render_source_graphics(
     device = device_class()
     device.target = mupdf.fz_new_list_device(filtered_list)
     device.errors, device.mask_depth, device.omitted_text_operations = [], 0, 0
+    device.paint_receipt = NativePaintReceipt(page, clip) if collect_text_receipt else None
+    device.omitted_raster_operations = 0
     for name in names:
         getattr(device, "use_virtual_" + name)()
     display_list = page.get_displaylist()
@@ -101,6 +114,9 @@ def render_source_graphics(
     return pixmap, {
         "method": "MUPDF_SOURCE_GRAPHICS_WITHOUT_NATIVE_PROSE",
         "omitted_text_operations": device.omitted_text_operations,
+        "native_text_omission_receipt": device.paint_receipt.to_dict() if device.paint_receipt else None,
+        "raster_absence_probe": bool(omit_raster_paint),
+        "omitted_raster_operations": device.omitted_raster_operations,
         "text_masks_and_clipping_preserved": True,
         "source_image_paint_preserved": True,
         "native_text_preserved_regions_pdf_pt": [list(region) for region in protected],

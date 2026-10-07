@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any, Protocol
+from .paddle_memory import predict_with_bounded_cache
 
 
 class OcrVerdict(str, Enum):
@@ -127,15 +128,11 @@ class FormulaOcrOutputValidator:
 
     @classmethod
     def _delimiter_error(cls, value: str) -> str | None:
-        sized_depth = 0
-        for match in cls._sized_delimiter.finditer(value):
-            sized_depth += 1 if match.group(1) == "left" else -1
-            if sized_depth < 0:
-                return "A LaTeX \\right delimiter has no preceding \\left."
-        if sized_depth:
-            return "LaTeX \\left and \\right delimiters are not balanced."
         value = cls._sized_delimiter.sub("", value)
-        pairs = {"}": "{", "]": "[", ")": "("}
+        # A crop can end inside surrounding prose parentheses. Preserve the
+        # transcription without requiring printable delimiters to pair up;
+        # LaTeX grouping braces must still be structurally complete.
+        pairs = {"}": "{"}
         stack: list[str] = []
         escaped = False
         for char in value:
@@ -145,9 +142,9 @@ class FormulaOcrOutputValidator:
             if char == "\\":
                 escaped = True
                 continue
-            if char in "{[(":
+            if char == "{":
                 stack.append(char)
-            elif char in "}])" and (not stack or stack.pop() != pairs[char]):
+            elif char == "}" and (not stack or stack.pop() != pairs[char]):
                 return f"Unexpected closing delimiter {char!r}."
         if stack:
             return f"Unclosed delimiter {stack[-1]!r}."
@@ -234,7 +231,7 @@ class PaddleFormulaNetRuntime:
             inputs = str(paths[0])
         else:
             inputs = [str(path) for path in paths]
-        results = list(self._model.predict(inputs, batch_size=batch_size))
+        results = list(predict_with_bounded_cache(self._model, inputs, batch_size=batch_size))
         if len(results) != len(paths):
             raise RuntimeError(
                 f"FormulaNet returned {len(results)} results for {len(paths)} images"

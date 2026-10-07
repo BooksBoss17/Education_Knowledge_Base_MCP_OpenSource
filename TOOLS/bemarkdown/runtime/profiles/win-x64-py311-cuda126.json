@@ -21,8 +21,8 @@
     "compatibility_status": "PENDING_FORMAL_STAGED_SMOKE",
     "providers": {
       "A": "pp-ocrv6-medium-rec",
-      "B": "ch-svtrv2-rec",
-      "C": "got-ocr2-0"
+      "B": "ovis-ocr2",
+      "C": "xiaomi-ocr-0"
     },
     "paddle_provider": {
       "paddlepaddle_gpu": "3.2.2",

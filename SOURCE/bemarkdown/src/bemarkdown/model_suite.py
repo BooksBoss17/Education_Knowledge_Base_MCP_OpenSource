@@ -8,6 +8,7 @@ from typing import Any
 
 from .model_registry import (
     MODEL_CATALOG,
+    PDF_PRODUCTION_MODEL_CATALOG,
     MODEL_MANIFEST_NAME,
     MODEL_RUNTIME_CONTRACT,
     PADDLE_MODEL_CATALOG,
@@ -37,7 +38,7 @@ def build_model_suite_manifest(models_root: str | Path) -> dict[str, Any]:
 def build_pdf_production_suite_manifest(models_root: str | Path) -> dict[str, Any]:
     return _build_suite_manifest(
         models_root,
-        catalog=MODEL_CATALOG,
+        catalog=PDF_PRODUCTION_MODEL_CATALOG,
         suite_id=PDF_PRODUCTION_SUITE_ID,
     )
 
@@ -62,7 +63,7 @@ def build_pdf_production_suite_manifest_from_legacy(
     rows = deepcopy(legacy_rows)
     extension_catalog = {
         model_id: spec
-        for model_id, spec in MODEL_CATALOG.items()
+        for model_id, spec in PDF_PRODUCTION_MODEL_CATALOG.items()
         if model_id not in PADDLE_MODEL_CATALOG
     }
     for model_id in sorted(extension_catalog):
@@ -93,7 +94,7 @@ def build_pdf_production_suite_manifest_from_legacy(
     }
     _validate_suite_payload(
         payload,
-        catalog=MODEL_CATALOG,
+        catalog=PDF_PRODUCTION_MODEL_CATALOG,
         suite_id=PDF_PRODUCTION_SUITE_ID,
     )
     return payload
@@ -161,7 +162,7 @@ def validate_pdf_production_suite(
         models_root,
         manifest_path=manifest_path,
         deep=deep,
-        catalog=MODEL_CATALOG,
+        catalog=PDF_PRODUCTION_MODEL_CATALOG,
         suite_id=PDF_PRODUCTION_SUITE_ID,
         default_manifest_name=PDF_PRODUCTION_SUITE_MANIFEST_NAME,
     )

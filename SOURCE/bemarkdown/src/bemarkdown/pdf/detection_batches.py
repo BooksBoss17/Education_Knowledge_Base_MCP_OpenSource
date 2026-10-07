@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 from collections import defaultdict
+from ..paddle_memory import predict_with_bounded_cache
 
 
 def predict_detector_batches(detector, crops, *, batch_size, max_batch_pixels=1024*1024):
@@ -21,7 +22,7 @@ def predict_detector_batches(detector, crops, *, batch_size, max_batch_pixels=10
     if batch_size == 1 or not supported or not paths:
         if not supported and batch_size > 1:
             metrics['strategy'] = 'SCALAR_UNSUPPORTED_PREPROCESSOR'
-        outputs = list(detector.predict(paths, batch_size=1)) if paths else []
+        outputs = list(predict_with_bounded_cache(detector, paths, batch_size=1)) if paths else []
         if len(outputs) != len(paths):
             raise RuntimeError('PP_OCR_BATCH_DETECTION_CARDINALITY')
         return outputs, metrics
@@ -54,7 +55,7 @@ def predict_detector_batches(detector, crops, *, batch_size, max_batch_pixels=10
         if pixels > max_batch_pixels:
             # Preserve the existing scalar input instead of altering source pixels.
             metrics['oversized_single_inputs'] += len(group)
-        values = list(detector.predict([path for _, path in group], batch_size=size))
+        values = list(predict_with_bounded_cache(detector, [path for _, path in group], batch_size=size))
         if len(values) != len(group):
             raise RuntimeError('PP_OCR_BATCH_DETECTION_CARDINALITY')
         metrics['detector_batch_count'] += (len(group) + size - 1) // size

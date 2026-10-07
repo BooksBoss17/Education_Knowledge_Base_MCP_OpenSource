@@ -105,6 +105,7 @@ class CharacterLayout:
 def predict_positioned_batch(model: Any, paths: Sequence[Path], *, batch_size: int):
     """Ask the existing recognizer for positions without reordering its callers."""
     from PIL import Image
+    from ..paddle_memory import predict_with_bounded_cache
 
     if isinstance(batch_size, bool) or not isinstance(batch_size, int) or batch_size < 1:
         raise ValueError("CHARACTER_POSITION_BATCH_SIZE_INVALID")
@@ -117,7 +118,7 @@ def predict_positioned_batch(model: Any, paths: Sequence[Path], *, batch_size: i
             with Image.open(path) as image:
                 ratios.append((image.width / image.height, index, path))
         ordered = sorted(ratios)
-        predicted = list(model.predict([str(p) for _, _, p in ordered], batch_size=batch_size, return_word_box=True))
+        predicted = list(predict_with_bounded_cache(model, [str(p) for _, _, p in ordered], batch_size=batch_size, return_word_box=True))
         if len(predicted) != len(ordered):
             raise ValueError("CHARACTER_PREDICTION_CARDINALITY_MISMATCH")
         restored = [None] * len(group)

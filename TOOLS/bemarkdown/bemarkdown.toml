@@ -1,0 +1,2 @@
+[workspace]
+models_root = "../../MODELS"

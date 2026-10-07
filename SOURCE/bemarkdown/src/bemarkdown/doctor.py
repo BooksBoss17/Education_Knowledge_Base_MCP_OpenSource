@@ -145,6 +145,10 @@ def run_doctor(
         probe_runtime=probe_model_suite_runtime,
     )
     timings["model_suite_check_seconds"] = time.perf_counter() - suite_started
+    _add_adaptive_ocr_checks(
+        capabilities, models_root=models_root, config_path=config_path,
+        mcp_root=mcp_root, deep=deep, probe_runtime=probe_model_suite_runtime,
+    )
 
     readiness = derive_readiness(capabilities)
     capability_readiness = derive_capability_readiness(capabilities, readiness)
@@ -201,10 +205,61 @@ def derive_capability_readiness(
             capabilities.get(f"paddle_model:{model_id}", {}).get("status") == "PASS"
             for model_id in required
         )
+        if capability == 'PDF_TEXT':
+            models_ready = models_ready and all(
+                capabilities.get(name, {}).get('status') == 'PASS'
+                for name in ('adaptive_model:ovis-ocr2', 'adaptive_model:xiaomi-ocr-0', 'adaptive_qwen_runtime')
+            )
         result[capability] = (
             "MODEL_READY" if runtime_ready and models_ready else "MODEL_NOT_READY"
         )
     return result
+
+
+def _add_adaptive_ocr_checks(capabilities, *, models_root, config_path, mcp_root, deep, probe_runtime):
+    """Expose new production dependencies without importing Torch in the host."""
+    import json
+    import subprocess
+    import tempfile
+    from pathlib import Path
+    from .pdf.qwen_stage import QwenStageRunner, qwen_python
+    from .pdf.text_evidence import TextRecognitionRequest
+    try:
+        registry=ModelRegistry(models_root=models_root,config_path=config_path,mcp_root=mcp_root)
+    except ModelRegistryError as exc:
+        for name in ('adaptive_model:ovis-ocr2','adaptive_model:xiaomi-ocr-0','adaptive_qwen_runtime'):
+            capabilities[name]=_check('FAIL',None,{'model_root_required':True},str(exc))
+        return
+    resolved={}
+    for model_id in ('ovis-ocr2','xiaomi-ocr-0'):
+        try:
+            model=registry.resolve(model_id,deep=deep);resolved[model_id]=model
+            capabilities['adaptive_model:'+model_id]=_check('PASS',{'fingerprint':model.manifest['model_fingerprint'],'deep_verified':model.fingerprint_verified}, {'model_id':model_id},'Pinned adaptive OCR model inventory valid')
+        except ModelRegistryError as exc:
+            capabilities['adaptive_model:'+model_id]=_check('FAIL',None,{'model_id':model_id},str(exc))
+    try:
+        python=qwen_python()
+        query="import torch,transformers,json;print(json.dumps({'torch':torch.__version__,'transformers':transformers.__version__,'cuda':torch.cuda.is_available()}))"
+        probe=subprocess.run([str(python),'-c',query],check=True,capture_output=True,text=True,encoding='utf8')
+        actual=json.loads(probe.stdout)
+        if actual['torch']!='2.14.0+cu130' or actual['transformers']!='5.17.0' or not actual['cuda']:
+            raise RuntimeError('ADAPTIVE_QWEN_RUNTIME_VERSION_OR_CUDA_MISMATCH')
+        capabilities['adaptive_qwen_runtime']=_check('PASS',actual,{'torch':'2.14.0+cu130','transformers':'5.17.0','cuda':True},'Isolated local Qwen worker runtime available')
+        if deep and probe_runtime and len(resolved)==2:
+            from PIL import Image,ImageDraw
+            import hashlib
+            with tempfile.TemporaryDirectory(prefix='qocr-') as temporary:
+                folder=Path(temporary);path=folder/'text.png';image=Image.new('RGB',(600,96),'white');ImageDraw.Draw(image).text((24,32),'BeMarkdown OCR runtime smoke 2026',fill='black');image.save(path)
+                request=TextRecognitionRequest(document_id='doctor',page_id='doctor-page',region_id='qwen-smoke',source_candidate_id='qwen-smoke',bbox=(0,0,600,96),crop_ref=str(path),crop_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),route_kind='OCR_TEXT_REGION',text_track='TEXT_REGION_CROP')
+                for model_id,model in resolved.items():
+                    runner=QwenStageRunner(model,folder,folder/'workers',python=python,max_new_tokens=64)
+                    row=runner('DOCTOR_QWEN',[request])[0]
+                    if row['output_contract_status']!='PASS' or not row['raw_text'].strip():
+                        raise RuntimeError('ADAPTIVE_GPU_SMOKE_FAILED:'+model_id)
+                    capabilities['adaptive_model:'+model_id]['actual']['gpu_smoke']='PASS'
+                    capabilities['adaptive_model:'+model_id]['actual']['gpu_only']=True
+    except Exception as exc:
+        capabilities['adaptive_qwen_runtime']=_check('FAIL',None,{'runtime':'isolated-qwen-worker'},f'{type(exc).__name__}: {exc}')
 
 
 def _add_model_suite_checks(

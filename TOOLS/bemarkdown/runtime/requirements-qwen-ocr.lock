@@ -1,0 +1,7 @@
+# Isolated Qwen worker; never overlay the shared Paddle host.
+# Torch cu130 wheel source: https://download.pytorch.org/whl/cu130
+torch==2.14.0+cu130
+transformers==5.17.0
+accelerate==1.15.0
+pillow==12.3.0
+huggingface-hub==1.33.0

@@ -21,6 +21,7 @@ from .config import resolve_output_root
 from .mtef_cache import MtefCacheContext
 from .package import DocxResourceLimits, validate_docx_source
 from .pipeline import convert_docx
+from .image_input import IMAGE_SUFFIXES, inspect_raster_image
 
 PACKAGE_CONTRACT = "bemarkdown-package-v1"
 QUALITY_STATUSES = {
@@ -363,9 +364,13 @@ def convert_document(
     elif suffix == ".pdf":
         source_type = "PDF"
         limits = None
+    elif suffix in IMAGE_SUFFIXES:
+        inspect_raster_image(source)
+        source_type = "IMAGE"
+        limits = None
     else:
         raise UnsupportedDocumentError(
-            f"Unsupported BeMarkdown input type {source.suffix!r}; expected .docx or .pdf"
+            f"Unsupported BeMarkdown input type {source.suffix!r}; expected .docx, .pdf or a single-frame PNG/JPEG/WebP/BMP/TIFF image"
         )
     source_sha = _sha256_file(source)
     document_id = build_document_id(source, source_sha)
@@ -466,6 +471,10 @@ def convert_document(
 
                 result = convert_visual_docx(source, staging, profile=visual_profile,
                                              pdf_runtime=pdf_runtime, debug=debug)
+            elif source_type == "IMAGE":
+                from .image_input import convert_raster_image
+                result = convert_raster_image(source, staging, pdf_runtime=pdf_runtime,
+                                              expected_source_sha256=source_sha, debug=debug)
             else:
                 result = pdf_runtime.convert(
                     source,

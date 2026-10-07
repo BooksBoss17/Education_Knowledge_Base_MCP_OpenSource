@@ -19,3 +19,13 @@ MODELS/*/*
 MODELS/**/.cache/
 *.safetensors
 *.pdiparams
+
+# Standalone model licensing and portable configuration only.
+!MODELS/BeMarkdown-Retention-B200/README.md
+!MODELS/BeMarkdown-Retention-B200/LICENSE
+!MODELS/BeMarkdown-Retention-B200/NOTICE
+!MODELS/BeMarkdown-Retention-B200/model-decision-system.txt
+!MODELS/BeMarkdown-Retention-B200/adapter/
+!MODELS/BeMarkdown-Retention-B200/adapter/adapter_config.json
+*.gguf
+.download-parts/

@@ -109,3 +109,14 @@
 本文件夹可作为新的仓库根目录。保留 `.gitignore`、`.gitattributes`、许可证、源码和第三方声明；不要提交 `.local`、工作区、运行日志、下载缓存或模型权重。使用全新的 Git 历史，不要复制内部开发仓库的 `.git`。
 
 执行安装、测试或二次构建后，可运行随包校验脚本检查发布文件。模型是独立下载资源，Git checkout 本身不能恢复权重。
+
+
+
+
+
+
+
+
+
+
+2026-10-07: [Latest release notes](docs/RELEASE_20261007.md). [Standalone retention model](https://github.com/BooksBoss17/BeMarkdown-Retention-B200). Model assets are not connected to the BeMarkdown pipeline.

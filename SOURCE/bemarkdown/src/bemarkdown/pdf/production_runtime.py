@@ -181,9 +181,9 @@ class RegistryBackedThreeModelTextResolver:
         models_root: str | Path | None = None,
         config_path: str | Path | None = None,
         mcp_root: str | Path | None = None,
-        inline_math: bool = True,
+        inline_math: bool = False,
         inline_math_candidate_policy: str = 'source-risk-v3',
-        fraction_repair: bool = True,
+        fraction_repair: bool = False,
         inline_atomic_superscripts: bool = True,
         independent_source_pages: bool = False,
     ) -> None:
@@ -236,18 +236,18 @@ class RegistryBackedThreeModelTextResolver:
         formula_runtime=None,
         formula_rows=(),
     ) -> Any:
-        from .production_three_model_live import SubprocessGOTStageRunner
+        from .qwen_stage import QwenStageRunner
         from ..resource_profiles import resource_profile
 
         profile = resource_profile()
 
         stage_root = self.work_root / 'three_model_stages'
         stage_root.mkdir()
-        runner = SubprocessGOTStageRunner.from_registry(
+        runner = QwenStageRunner.from_registry(
             vram_limit_mib=profile.got_allocator_mib,
             batch_size=profile.got_batch_size,
             vision_batch_size=profile.got_vision_batch_size,
-            python=sys.executable, crop_root=self.work_root, output_root=stage_root,
+            python=None, crop_root=self.work_root, output_root=stage_root,
             models_root=self.models_root, config_path=self.config_path, mcp_root=self.mcp_root,
         )
         try:
@@ -331,8 +331,10 @@ class RegistryBackedThreeModelTextResolver:
                 },
             },
         )
-        provider_b_runner = InProcessChSVTRv2StageRunner.from_registry(
-            python=sys.executable,
+        from .qwen_stage import QwenStageRunner
+        provider_b_runner = QwenStageRunner.from_registry(
+            model_id="ovis-ocr2",
+            python=None,
             crop_root=self.work_root,
             output_root=stage_root,
             models_root=self.models_root,
@@ -381,10 +383,11 @@ class RegistryBackedThreeModelTextResolver:
             pending = FigureMathPrefetch(requests, formula_factory, pool,
                 select_requests=lambda values: select_figure_math_requests(values, evidence_b),
                 caller_thread_prediction=formula_runtime is not None)
-            staged = ProductionThreeModelLiveComposition(
+            from .adaptive_ocr_live import AdaptiveThreeModelComposition
+            staged = AdaptiveThreeModelComposition(
                 provider_a,
-                CurrentRunRecognitionStageProvider("B_CH_SVTRV2_REC", run_b),
-                CurrentRunGenerativeStageProvider("C_GOT_OCR2", pending.overlap_runner(text_runner)),
+                CurrentRunRecognitionStageProvider("B_OVIS_OCR2", run_b),
+                CurrentRunGenerativeStageProvider("C_XIAOMI_OCR_0", pending.overlap_runner(text_runner)),
             ).resolve(plans=resolution_plans, crops_by_route=crops_by_route)
             prefetched = pending.result()
             if inline is not None:
@@ -598,6 +601,8 @@ def _write_pdf_payload(
     debug: bool,
 ) -> dict[str, Any]:
     document = copy.deepcopy(pipeline_result.document)
+    from ..blank_images import prune_pdf
+    blank_images_removed = prune_pdf(document, document_asset_source_ref)
     renderer = CleanHandoffRenderer()
     source_asset_map = {
         asset["asset_uid"]: document_asset_presentation_ref(asset)
@@ -635,6 +640,7 @@ def _write_pdf_payload(
         elapsed=elapsed,
     )
     report["markdown_render"] = {key: value for key, value in rendered.items() if key != "markdown"}
+    report['blank_images_removed'] = blank_images_removed
     report["assets"]["non_content_source_assets"] = len(document.get("assets", [])) - len(asset_rows)
     (output_dir / "conversion_report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2),

@@ -2,6 +2,7 @@
 
 import math
 from functools import lru_cache
+from .text_trace import safe_text_trace
 
 
 @lru_cache(maxsize=16)
@@ -42,7 +43,7 @@ def page_cff_ink_map(page):
     output, mappings, fonts = {}, {}, {}
     if not candidates:
         return output
-    for span in page.get_texttrace():
+    for span in safe_text_trace(page):
         if tuple(span["dir"]) != (1.0, 0.0) or span["type"] != 0:
             continue
         refs = candidates.get(span["font"].split("+")[-1], set())

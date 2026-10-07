@@ -37,9 +37,11 @@ def run(command, log, *, capture=False):
         raise RuntimeError(f'Command failed with exit {result.returncode}; see {log}')
     return result.stdout.decode('utf-8-sig') if capture else None
 
-def models(selection, cache, local_cache=None, workers=8):
+def models(selection, cache, local_cache=None, workers=8, include_retention=False):
     plan = read(ROOT / 'scripts/model-downloads.json')['models']
     for model in plan:
+        if model.get('distribution') == 'github-release' and not include_retention:
+            continue
         if selection == 'conversion' and model['purpose'] != 'conversion':
             continue
         if selection == 'none':
@@ -49,6 +51,10 @@ def models(selection, cache, local_cache=None, workers=8):
             raise ValueError('Model authority manifest changed: ' + model['model_id'])
         print('Checking model ' + model['model_id'], flush=True)
         directory = safe_path(ROOT / 'MODELS', model['directory'])
+        if model.get('distribution') == 'github-release':
+            if include_retention:
+                subprocess.run([sys.executable, str(ROOT / 'scripts/download_retention_model.py'), '--manifest', str(ROOT / 'scripts/retention-model-weights.json'), '--output', str(directory)], check=True)
+            continue
         for file in model['files']:
             target = safe_path(directory, file['path'])
             if valid(target, file['sha256'], file['bytes']):
@@ -77,6 +83,8 @@ def main():
     parser.add_argument('--workspace', type=Path)
     parser.add_argument('--download-workers', type=int, default=8, choices=range(1, 33))
     parser.add_argument('--models-only', action='store_true')
+    parser.add_argument('--include-retention-model', action='store_true')
+    parser.add_argument('--qwen-python', type=Path)
     args = parser.parse_args()
     if os.name != 'nt' or sys.version_info[:2] != (3, 11):
         parser.error('The complete installer requires Windows and CPython 3.11. Use setup.ps1.')
@@ -90,10 +98,12 @@ def main():
     old_client = read(local / 'mcp-client.json') if (local / 'mcp-client.json').is_file() else {}
     selection = args.models or previous_state.get('models', 'all')
     workspace_path = select_workspace(args.workspace, previous_state, old_client)
-    models(selection, cache, args.model_cache, args.download_workers)
+    models(selection, cache, args.model_cache, args.download_workers, include_retention=args.include_retention_model)
     if args.models_only:
         print('Selected model files verified.')
         return
+    from install_qwen_runtime import ensure as ensure_isolated_qwen
+    ensure_isolated_qwen(ROOT / 'TOOLS/bemarkdown', Path(os.environ.get('LOCALAPPDATA', str(local))) / 'BeMarkdown', args.qwen_python)
     office_candidates = [os.environ.get('BEMARKDOWN_SOFFICE'), shutil.which('soffice'), shutil.which('soffice.com')]
     office_candidates += [str(Path(os.environ[key]) / 'LibreOffice/program/soffice.com') for key in ('ProgramFiles', 'ProgramFiles(x86)') if os.environ.get(key)]
     if not any(path and Path(path).is_file() for path in office_candidates):

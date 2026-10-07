@@ -14,6 +14,7 @@ from .config import OutputRootConfigurationError
 from .doctor import run_doctor
 from .package import InvalidDocxError
 from .pdf_source import PdfInspectionError
+from .image_input import InvalidRasterImageError
 from .production import (
     ExistingPackageError,
     PackageValidationError,
@@ -205,6 +206,7 @@ def main(argv: list[str] | None = None) -> int:
         except (
             InvalidDocxError,
             PdfInspectionError,
+            InvalidRasterImageError,
             UnsupportedDocumentError,
             FileNotFoundError,
         ) as exc:

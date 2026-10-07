@@ -42,16 +42,17 @@ def normalize_native_math_character(text, font):
 
 
 def propose_native_math(page, *, hidden_characters=None):
+    from .native_character_sources import raw_character_ref
     from .native_glyph_bounds import character_key
     from .native_visibility import hidden_native_characters
 
     if hidden_characters is None:
         hidden_characters = hidden_native_characters(page)
     items, prose = [], []
-    for block in page.get_text("rawdict")["blocks"]:
+    for block_index, block in enumerate(page.get_text("rawdict")["blocks"]):
         if block["type"] != 0:
             continue
-        for line in block["lines"]:
+        for line_index, line in enumerate(block["lines"]):
             line_characters = [char for span in line["spans"] for char in span["chars"]
                                if not char.get("origin")
                                or character_key(char["c"], char["origin"]) not in hidden_characters]
@@ -74,12 +75,12 @@ def propose_native_math(page, *, hidden_characters=None):
                 for left, middle, right in zip(nonspace, nonspace[1:], nonspace[2:])
                 if quote_pairs.get(left["c"]) == right["c"]
             }
-            for span in line["spans"]:
+            for span_index, span in enumerate(line["spans"]):
                 font = span["font"].lower()
                 math_font = bool(span["flags"] & 2) or any(
                     name in font for name in ("symbol", "math", "cmmi")
                 )
-                for char in span["chars"]:
+                for character_index, char in enumerate(span["chars"]):
                     if id(char) not in visible_character_ids or id(char) in label_characters:
                         continue
                     original_text = char["c"]
@@ -121,6 +122,12 @@ def propose_native_math(page, *, hidden_characters=None):
                                 "kind": "NATIVE_CHARACTER",
                                 "text": text,
                                 "original_text": original_text,
+                                # Raw extraction indices, before visibility filtering.
+                                # Deliberately distinct from the filtered text adapter's
+                                # span IDs: a partial formula never owns that entire span.
+                                "source_character": raw_character_ref(
+                                    block_index, line_index, span_index,
+                                    character_index, len(span["chars"])),
                                 "origin_pdf_pt": list(char["origin"]),
                                 "superscript_flag": bool(span["flags"] & 1),
                                 "size": span["size"],
@@ -261,7 +268,11 @@ def propose_native_math(page, *, hidden_characters=None):
         ):
             continue
         identity = hashlib.sha256(
-            json.dumps(group, sort_keys=True).encode()
+            # Provenance enrichment must not change geometry or derived route IDs.
+            json.dumps([
+                {key: value for key, value in item.items() if key != "source_character"}
+                for item in group
+            ], sort_keys=True).encode()
         ).hexdigest()[:24]
         output.append(
             {
@@ -277,6 +288,61 @@ def propose_native_math(page, *, hidden_characters=None):
     return sorted(
         output, key=lambda row: (row["bbox_pdf_pt"][1], row["bbox_pdf_pt"][0])
     )
+
+
+def native_formula_source_receipt(route, decoded_latex):
+    """Persist decoder inputs, not a claim of semantic coverage or deletion safety.
+
+    Raw indices are page-local and meaningful only with this source document and
+    extraction schema. They must never be joined to filtered span IDs by number.
+    """
+    geometry = route["provenance"].get("native_math_geometry", {})
+    evidence = geometry.get("source_evidence", [])
+    characters = copy.deepcopy([
+        item for item in evidence if item.get("kind") == "NATIVE_CHARACTER"
+    ])
+    identities = [item.get("source_character") for item in characters]
+    valid = bool(characters) and all(
+        isinstance(ref, dict)
+        and ref.get("schema") == "pymupdf-raw-character-v1"
+        and all(type(ref.get(key)) is int and ref[key] >= 0
+                for key in ("block_index", "line_index", "span_index"))
+        and ref.get("raw_span_id") == (
+            f"raw-text-block-{ref['block_index']:04d}"
+            f"-line-{ref['line_index']:04d}-span-{ref['span_index']:04d}"
+        )
+        and type(ref.get("character_index")) is int
+        and type(ref.get("span_character_count")) is int
+        and 0 <= ref["character_index"] < ref["span_character_count"]
+        for ref in identities
+    )
+    if valid:
+        keys = [(ref["raw_span_id"], ref["character_index"]) for ref in identities]
+        valid = len(keys) == len(set(keys))
+    return {
+        "schema": "native-formula-source-receipt-v1",
+        "extractor": {"name": "PyMuPDF", "version": pymupdf.VersionBind,
+                      "mode": "rawdict", "sort": False},
+        "document_id": route["document_id"],
+        "page_index": route["page_index"],
+        "source_path": route["provenance"].get("source_path"),
+        "geometry_id": geometry.get("geometry_id"),
+        "source_identity_status": "COMPLETE" if valid else "INCOMPLETE",
+        "identity_scope": "NATIVE_CHARACTERS_ONLY",
+        "characters": characters,
+        "non_character_evidence": copy.deepcopy([
+            item for item in evidence if item.get("kind") != "NATIVE_CHARACTER"
+        ]),
+        "decoded_latex": decoded_latex,
+        "decoded_latex_sha256": hashlib.sha256(decoded_latex.encode("utf-8")).hexdigest(),
+        "normalization": "normalize_native_math_character",
+        "normalization_changed": any(
+            item.get("original_text") != item.get("text") for item in characters
+        ),
+        "whole_span_ownership_claimed": False,
+        "coverage_status": "NOT_VERIFIED",
+        "authorizes_exclusion": False,
+    }
 
 
 def native_flat_latex(evidence):
@@ -334,6 +400,16 @@ def native_flat_latex(evidence):
             )
         ):
             return None
+        if text == "°":
+            # A degree glyph already carries its raised shape in many fonts,
+            # even when its PDF baseline and font size equal the main text.
+            # Preserve that explicit source symbol rather than falling back
+            # to OCR (which can turn a neighboring alpha into Latin a).
+            # Nested/exponent contexts remain unsupported and fail closed.
+            if not output or output[-1][0]:
+                return None
+            output.append(["", r"^{\circ}"])
+            continue
         if text in greek or text in operators:
             token = (greek | operators)[text] + " "
         elif re.fullmatch(r"[A-Za-z0-9=+\-*/().:<>%~']", text):
@@ -423,7 +499,7 @@ def _intersection(a, b):
 
 
 def _split_complete_equation_rows(routes, accepted, source_evidence):
-    """Split only independently readable equations in distinct source rows."""
+    """Split fully source-readable equations, including short result rows."""
     consumed, records = set(), []
     for route in list(routes):
         peers = [item for item in accepted if route in item[2]]
@@ -438,9 +514,21 @@ def _split_complete_equation_rows(routes, accepted, source_evidence):
         union = list(pymupdf.Rect(boxes[0]))
         for box in boxes[1:]:
             union = list(pymupdf.Rect(union) | pymupdf.Rect(box))
+        minimum_width = (original[2] - original[0]) * 0.5
+        # A source result such as "=40m" can be much shorter than its preceding
+        # fraction. Keep the normal width guard for independent equations, but
+        # accept an exactly readable continuation within the first row's column.
+        # Unknown source glyphs, ambiguous owners and overlapping fraction layers
+        # still fail the existing guards; no model output is appended or guessed.
+        widths_supported = all(
+            box[2] - box[0] >= minimum_width
+            or (index > 0 and peers[index][1]['native_latex'].startswith('=')
+                and boxes[0][0] <= box[0] and box[2] <= boxes[0][2])
+            for index, box in enumerate(boxes)
+        )
         if (_intersection(union, original) < _area(original) * 0.85
                 or _crosses_prose(union, source_evidence)
-                or any(box[2] - box[0] < (original[2] - original[0]) * 0.5 for box in boxes)):
+                or not widths_supported):
             continue
         if any(second[1] < first[3] - min(first[3] - first[1], second[3] - second[1]) * 0.1
                for first, second in pairwise(boxes)):

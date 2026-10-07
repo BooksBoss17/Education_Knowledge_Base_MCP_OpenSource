@@ -1,11 +1,11 @@
 {
   "schema": "bemarkdown-runtime-manifest-v1",
   "runtime_contract": "bemarkdown-runtime-contract-v1",
-  "validation_status": "PUBLIC_VALIDATED_READY_FULL",
+  "validation_status": "PENDING_SHARED_RUNTIME_COMPATIBILITY",
   "tool_version": "0.2.0",
   "tool_wheel": {
     "path": "dist/bemarkdown-0.2.0-py3-none-any.whl",
-    "sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5"
+    "sha256": "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c"
   },
   "profile": "profiles/win-x64-py311-cuda126.json",
   "platform": "Windows x64",
@@ -15,7 +15,7 @@
       "beautifulsoup4==4.15.0",
       "lxml==6.1.2",
       "mathml2latex==0.2.12",
-      "mathtypejx @ https://codeload.github.com/a917470154/mathtypejx/zip/7d90e7274c85cf56ac28d4d15e593044693d7e70#sha256=33d9e6410aaf47406621e30b1bcf3f73eee031d21c17feb26e8dc64b789d31cd",
+      "mathtypejx @ git+https://github.com/a917470154/mathtypejx.git@7d90e7274c85cf56ac28d4d15e593044693d7e70",
       "olefile==0.47",
       "pillow==12.1.0",
       "PyMuPDF==1.27.2.3",
@@ -131,13 +131,13 @@
     "legacy_paddle": {
       "path": "model_suite.json",
       "suite_id": "bemarkdown-paddle-document-suite-v1",
-      "suite_fingerprint": "1521f6cccb7b01e7f2c189cc3e23d8f60f971e554f11d9041ddad8526c20c47a",
+      "suite_fingerprint": "3fa40b07667d08d53a2fb2c720b6977eb26e1c94d396999b69c52c6c4511ec56",
       "model_count": 9
     },
     "pdf_production": {
       "path": "pdf_production_suite.json",
       "suite_id": "bemarkdown-pdf-production-suite-v1",
-      "suite_fingerprint": "d6c862f5659adb3994092b5358be10d1232119d8bb454e2df435dae4789bb082",
+      "suite_fingerprint": "11a58c0127ce52ce892996dc75c6e62cbaf0bab9e09c15696028da3460996565",
       "model_count": 11
     }
   },
@@ -157,31 +157,29 @@
     "cpu_fallback": false
   },
   "text_ensemble": {
-    "shared_runtime_required": true,
-    "compatibility_status": "PENDING_FORMAL_STAGED_SMOKE",
-    "providers": {
-      "A": "pp-ocrv6-medium-rec",
-      "B": "ch-svtrv2-rec",
-      "C": "got-ocr2-0"
-    },
-    "torch": "2.13.0+cu130",
-    "torchvision": "0.28.0+cu130",
-    "transformers": "5.15.1",
-    "accelerate": "1.14.0",
-    "torch_cuda_wheel_abi": "cu130",
-    "paddle_cuda_baseline_unchanged": "12.6",
-    "got_precision": "bf16",
-    "got_batch_size": 1,
-    "got_do_sample": false,
-    "got_max_new_tokens": 256,
-    "cpu_fallback": false
+    "status": "INTEGRATED_VALIDATED",
+    "architecture": "bemarkdown-pp-ovis-xiaomi-v3",
+    "model_ids": [
+      "ovis-ocr2",
+      "xiaomi-ocr-0"
+    ],
+    "precision": "bf16",
+    "runtime_mode": "standalone-managed-subprocess",
+    "runtime_name": "qwen-ocr-py312-torch214-tf517-v1",
+    "python": "3.12.14",
+    "torch": "2.14.0+cu130",
+    "transformers": "5.17.0",
+    "accelerate": "1.15.0",
+    "pillow": "12.3.0",
+    "max_new_tokens": 2048,
+    "do_sample": false,
+    "cpu_fallback": false,
+    "shared_paddle_runtime_unchanged": true
   },
   "wheel_reproducibility": {
-    "byte_identical": true,
-    "first_sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5",
-    "second_sha256": "e5f38d72920299d2543349cb04e1bc54e3aaed42bcea197ac65ef38c5edf3fd5",
-    "content_identical": true,
-    "content_sha256": "4e1dcc3a6239401ade8f3dc4a74e37816834dfea3a8abcecb5cc5a5bd38064f3"
+    "status": "PUBLIC_TEXT_NORMALIZATION_NOT_COLD_REBUILD",
+    "byte_identical": false,
+    "content_sha256": "7fb75646965662fdb486645250f9fd678b2621b7d9f47f04224469be947e5281"
   },
   "wheel_runtime_import_closure": {
     "schema": "bemarkdown-wheel-runtime-import-closure-v1",
@@ -190,8 +188,9 @@
       "bemarkdown.__main__",
       "bemarkdown.cli",
       "bemarkdown.production",
-      "bemarkdown.pdf.workers.ch_svtrv2_rec",
-      "bemarkdown.pdf.workers.got_ocr2"
+      "bemarkdown.pdf.adaptive_ocr_live",
+      "bemarkdown.pdf.qwen_stage",
+      "bemarkdown.pdf.workers.qwen_ocr"
     ],
     "reachable_modules": [
       "bemarkdown",
@@ -200,6 +199,7 @@
       "bemarkdown.agent_task_contract",
       "bemarkdown.asset_contract",
       "bemarkdown.batch",
+      "bemarkdown.blank_images",
       "bemarkdown.cli",
       "bemarkdown.config",
       "bemarkdown.doctor",
@@ -211,6 +211,7 @@
       "bemarkdown.formula_ocr",
       "bemarkdown.formula_runtime_owner",
       "bemarkdown.formulanet_runtime",
+      "bemarkdown.image_input",
       "bemarkdown.ir",
       "bemarkdown.model_registry",
       "bemarkdown.model_runtime",
@@ -219,7 +220,10 @@
       "bemarkdown.mtef_cache",
       "bemarkdown.namespaces",
       "bemarkdown.package",
+      "bemarkdown.paddle_memory",
       "bemarkdown.paddlex_runtime",
+      "bemarkdown.pdf.adaptive_ocr",
+      "bemarkdown.pdf.adaptive_ocr_live",
       "bemarkdown.pdf.caption_order",
       "bemarkdown.pdf.cff_glyph_bounds",
       "bemarkdown.pdf.clean_markdown",
@@ -245,6 +249,7 @@
       "bemarkdown.pdf.inline_math_runtime",
       "bemarkdown.pdf.isolated_image_content",
       "bemarkdown.pdf.modular_pipeline",
+      "bemarkdown.pdf.native_character_sources",
       "bemarkdown.pdf.native_column_order",
       "bemarkdown.pdf.native_drawn_blanks",
       "bemarkdown.pdf.native_font_unicode",
@@ -253,6 +258,7 @@
       "bemarkdown.pdf.native_margin_notes",
       "bemarkdown.pdf.native_margin_titles",
       "bemarkdown.pdf.native_math",
+      "bemarkdown.pdf.native_paint_receipt",
       "bemarkdown.pdf.native_visibility",
       "bemarkdown.pdf.non_text_ownership",
       "bemarkdown.pdf.ocr_character_geometry",
@@ -262,6 +268,7 @@
       "bemarkdown.pdf.production_runtime",
       "bemarkdown.pdf.production_three_model_live",
       "bemarkdown.pdf.prose_edge_crop",
+      "bemarkdown.pdf.qwen_stage",
       "bemarkdown.pdf.region_line_coverage",
       "bemarkdown.pdf.ruled_writing_area",
       "bemarkdown.pdf.source_evidence",
@@ -274,13 +281,13 @@
       "bemarkdown.pdf.text_containment",
       "bemarkdown.pdf.text_evidence",
       "bemarkdown.pdf.text_scope_review",
+      "bemarkdown.pdf.text_trace",
       "bemarkdown.pdf.three_model_ocr",
       "bemarkdown.pdf.visible_vectors",
-      "bemarkdown.pdf.vram_monitor",
       "bemarkdown.pdf.workers",
       "bemarkdown.pdf.workers.ch_svtrv2_rec",
       "bemarkdown.pdf.workers.deferred_got",
-      "bemarkdown.pdf.workers.got_ocr2",
+      "bemarkdown.pdf.workers.qwen_ocr",
       "bemarkdown.pdf_content_quality",
       "bemarkdown.pdf_content_router",
       "bemarkdown.pdf_document_ir",
@@ -327,6 +334,7 @@
         "bemarkdown.batch",
         "bemarkdown.config",
         "bemarkdown.doctor",
+        "bemarkdown.image_input",
         "bemarkdown.package",
         "bemarkdown.pdf_source",
         "bemarkdown.production"
@@ -336,6 +344,7 @@
         "bemarkdown.docx_image_content",
         "bemarkdown.docx_visual",
         "bemarkdown.formula_ocr",
+        "bemarkdown.image_input",
         "bemarkdown.mtef_cache",
         "bemarkdown.package",
         "bemarkdown.pdf.clean_markdown",
@@ -343,19 +352,18 @@
         "bemarkdown.pipeline",
         "bemarkdown.resource_profiles"
       ],
-      "bemarkdown.pdf.workers.ch_svtrv2_rec": [
-        "bemarkdown.model_registry",
-        "bemarkdown.paddlex_runtime",
-        "bemarkdown.text_recognition_contract"
+      "bemarkdown.pdf.adaptive_ocr_live": [
+        "bemarkdown.pdf.adaptive_ocr",
+        "bemarkdown.pdf.production_three_model_live"
       ],
-      "bemarkdown.pdf.workers.got_ocr2": [
-        "bemarkdown.pdf.got_batching",
-        "bemarkdown.pdf.vram_monitor",
-        "bemarkdown.text_recognition_contract"
+      "bemarkdown.pdf.qwen_stage": [
+        "bemarkdown.model_registry"
       ],
+      "bemarkdown.pdf.workers.qwen_ocr": [],
       "bemarkdown.batch": [
         "bemarkdown.config",
         "bemarkdown.formula_runtime_owner",
+        "bemarkdown.image_input",
         "bemarkdown.package",
         "bemarkdown.pdf_source",
         "bemarkdown.production"
@@ -368,6 +376,7 @@
       "bemarkdown.formulanet_runtime": [
         "bemarkdown.model_registry",
         "bemarkdown.model_runtime",
+        "bemarkdown.paddle_memory",
         "bemarkdown.paddlex_runtime"
       ],
       "bemarkdown.mtef_cache": [
@@ -379,6 +388,7 @@
       ],
       "bemarkdown.pipeline": [
         "bemarkdown.asset_contract",
+        "bemarkdown.blank_images",
         "bemarkdown.formula_ocr",
         "bemarkdown.mtef_cache",
         "bemarkdown.package",
@@ -397,9 +407,14 @@
         "bemarkdown.model_suite_runtime",
         "bemarkdown.mtef_cache",
         "bemarkdown.paddlex_runtime",
+        "bemarkdown.pdf.qwen_stage",
+        "bemarkdown.pdf.text_evidence",
         "bemarkdown.production",
         "bemarkdown.release",
         "bemarkdown.wmf"
+      ],
+      "bemarkdown.image_input": [
+        "bemarkdown.production"
       ],
       "bemarkdown.pdf_source": [
         "bemarkdown.pdf.native_image_appearance",
@@ -422,7 +437,9 @@
       ],
       "bemarkdown.pdf.clean_markdown": [],
       "bemarkdown.pdf.production_runtime": [
+        "bemarkdown.blank_images",
         "bemarkdown.formula_ocr",
+        "bemarkdown.pdf.adaptive_ocr_live",
         "bemarkdown.pdf.diagram_bounds",
         "bemarkdown.pdf.figure_label_debug",
         "bemarkdown.pdf.figure_label_segments",
@@ -432,6 +449,7 @@
         "bemarkdown.pdf.inline_math_runtime",
         "bemarkdown.pdf.modular_pipeline",
         "bemarkdown.pdf.production_three_model_live",
+        "bemarkdown.pdf.qwen_stage",
         "bemarkdown.pdf.source_evidence",
         "bemarkdown.pdf.table_bounds",
         "bemarkdown.pdf.table_formula_review",
@@ -446,24 +464,41 @@
         "bemarkdown.resource_profiles"
       ],
       "bemarkdown.resource_profiles": [],
+      "bemarkdown.pdf.adaptive_ocr": [],
+      "bemarkdown.pdf.production_three_model_live": [
+        "bemarkdown.agent_task_contract",
+        "bemarkdown.model_registry",
+        "bemarkdown.pdf.got_batching",
+        "bemarkdown.pdf.inline_math_runtime",
+        "bemarkdown.pdf.page_visual_text_recovery",
+        "bemarkdown.pdf.region_line_coverage",
+        "bemarkdown.pdf.text_evidence",
+        "bemarkdown.pdf.three_model_ocr",
+        "bemarkdown.pdf.workers",
+        "bemarkdown.pdf.workers.ch_svtrv2_rec",
+        "bemarkdown.pdf.workers.deferred_got",
+        "bemarkdown.pdf_content_router",
+        "bemarkdown.text_recognition_contract"
+      ],
       "bemarkdown.model_registry": [
         "bemarkdown.config"
       ],
-      "bemarkdown.paddlex_runtime": [],
-      "bemarkdown.text_recognition_contract": [],
-      "bemarkdown.pdf.got_batching": [],
-      "bemarkdown.pdf.vram_monitor": [],
       "bemarkdown.formula_runtime_owner": [
         "bemarkdown.formulanet_runtime"
       ],
       "bemarkdown.ir": [],
       "bemarkdown.model_runtime": [],
+      "bemarkdown.paddle_memory": [],
+      "bemarkdown.paddlex_runtime": [],
       "bemarkdown.formula": [
         "bemarkdown._vendor.omml2latex_parser",
         "bemarkdown.eq"
       ],
       "bemarkdown.namespaces": [],
       "bemarkdown.asset_contract": [
+        "bemarkdown.ir"
+      ],
+      "bemarkdown.blank_images": [
         "bemarkdown.ir"
       ],
       "bemarkdown.scanner": [
@@ -491,6 +526,9 @@
         "bemarkdown.paddlex_runtime",
         "bemarkdown.release"
       ],
+      "bemarkdown.pdf.text_evidence": [
+        "bemarkdown.text_recognition_contract"
+      ],
       "bemarkdown.release": [
         "bemarkdown",
         "bemarkdown.asset_contract",
@@ -503,6 +541,7 @@
       ],
       "bemarkdown.pdf_layout_runtime": [
         "bemarkdown.model_registry",
+        "bemarkdown.paddle_memory",
         "bemarkdown.paddlex_runtime",
         "bemarkdown.pdf_region_ir"
       ],
@@ -557,22 +596,8 @@
         "bemarkdown.pdf_table_engine",
         "bemarkdown.production_gpu_closeout"
       ],
-      "bemarkdown.pdf.production_three_model_live": [
-        "bemarkdown.agent_task_contract",
-        "bemarkdown.model_registry",
-        "bemarkdown.pdf.got_batching",
-        "bemarkdown.pdf.inline_math_runtime",
-        "bemarkdown.pdf.page_visual_text_recovery",
-        "bemarkdown.pdf.region_line_coverage",
-        "bemarkdown.pdf.text_evidence",
-        "bemarkdown.pdf.three_model_ocr",
-        "bemarkdown.pdf.workers",
-        "bemarkdown.pdf.workers.ch_svtrv2_rec",
-        "bemarkdown.pdf.workers.deferred_got",
-        "bemarkdown.pdf_content_router",
-        "bemarkdown.text_recognition_contract"
-      ],
       "bemarkdown.pdf.source_evidence": [
+        "bemarkdown.pdf.native_character_sources",
         "bemarkdown.pdf.native_drawn_blanks",
         "bemarkdown.pdf.native_font_unicode",
         "bemarkdown.pdf.native_glyph_bounds",
@@ -600,11 +625,13 @@
         "bemarkdown.formulanet_runtime",
         "bemarkdown.model_registry",
         "bemarkdown.model_runtime",
+        "bemarkdown.paddle_memory",
         "bemarkdown.paddlex_runtime",
         "bemarkdown.pdf.detection_batches",
         "bemarkdown.pdf.formula_ink_bounds",
         "bemarkdown.pdf.graphics_render",
         "bemarkdown.pdf.image_containment",
+        "bemarkdown.pdf.native_character_sources",
         "bemarkdown.pdf.native_font_unicode",
         "bemarkdown.pdf.native_glyph_bounds",
         "bemarkdown.pdf.native_margin_titles",
@@ -632,6 +659,23 @@
         "bemarkdown.pdf_table_engine"
       ],
       "bemarkdown.pdf_layout_fusion": [],
+      "bemarkdown.agent_task_contract": [],
+      "bemarkdown.pdf.got_batching": [],
+      "bemarkdown.pdf.page_visual_text_recovery": [],
+      "bemarkdown.pdf.region_line_coverage": [],
+      "bemarkdown.pdf.three_model_ocr": [
+        "bemarkdown.pdf.text_evidence",
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.pdf.workers": [],
+      "bemarkdown.pdf.workers.ch_svtrv2_rec": [
+        "bemarkdown.model_registry",
+        "bemarkdown.paddle_memory",
+        "bemarkdown.paddlex_runtime",
+        "bemarkdown.text_recognition_contract"
+      ],
+      "bemarkdown.pdf.workers.deferred_got": [],
+      "bemarkdown.text_recognition_contract": [],
       "bemarkdown._vendor.omml2latex_parser": [],
       "bemarkdown.eq": [],
       "bemarkdown.drawingml": [
@@ -651,53 +695,51 @@
       ],
       "bemarkdown.pdf.figure_graphic_markers": [],
       "bemarkdown.pdf.figure_waveforms": [],
-      "bemarkdown.pdf.page_visual_text_recovery": [],
-      "bemarkdown.pdf.text_evidence": [
-        "bemarkdown.text_recognition_contract"
-      ],
       "bemarkdown.pdf_content_quality": [],
       "bemarkdown.pdf.inline_atomic_superscript": [
         "bemarkdown.pdf.inline_math_repair"
       ],
       "bemarkdown.pdf.inline_math_candidates": [],
       "bemarkdown.pdf.inline_math_repair": [],
-      "bemarkdown.pdf.ocr_character_geometry": [],
+      "bemarkdown.pdf.ocr_character_geometry": [
+        "bemarkdown.paddle_memory"
+      ],
       "bemarkdown.pdf.pipeline_mode": [
         "bemarkdown.config"
       ],
       "bemarkdown.production_gpu_closeout": [
         "bemarkdown.production_runtime"
       ],
-      "bemarkdown.agent_task_contract": [],
-      "bemarkdown.pdf.region_line_coverage": [],
-      "bemarkdown.pdf.three_model_ocr": [
-        "bemarkdown.pdf.text_evidence",
-        "bemarkdown.text_recognition_contract"
-      ],
-      "bemarkdown.pdf.workers": [],
-      "bemarkdown.pdf.workers.deferred_got": [],
+      "bemarkdown.pdf.native_character_sources": [],
       "bemarkdown.pdf.native_drawn_blanks": [
         "bemarkdown.pdf.visible_vectors"
       ],
       "bemarkdown.pdf.native_font_unicode": [],
       "bemarkdown.pdf.native_glyph_bounds": [
-        "bemarkdown.pdf.cff_glyph_bounds"
+        "bemarkdown.pdf.cff_glyph_bounds",
+        "bemarkdown.pdf.text_trace"
       ],
       "bemarkdown.pdf.native_math": [
+        "bemarkdown.pdf.native_character_sources",
         "bemarkdown.pdf.native_glyph_bounds",
         "bemarkdown.pdf.native_visibility"
       ],
       "bemarkdown.pdf.native_visibility": [
-        "bemarkdown.pdf.native_glyph_bounds"
+        "bemarkdown.pdf.native_glyph_bounds",
+        "bemarkdown.pdf.text_trace"
       ],
       "bemarkdown.pdf.visible_vectors": [],
       "bemarkdown.pdf.source_table_grid": [
         "bemarkdown.pdf_table_engine"
       ],
       "bemarkdown.pdf.table_source_markers": [],
-      "bemarkdown.pdf.detection_batches": [],
+      "bemarkdown.pdf.detection_batches": [
+        "bemarkdown.paddle_memory"
+      ],
       "bemarkdown.pdf.formula_ink_bounds": [],
-      "bemarkdown.pdf.graphics_render": [],
+      "bemarkdown.pdf.graphics_render": [
+        "bemarkdown.pdf.native_paint_receipt"
+      ],
       "bemarkdown.pdf.image_containment": [],
       "bemarkdown.pdf.native_margin_titles": [],
       "bemarkdown.pdf.non_text_ownership": [],
@@ -722,11 +764,18 @@
         "bemarkdown.pdf.native_math"
       ],
       "bemarkdown.pdf.cff_glyph_bounds": [
+        "bemarkdown.pdf.native_glyph_bounds",
+        "bemarkdown.pdf.text_trace"
+      ],
+      "bemarkdown.pdf.text_trace": [],
+      "bemarkdown.pdf.native_paint_receipt": [
+        "bemarkdown.pdf.native_character_sources",
+        "bemarkdown.pdf.native_font_unicode",
         "bemarkdown.pdf.native_glyph_bounds"
       ]
     },
-    "reachable_module_count": 111,
-    "closure_fingerprint": "2aad86376385e9ad579cc8f682c7be3d9056bf2d0162526adb3d70c74564fecb",
+    "reachable_module_count": 119,
+    "closure_fingerprint": "1d30ee4a52228586d0e7ff878400d8648f127d70ee1c01465a4f71c14a7c0a9e",
     "gate": "PASS"
   }
 }

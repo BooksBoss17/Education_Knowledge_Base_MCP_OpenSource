@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from .model_registry import ModelRegistry
+from .paddle_memory import predict_with_bounded_cache
 from .pdf_region_ir import (
     LAYOUT_LABEL_MAPPING,
     PageRenderTransform,
@@ -343,7 +344,7 @@ class FormalPaddleLayoutRuntime:
         assert self._model is not None
         assert self._model_identity is not None
         results = list(
-            self._model.predict(
+            predict_with_bounded_cache(self._model,
                 value,
                 batch_size=1,
                 threshold=self.capture_floor,
