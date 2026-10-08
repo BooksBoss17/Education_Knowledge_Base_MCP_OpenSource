@@ -1,0 +1,43 @@
+{
+  "schema": "bemarkdown-model-manifest-v1",
+  "model_id": "qwen35-9b-semantic-reviewer",
+  "display_name": "Qwen3.5-9B-Semantic-Reviewer",
+  "task": "image_retention_semantic_review",
+  "provider": "llama.cpp",
+  "source": {
+    "repo_id": "unsloth/Qwen3.5-9B-GGUF",
+    "revision": "3885219b6810b007914f3a7950a8d1b469d598a5"
+  },
+  "license": {
+    "spdx": "Apache-2.0",
+    "source_file": "LICENSE"
+  },
+  "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
+  "integration": {
+    "state": "STANDALONE_SEMANTIC_SCHEME",
+    "bemarkdown_connected": false,
+    "auto_deletion_enabled": false
+  },
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "mmproj-F16.gguf",
+      "bytes": 918166080,
+      "sha256": "f70dc3509053962b0d0d3ee8a7eacebf5d60aa560cad78254ae8698516ae029f"
+    },
+    {
+      "path": "Qwen3.5-9B-Q3_K_M.gguf",
+      "bytes": 4673643744,
+      "sha256": "8fed90306e4f019e2bf35f3766470b7bc59ea1a9dae00f5ceb20b43cb5514393"
+    }
+  ],
+  "file_count": 3,
+  "total_bytes": 5591821182,
+  "model_fingerprint": "4c001ab8883d2bad2b7778c9154b4fc788781271ba48cdbf6c20782223233143",
+  "release_id": "semantic-retention-20261008-v1",
+  "distribution_scope": "PUBLIC_METADATA_WITH_VERIFIED_DOWNLOADS"
+}

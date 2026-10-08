@@ -66,3 +66,7 @@ FormulaNet 原清单中含有 9 个 Hugging Face 下载缓存文件。公开包�
 
 
 2026-10-07: BeMarkdown-Retention-B200 weights and independent downloader: Apache-2.0, derived from Qwen/Qwen3.5-4B; datasets are not redistributed. OvisOCR2 and Xiaomi-OCR-0 use pinned Apache-2.0 model artifacts. NVIDIA and Microsoft binaries remain external.
+
+## Semantic retention 2026-10-08
+
+新增组合工具与可读 engine 源码按 AGPL-3.0-or-later。B200/Qwen3.5-9B 模型均保留 Apache-2.0，上游来源锁定到 revision。第三方原生程序只由使用者从上游安装，仓库不包含 NVIDIA/Microsoft 二进制。

@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.bemarkdown.invalid/retention-training/prediction",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "sample_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "model_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "policy_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "raw_decision": {
+      "enum": [
+        "K",
+        "D",
+        "U"
+      ]
+    },
+    "final_decision": {
+      "enum": [
+        "K",
+        "D",
+        "U"
+      ]
+    },
+    "status": {
+      "enum": [
+        "model_response",
+        "input_failure",
+        "protocol_failure",
+        "policy_abstention"
+      ]
+    },
+    "inference_kind": {
+      "enum": [
+        "cold_inference",
+        "cache_replay",
+        "not_run"
+      ]
+    },
+    "elapsed_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "raw_response_sha256": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "p_d": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reason_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "sample_id",
+    "input_fingerprint",
+    "model_fingerprint",
+    "policy_fingerprint",
+    "raw_decision",
+    "final_decision",
+    "status",
+    "inference_kind",
+    "elapsed_ms",
+    "raw_response_sha256",
+    "p_d",
+    "reason_code"
+  ],
+  "additionalProperties": false
+}

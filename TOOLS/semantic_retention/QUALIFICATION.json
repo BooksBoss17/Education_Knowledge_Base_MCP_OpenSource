@@ -1,0 +1,59 @@
+{
+  "scope": "12 books / 8767 assets, frozen current semantic-v2 labels",
+  "count": 8767,
+  "metrics": {
+    "total": 8767,
+    "accuracy_u_wrong": 0.9851716664765598,
+    "output_keep_precision": 0.9711879432624113,
+    "output_necessary_recall": 1.0,
+    "false_exclusions": 0,
+    "unresolved": 0,
+    "decided_false_retention": 130,
+    "output_false_retention": 130,
+    "decoration_removal_recall": 0.9703534777651083,
+    "gate_passed": true,
+    "accuracy_wilson95": [
+      0.9824207903602035,
+      0.9874975509917142
+    ],
+    "output_precision_wilson95": [
+      0.9658918334674841,
+      0.9756824088466834
+    ],
+    "necessary_output_recall_wilson95": [
+      0.9991241227352237,
+      1
+    ],
+    "decoration_exclusion_wilson95": [
+      0.964906992763314,
+      0.9749765821399385
+    ],
+    "n": 8767,
+    "n_needed": 4382,
+    "n_decoration": 4385,
+    "confusion": {
+      "K": {
+        "K": 4382,
+        "D": 0,
+        "U": 0
+      },
+      "D": {
+        "K": 130,
+        "D": 4255,
+        "U": 0
+      }
+    }
+  },
+  "label_revision_count": 28,
+  "original_gold_false_exclusions": 28,
+  "semantic_v1_false_exclusions": 5,
+  "execution_seconds": 5290.921,
+  "wall_seconds": 7095.657,
+  "cold_execution_with_checkpoint_recovery": true,
+  "conservative_private_gib": 5.98354,
+  "conservative_working_gib": 4.881,
+  "whole_card_peak_mib": 5589,
+  "independent_generalization_certified": false,
+  "books_below_97_precision": 4,
+  "target_99_achieved": false
+}

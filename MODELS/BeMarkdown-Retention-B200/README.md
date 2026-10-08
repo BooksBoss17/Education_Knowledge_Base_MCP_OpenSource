@@ -16,3 +16,7 @@
 
 GitHub: https://github.com/BooksBoss17/BeMarkdown-Retention-B200
 模型文件由该仓库 Release 提供，权重分片下载并按SHA256合并验证，避免Git普通大文件或LFS配额依赖。
+
+## 2026-10-08 组合线路
+
+B200 权重保持 v1.0.0-b200 不变。新增独立 semantic_retention MCP，结合 Qwen3.5-9B 复核；使用说明与组合成绩见 ../../docs/SEMANTIC_RETENTION.md。历史单模型指标仍保留，不代表组合指标。处理器文件由安装脚本从固定 Qwen 基座版本下载。

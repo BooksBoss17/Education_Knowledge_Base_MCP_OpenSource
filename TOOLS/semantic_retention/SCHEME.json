@@ -1,0 +1,23 @@
+{
+  "release_id": "semantic-retention-20261008-v1",
+  "runtime_id": "0e46bef39554ddf9",
+  "engine_zip_sha256": "edfcaef2d4a4d09909152c41cfee27ed3af90feccbbe3e86818b30819ceeb4b7",
+  "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "converter_commit": "7fe450e19305b828c199d602c23a8337aaa1f03b",
+  "bemarkdown_auto_integrated": false,
+  "models": {
+    "base": {
+      "directory": "BeMarkdown-Retention-B200",
+      "model_fingerprint": "f90d9a016408fbfb7db56ae541ed92f20d47b70085aa3f3421348106a6259dee",
+      "weights": "B200-Q4_K_M.gguf",
+      "projector": "mmproj-F16.gguf",
+      "processor": "processor"
+    },
+    "reviewer": {
+      "directory": "Qwen3.5-9B-Semantic-Reviewer",
+      "model_fingerprint": "4c001ab8883d2bad2b7778c9154b4fc788781271ba48cdbf6c20782223233143",
+      "weights": "Qwen3.5-9B-Q3_K_M.gguf",
+      "projector": "mmproj-F16.gguf"
+    }
+  }
+}

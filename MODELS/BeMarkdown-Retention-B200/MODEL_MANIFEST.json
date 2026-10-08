@@ -10,9 +10,9 @@
     "derived_repo": "BooksBoss17/BeMarkdown-Retention-B200"
   },
   "fingerprint_contract": "sha256(path\\0file_sha256\\n), excluding MODEL_MANIFEST.json",
-  "model_fingerprint": "623e63e65901b0e2bcd69229032b339c5277e66f0de880818696c47febe44fb6",
-  "file_count": 8,
-  "total_bytes": 3577842851,
+  "model_fingerprint": "f90d9a016408fbfb7db56ae541ed92f20d47b70085aa3f3421348106a6259dee",
+  "file_count": 16,
+  "total_bytes": 3600755576,
   "files": [
     {
       "path": "adapter/adapter_config.json",
@@ -50,9 +50,49 @@
       "sha256": "d37bb194fe0102beed6c0050f914aa7cd0cefeb01d31539f84a17a6bec7d3ac4"
     },
     {
+      "path": "processor/chat_template.jinja",
+      "bytes": 7756,
+      "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715"
+    },
+    {
+      "path": "processor/config.json",
+      "bytes": 3161,
+      "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670"
+    },
+    {
+      "path": "processor/merges.txt",
+      "bytes": 3353259,
+      "sha256": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+    },
+    {
+      "path": "processor/preprocessor_config.json",
+      "bytes": 390,
+      "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516"
+    },
+    {
+      "path": "processor/tokenizer.json",
+      "bytes": 12807982,
+      "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42"
+    },
+    {
+      "path": "processor/tokenizer_config.json",
+      "bytes": 16710,
+      "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8"
+    },
+    {
+      "path": "processor/video_preprocessor_config.json",
+      "bytes": 385,
+      "sha256": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13"
+    },
+    {
+      "path": "processor/vocab.json",
+      "bytes": 6722759,
+      "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+    },
+    {
       "path": "README.md",
-      "bytes": 1935,
-      "sha256": "324e6b63ea644bde1fc410f1b067d16dd7641f6ee62db27266929323abef415e"
+      "bytes": 2258,
+      "sha256": "e71abb94e21e9f1fc27ace9334c9a49492c0e2ec0e8c07aea5efbe14292af25a"
     }
   ],
   "license": {
@@ -62,9 +102,9 @@
   },
   "runtime_contract": "bemarkdown-runtime-contract-v1",
   "device_policy": "gpu:0",
-  "release_id": "retention-assets-aspect-padding-20261007-v1",
+  "release_id": "semantic-retention-20261008-v1",
   "integration": {
-    "state": "ASSETS_ONLY_NOT_INTEGRATED",
+    "state": "STANDALONE_SEMANTIC_SCHEME",
     "bemarkdown_connected": false,
     "auto_deletion_enabled": false
   },
@@ -86,5 +126,7 @@
     "unresolved": 33,
     "numeric_quality_goal_met": false,
     "independent_generalization_certified": false
-  }
+  },
+  "validation_note": "validation field describes historical B200-only run; combined scheme metrics are in TOOLS/semantic_retention/QUALIFICATION.json",
+  "distribution_scope": "PUBLIC_METADATA_WITH_VERIFIED_DOWNLOADS"
 }

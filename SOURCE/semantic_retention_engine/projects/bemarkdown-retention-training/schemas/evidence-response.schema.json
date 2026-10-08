@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.bemarkdown.invalid/retention-training/evidence-response",
+  "type": "object",
+  "properties": {
+    "evidence": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 150
+    },
+    "verdict": {
+      "enum": [
+        "K",
+        "D",
+        "U"
+      ]
+    }
+  },
+  "required": [
+    "evidence",
+    "verdict"
+  ],
+  "additionalProperties": false
+}

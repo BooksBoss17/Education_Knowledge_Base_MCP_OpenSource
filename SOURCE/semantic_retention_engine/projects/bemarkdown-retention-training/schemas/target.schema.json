@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.bemarkdown.invalid/retention-training/target",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "sample_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asset_gold_label": {
+      "enum": [
+        "K",
+        "D"
+      ]
+    },
+    "gold_class": {
+      "enum": [
+        "heading_or_footer",
+        "transcribable_content",
+        "diagram",
+        "decoration",
+        null
+      ]
+    },
+    "gold_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "truth_scope": {
+      "enum": [
+        "asset_category_proxy",
+        "asset_semantic_all_uses",
+        "use_semantic_review",
+        "abstention_annotation"
+      ]
+    },
+    "target_scope": {
+      "enum": [
+        "asset",
+        "reviewed_use_set",
+        "abstention_stress"
+      ]
+    },
+    "decision_target": {
+      "enum": [
+        "K",
+        "D",
+        "U"
+      ]
+    },
+    "annotation_status": {
+      "enum": [
+        "gold_mapped",
+        "human_verified",
+        "teacher_proposal",
+        "conflict"
+      ]
+    },
+    "label_provenance": {
+      "enum": [
+        "current_asset_gold",
+        "human_verified_usage",
+        "human_verified_abstention"
+      ]
+    },
+    "supervision": {
+      "enum": [
+        "decision_only",
+        "evidence_verified",
+        "none"
+      ]
+    },
+    "review_record": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "reviewer_kind": {
+              "enum": [
+                "human",
+                "model_assisted"
+              ]
+            },
+            "approved_scopes": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "evidence",
+                  "use_label",
+                  "abstention",
+                  "asset_semantic_label"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "ref",
+            "sha256",
+            "reviewer_kind",
+            "approved_scopes"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "evidence": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1
+            },
+            "approval": {
+              "enum": [
+                "human_approved",
+                "proposal"
+              ]
+            },
+            "source_span_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "required": [
+            "text",
+            "approval",
+            "source_span_ids"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "sample_id",
+    "asset_gold_label",
+    "gold_class",
+    "gold_manifest_sha256",
+    "truth_scope",
+    "target_scope",
+    "decision_target",
+    "annotation_status",
+    "label_provenance",
+    "supervision",
+    "review_record",
+    "evidence"
+  ],
+  "additionalProperties": false
+}

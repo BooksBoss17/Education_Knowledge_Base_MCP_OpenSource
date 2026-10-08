@@ -29,3 +29,8 @@ MODELS/**/.cache/
 !MODELS/BeMarkdown-Retention-B200/adapter/adapter_config.json
 *.gguf
 .download-parts/
+
+!TOOLS/semantic_retention/dist/
+!TOOLS/semantic_retention/dist/engine.zip
+!TOOLS/semantic_retention/dist/engine-manifest.json
+!MODELS/Qwen3.5-9B-Semantic-Reviewer/LICENSE

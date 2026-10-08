@@ -1,0 +1,475 @@
+{
+  "schema": "semantic-retention-engine-v1",
+  "files": {
+    "projects/bemarkdown-retention-training/configs/resource-policy.json": "f4fdb4e01c7b389ec6803911d7a074dbb263e32a75cba5509b5fca9aca2daf88",
+    "projects/bemarkdown-retention-training/prompts/model-decision-system.txt": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878",
+    "projects/bemarkdown-retention-training/reports/extreme_aspect_padding_candidate.py": "1a3b4a17ec55bfcc152681c62956666eeea5998a5cdbac95c72bd360de40f5ab",
+    "projects/bemarkdown-retention-training/schemas/asset-plan.schema.json": "1aa1915131c58d3446e01e7babac73780600ee4ae530edb67bd1efd8c7dd0d71",
+    "projects/bemarkdown-retention-training/schemas/decision-response.schema.json": "adb4c881233264b0336f06bd324b1b3ca7345485442f1c593a206c5f2e1477f1",
+    "projects/bemarkdown-retention-training/schemas/evidence-response.schema.json": "59fa07c47d31135d04df86de61ce157cfed57ff054ffb21a2121dc8b5ad098e0",
+    "projects/bemarkdown-retention-training/schemas/input.schema.json": "ec962daee2448273f86342de546f1db36f7eb11f08a8647d89a05d1e3de52a3b",
+    "projects/bemarkdown-retention-training/schemas/prediction-freeze.schema.json": "2d31695ce8e066eeb84edac150acf2b6d110612c4d2f430933f49f60f3341c88",
+    "projects/bemarkdown-retention-training/schemas/prediction.schema.json": "eda858da4a82632869c85aee2cae58153f23780861e35ffc4d5a5e0f01cfb2de",
+    "projects/bemarkdown-retention-training/schemas/target.schema.json": "5e746cb51e24fe15e3fba87081867e17b3e214bd515535273950fde3eb70a0cd",
+    "projects/bemarkdown-retention-training/tools/build_bound_md_probe.py": "2cae9f36f5b64e27acc8984ec593f6731983f55e4acf7711436981119c5c63b8",
+    "projects/bemarkdown-retention-training/tools/build_zero99_locality_probe.py": "dbf54d8beece3dc29389768c0852527fb8d4ef6cb200753486331844555a9ac4",
+    "projects/bemarkdown-retention-training/tools/build_zero99_primitive_probe.py": "97163aaa6847bc5fee7e8fa4447d7e078cb562a7808980749908bbdc780ae757",
+    "projects/bemarkdown-retention-training/tools/build_zero99_spatial_probe.py": "a96c03ff0930ce3dbba6d4393c75141d94b224e98842c1873b7b8bfc01c67acb",
+    "projects/bemarkdown-retention-training/tools/cold_merge_stage.py": "5e69d2501f6812418419134c1cb179292771b1dcbdc8c6ced24b0cf3b6ff0feb",
+    "projects/bemarkdown-retention-training/tools/cold_semantic_inputs.py": "7ca05d421fc7fb44e218fe1c46dd74d84f5d80709bd999ab4c4eb569bf5988f2",
+    "projects/bemarkdown-retention-training/tools/cold_semantic_review.py": "89480716af9676fb9d53e183f8709aa1c1117ca32a1e8b19a22d4a566aa482c6",
+    "projects/bemarkdown-retention-training/tools/cold_source_choice.py": "113330aef4054f391646e94a22bae250fc7fa5a60c33238a5034aa3cc20e58da",
+    "projects/bemarkdown-retention-training/tools/cold_source_components.py": "6887d12cc6226b561adc6c6a8ebefe6219bdb62ff444fe20bb1ce973a551f867",
+    "projects/bemarkdown-retention-training/tools/contracts.py": "d05c1ce6c815d2751fc445bfabc27c384fccdd8facc00035e44028a5cb9a9e2d",
+    "projects/bemarkdown-retention-training/tools/dev_calibration.py": "4eddcfcc14bad83a4091fe7ec26b06f1bb175009102feeef3f6492e4f16ffd96",
+    "projects/bemarkdown-retention-training/tools/hf_training_adapter.py": "57bd24704569fb08b7a61b6ef394a4f9a7ed52e53f7c4ad1403a56f7621783e2",
+    "projects/bemarkdown-retention-training/tools/inference_plan.py": "5f293becf6be31e8b27b53eec750823be415fc5ffffb7b03109d7caaf8a1d349",
+    "projects/bemarkdown-retention-training/tools/prepare_gguf_input_lengths.py": "e3d764cd9ae55cb35d8bce0f2ae24ea570f5f78bc87a0ffb290c96c322d351b3",
+    "projects/bemarkdown-retention-training/tools/prepare_zero99_semantic_toc_reviews.py": "e908afc76a4dd2b795d8d3bea9a223772b94fb210425775692a36ca50f6008d5",
+    "projects/bemarkdown-retention-training/tools/probe_gguf_image_runtime.py": "66520fda2b42fa76e5acdb7f45427c3f5bb7178b35136b57e09581cc46b9620c",
+    "projects/bemarkdown-retention-training/tools/probe_zero99_body_photo_dependency.py": "6891ec0ebf94b67ab68964bde7b8cd9513958a4486f0b95e526f8473fb323587",
+    "projects/bemarkdown-retention-training/tools/probe_zero99_body_photo_semantic_v3.py": "833731367e54b4fc1bea3420af5a7a4cfe33b76b7af465c5b637626c560f99ba",
+    "projects/bemarkdown-retention-training/tools/probe_zero99_evidence_contract.py": "ef68448b2b6924e2cbf6dd54cfe77c9ca80f5b65ae28156aff484fa97b050169",
+    "projects/bemarkdown-retention-training/tools/probe_zero99_photo_guard.py": "ab255cd1b0b2821635a812fbdd85aa21dfbc2af363b478e5d335710fc1096fc5",
+    "projects/bemarkdown-retention-training/tools/probe_zero99_toc_semantic.py": "ecefbe038e4f24060aa57322d2fa8d5991e007a6a31236d66d9c4d7a5376c850",
+    "projects/bemarkdown-retention-training/tools/probe_zero99_vector_visibility.py": "21aedc25837aa3df7ec077768921f840328776a7772d3e376c2684e7b189ffec",
+    "projects/bemarkdown-retention-training/tools/repair_zero99_toc_contract.py": "82756698ee035c5acbc1e749dc7d088e5dcf347e9f35519efdc1cfe69ad1fafa",
+    "projects/bemarkdown-retention-training/tools/retention_inference.py": "199d9be6b0a82a79c8f41210bf63a6458c1776e1746f1a41b56c06bcb743116e",
+    "projects/bemarkdown-retention-training/tools/run_cold_semantic_pipeline.py": "f68340778f79ec626a23007f9d9df1d4b41e7da8fa0ffaecac92197f7da655ba",
+    "projects/bemarkdown-retention-training/tools/run_gguf_partition_predictions.py": "232f71a8f31668a04a83b79992e5162d592048a906ca1d6c10b11048465330b4",
+    "projects/bemarkdown-retention-training/tools/run_native_model_stage.py": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec",
+    "projects/bemarkdown-retention-training/tools/run_zero99_fact_probe.py": "cac5de5cef89814a01c1ce9c20786c8ed158404d4adba3dc48019be7edc876e5",
+    "projects/bemarkdown-retention-training/tools/source_choice_option.py": "f99cb57314a6833c88a9bc355f59fe6684fa83eebf24469fb404b5e546b6a9c2",
+    "projects/bemarkdown-retention-training/tools/toc_footer_position.py": "58513bda65224b9b953633b2889c157fb32adec183d512649dd58cd318d0bcc0",
+    "projects/bemarkdown-retention-training/tools/toc_semantic_contract_v2.py": "d26012160b3b14a588aa49b05206c050beace1bd7e40ade617fedd67a51d2d03",
+    "projects/bemarkdown-retention-training/tools/training_state.py": "14103dce21503ad45f40cb45455b1e3521e1f4165caed3a8b53deaa4849cb4c5",
+    "projects/bemarkdown-retention-training/tools/zero99_registered_component.py": "e1792e88a3bbf4de60e4b6fd6f46baac8b55361540f291bf9af42da26b264777",
+    "projects/bemarkdown-retention-training/tools/zero99_toc_evidence.py": "7af52990a8c209ba531d805dd542666df61850c10213f389c1c965078ff4ad7b",
+    "projects/education_mcp/context_retention.py": "b44cbdf6f7eefde3a1e8aeaf8309e188d052b6f3205fcf1a3231e432c4076958",
+    "projects/education_mcp/image_occurrences.py": "a75e92e3dcd279090afd42a29daf7b6bbbbb9552c05e631b06ec3b3de5a14457",
+    "projects/education_mcp/retention_context_v8_7.py": "4f2ae67318cfd5c6236282aa3b175a975f9fe6f72715d69a3c33c75ec0d24f9e",
+    "tmp/retention-v6-20261003/memory_guard_v33.py": "ddb81df2eecdfd60dc8248cdcaed26b9919b62349450c0d147a422b51b8997c2",
+    "tmp/retention-v6-20261003/memory_watchdog_v34.py": "4060f0f08b2ea708c45436bf80f10508b3fe8c8d7b8ce7634569724a6e51f562",
+    "tmp/retention-v6-20261003/source_builder_v29.py": "ecbeb8bff2c482ca2da8aa128c9ce6e923a50f3b5da68f3e6c2d59db599ba619",
+    "tmp/retention-v6-20261003/source_pairing_v20.py": "21cb73c0ac4d9d8f3d6d1b0d1efb29c177f81e5fed879cebd18e67cb7b246e41",
+    "tmp/retention-v6-20261003/source_pairing_v24.py": "1da82b3d246677cd8317416557d13b1659b20f14ab0f2feb4c78bd1eabc9c39c",
+    "tmp/retention-v6-20261003/v21-source-attribution/source_pairing_v21.py": "c35a56d63492d061a127b06633b17d0930ab6cbc6751f17851f530c969d712c0",
+    "tmp/retention-v6-20261003/v36-low-commit/job_family_v4.py": "8e23d51897d14d86d432b760a7243c87de123f6e6c7cb9b37dc5735ba4fdb83b",
+    "tmp/retention-v6-20261003/v36-low-commit/probe.py": "41f8b0e07eafaa0d2750b54e5a944187abcb158ce23c3d1f38d1b802da9e8820",
+    "tmp/retention-v6-20261003/v41-family-monitor-bounded/job_family_v41.py": "f3b0387f56575e771be88e59893b39c51f7511456a3c9fc59e47682846fd095d"
+  },
+  "source_mapping": [
+    {
+      "source": "projects/bemarkdown-retention-training/tools/cold_merge_stage.py",
+      "source_sha256": "5e69d2501f6812418419134c1cb179292771b1dcbdc8c6ced24b0cf3b6ff0feb",
+      "packaged_sha256": "5e69d2501f6812418419134c1cb179292771b1dcbdc8c6ced24b0cf3b6ff0feb",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/cold_semantic_inputs.py",
+      "source_sha256": "7ca05d421fc7fb44e218fe1c46dd74d84f5d80709bd999ab4c4eb569bf5988f2",
+      "packaged_sha256": "7ca05d421fc7fb44e218fe1c46dd74d84f5d80709bd999ab4c4eb569bf5988f2",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/cold_semantic_review.py",
+      "source_sha256": "89480716af9676fb9d53e183f8709aa1c1117ca32a1e8b19a22d4a566aa482c6",
+      "packaged_sha256": "89480716af9676fb9d53e183f8709aa1c1117ca32a1e8b19a22d4a566aa482c6",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/cold_source_choice.py",
+      "source_sha256": "113330aef4054f391646e94a22bae250fc7fa5a60c33238a5034aa3cc20e58da",
+      "packaged_sha256": "113330aef4054f391646e94a22bae250fc7fa5a60c33238a5034aa3cc20e58da",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/cold_source_components.py",
+      "source_sha256": "6887d12cc6226b561adc6c6a8ebefe6219bdb62ff444fe20bb1ce973a551f867",
+      "packaged_sha256": "6887d12cc6226b561adc6c6a8ebefe6219bdb62ff444fe20bb1ce973a551f867",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/prepare_gguf_input_lengths.py",
+      "source_sha256": "e3d764cd9ae55cb35d8bce0f2ae24ea570f5f78bc87a0ffb290c96c322d351b3",
+      "packaged_sha256": "e3d764cd9ae55cb35d8bce0f2ae24ea570f5f78bc87a0ffb290c96c322d351b3",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/probe_zero99_photo_guard.py",
+      "source_sha256": "ab255cd1b0b2821635a812fbdd85aa21dfbc2af363b478e5d335710fc1096fc5",
+      "packaged_sha256": "ab255cd1b0b2821635a812fbdd85aa21dfbc2af363b478e5d335710fc1096fc5",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/run_cold_semantic_pipeline.py",
+      "source_sha256": "f68340778f79ec626a23007f9d9df1d4b41e7da8fa0ffaecac92197f7da655ba",
+      "packaged_sha256": "f68340778f79ec626a23007f9d9df1d4b41e7da8fa0ffaecac92197f7da655ba",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/run_gguf_partition_predictions.py",
+      "source_sha256": "232f71a8f31668a04a83b79992e5162d592048a906ca1d6c10b11048465330b4",
+      "packaged_sha256": "232f71a8f31668a04a83b79992e5162d592048a906ca1d6c10b11048465330b4",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/run_native_model_stage.py",
+      "source_sha256": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec",
+      "packaged_sha256": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec",
+      "entrypoint": true,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/education_mcp/context_retention.py",
+      "source_sha256": "4d75d375b744b77ba37d11252aa19fc46b680307151278ad2d1d1f95fe076bfc",
+      "packaged_sha256": "b44cbdf6f7eefde3a1e8aeaf8309e188d052b6f3205fcf1a3231e432c4076958",
+      "entrypoint": false,
+      "exported_roots": [
+        "DEST",
+        "IMAGE",
+        "prepare",
+        "sha"
+      ]
+    },
+    {
+      "source": "projects/education_mcp/image_occurrences.py",
+      "source_sha256": "c43c499fa30e5c9906b72c524513402f45dc16f74448052f64751f49f29426cc",
+      "packaged_sha256": "a75e92e3dcd279090afd42a29daf7b6bbbbb9552c05e631b06ec3b3de5a14457",
+      "entrypoint": false,
+      "exported_roots": [
+        "reference_tokens",
+        "resolve",
+        "tokens"
+      ]
+    },
+    {
+      "source": "projects/education_mcp/retention_context_v8_7.py",
+      "source_sha256": "280822c64878711f3a99fc17fffa92d3a1554fb729982bafa2575a7a159b5542",
+      "packaged_sha256": "4f2ae67318cfd5c6236282aa3b175a975f9fe6f72715d69a3c33c75ec0d24f9e",
+      "entrypoint": false,
+      "exported_roots": [
+        "Context"
+      ]
+    },
+    {
+      "source": "tmp/retention-v6-20261003/source_builder_v29.py",
+      "source_sha256": "55c8e2eca928f8be0b07ce70bfdd41dcf8030168e6ad178adb8b25702eef2533",
+      "packaged_sha256": "ecbeb8bff2c482ca2da8aa128c9ce6e923a50f3b5da68f3e6c2d59db599ba619",
+      "entrypoint": false,
+      "exported_roots": [
+        "build"
+      ]
+    },
+    {
+      "source": "tmp/retention-v6-20261003/source_pairing_v20.py",
+      "source_sha256": "51ae110c7ac46a7211ad60863b4b641b37ecb5c1028ee7d9e30eaa787433bcbd",
+      "packaged_sha256": "21cb73c0ac4d9d8f3d6d1b0d1efb29c177f81e5fed879cebd18e67cb7b246e41",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "tmp/retention-v6-20261003/source_pairing_v24.py",
+      "source_sha256": "dcb2f136402e28eea2d6e8b6ccfb6e9e0d6c1060da0c6509386b78cce68bf421",
+      "packaged_sha256": "1da82b3d246677cd8317416557d13b1659b20f14ab0f2feb4c78bd1eabc9c39c",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "tmp/retention-v6-20261003/v21-source-attribution/source_pairing_v21.py",
+      "source_sha256": "1e59c0188821a729cc654f80b3ab2a0d24a327c7ab53eed38a9b89310689ab97",
+      "packaged_sha256": "c35a56d63492d061a127b06633b17d0930ab6cbc6751f17851f530c969d712c0",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "tmp/retention-v6-20261003/v41-family-monitor-bounded/job_family_v41.py",
+      "source_sha256": "e31eaf03db82d36b1764a6eaafba16ed1f348ead3ed8cd3df0e8ff4769d234c6",
+      "packaged_sha256": "f3b0387f56575e771be88e59893b39c51f7511456a3c9fc59e47682846fd095d",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "tmp/retention-v6-20261003/v36-low-commit/job_family_v4.py",
+      "source_sha256": "7074b10393fa13b2af682421fc7433f0022ed018e2838134d23683bb22e68d05",
+      "packaged_sha256": "8e23d51897d14d86d432b760a7243c87de123f6e6c7cb9b37dc5735ba4fdb83b",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "tmp/retention-v6-20261003/v36-low-commit/probe.py",
+      "source_sha256": "42bc99f0a2eba6257cd55a9693959eb8894e6925c08d80455a933f5b5fdfc77d",
+      "packaged_sha256": "41f8b0e07eafaa0d2750b54e5a944187abcb158ce23c3d1f38d1b802da9e8820",
+      "entrypoint": false,
+      "exported_roots": [
+        "Job",
+        "K",
+        "ROOT",
+        "must"
+      ]
+    },
+    {
+      "source": "tmp/retention-v6-20261003/memory_guard_v33.py",
+      "source_sha256": "f2f25111e685ff136939642795138ad71b2b8bc659d824a87be6adca840c9e1b",
+      "packaged_sha256": "ddb81df2eecdfd60dc8248cdcaed26b9919b62349450c0d147a422b51b8997c2",
+      "entrypoint": false,
+      "exported_roots": [
+        "sample"
+      ]
+    },
+    {
+      "source": "tmp/retention-v6-20261003/memory_watchdog_v34.py",
+      "source_sha256": "3f2b53ea677629680104d211e6b656b7915838588fd44c4a9265c9a59fee11ae",
+      "packaged_sha256": "4060f0f08b2ea708c45436bf80f10508b3fe8c8d7b8ce7634569724a6e51f562",
+      "entrypoint": false,
+      "exported_roots": [
+        "process_info",
+        "save"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/reports/extreme_aspect_padding_candidate.py",
+      "source_sha256": "8bdea80087b2120b778679edbde4443d9e013910bc473f6f9b33441a975d592c",
+      "packaged_sha256": "1a3b4a17ec55bfcc152681c62956666eeea5998a5cdbac95c72bd360de40f5ab",
+      "entrypoint": false,
+      "exported_roots": [
+        "pad_extreme"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/build_bound_md_probe.py",
+      "source_sha256": "66b7ac143165713581f17bbd389d18a2325d2e6170cefccccead6128ca3f5159",
+      "packaged_sha256": "2cae9f36f5b64e27acc8984ec593f6731983f55e4acf7711436981119c5c63b8",
+      "entrypoint": false,
+      "exported_roots": [
+        "context_view"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/probe_gguf_image_runtime.py",
+      "source_sha256": "d5e1c0083a6962fed34f81a0ac88b47c66eee7776cc8ec8e35fceeb2e1e0ec22",
+      "packaged_sha256": "66520fda2b42fa76e5acdb7f45427c3f5bb7178b35136b57e09581cc46b9620c",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/retention_inference.py",
+      "source_sha256": "8a17bc23ac9d8b4cfe05867e1c9085695ee31cc706880893b59b27cb45be07d4",
+      "packaged_sha256": "199d9be6b0a82a79c8f41210bf63a6458c1776e1746f1a41b56c06bcb743116e",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/contracts.py",
+      "source_sha256": "649dc356ea65aeec89b15ed2adc60cdba5a446aa6197dd8004d61bfd047cdb9a",
+      "packaged_sha256": "d05c1ce6c815d2751fc445bfabc27c384fccdd8facc00035e44028a5cb9a9e2d",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/build_zero99_locality_probe.py",
+      "source_sha256": "00a1e357b492e88bfc73c3817779ed524ac08146cf613b41db6d758204498382",
+      "packaged_sha256": "dbf54d8beece3dc29389768c0852527fb8d4ef6cb200753486331844555a9ac4",
+      "entrypoint": false,
+      "exported_roots": [
+        "local_view"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/build_zero99_spatial_probe.py",
+      "source_sha256": "0291a04a8821d3ddd36fe269d52c4d136bb126487c0b8a510e34a98a28ca1741",
+      "packaged_sha256": "a96c03ff0930ce3dbba6d4393c75141d94b224e98842c1873b7b8bfc01c67acb",
+      "entrypoint": false,
+      "exported_roots": [
+        "layout_view"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/prepare_zero99_semantic_toc_reviews.py",
+      "source_sha256": "bbebe7d5047ff394862ac5319137cbd1b4630accb72a23c43750c69a8eeb53e8",
+      "packaged_sha256": "e908afc76a4dd2b795d8d3bea9a223772b94fb210425775692a36ca50f6008d5",
+      "entrypoint": false,
+      "exported_roots": [
+        "candidate"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/probe_zero99_toc_semantic.py",
+      "source_sha256": "e5aff662db0f42f504cfed9aed6cec329e0b8fa87377f4e2256343c82d01233b",
+      "packaged_sha256": "ecefbe038e4f24060aa57322d2fa8d5991e007a6a31236d66d9c4d7a5376c850",
+      "entrypoint": false,
+      "exported_roots": [
+        "DROP",
+        "KEEP",
+        "PROMPT",
+        "SCHEMA",
+        "validate_result"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/probe_zero99_body_photo_semantic_v3.py",
+      "source_sha256": "f626179dd9ea1f0b631878b56960636d447bb2f6df16060b18a1caa956195c82",
+      "packaged_sha256": "833731367e54b4fc1bea3420af5a7a4cfe33b76b7af465c5b637626c560f99ba",
+      "entrypoint": false,
+      "exported_roots": [
+        "DROP",
+        "KEEP",
+        "PROMPT",
+        "SCHEMA",
+        "request_schema",
+        "validate_result"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/probe_zero99_body_photo_dependency.py",
+      "source_sha256": "0c6cf3e58267444bb3b82d09c3b304d616ece1c75417e916830e2813307ce17a",
+      "packaged_sha256": "6891ec0ebf94b67ab68964bde7b8cd9513958a4486f0b95e526f8473fb323587",
+      "entrypoint": false,
+      "exported_roots": [
+        "DROP",
+        "KEEP",
+        "PROMPT",
+        "SCHEMA",
+        "request_schema",
+        "validate_result"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/repair_zero99_toc_contract.py",
+      "source_sha256": "8729a10cf97f337544af5fa070a29af37c8e4ea38a1597a471c1faa0973478ee",
+      "packaged_sha256": "82756698ee035c5acbc1e749dc7d088e5dcf347e9f35519efdc1cfe69ad1fafa",
+      "entrypoint": false,
+      "exported_roots": [
+        "PROMPT_V2"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/toc_semantic_contract_v2.py",
+      "source_sha256": "6d76229f4ae6bb0704bf1fc450df0b2ce5b0ec958105f523fc47aea231edf87d",
+      "packaged_sha256": "d26012160b3b14a588aa49b05206c050beace1bd7e40ade617fedd67a51d2d03",
+      "entrypoint": false,
+      "exported_roots": [
+        "normalize_result",
+        "repair_schema"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/toc_footer_position.py",
+      "source_sha256": "3ab7ddfebac987708c0724c5ea6e5ecbe145097e6ae70681bc47723ab51a5b06",
+      "packaged_sha256": "58513bda65224b9b953633b2889c157fb32adec183d512649dd58cd318d0bcc0",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/source_choice_option.py",
+      "source_sha256": "75f06389d8e2411714c0f8b352a7a273a7db839428363ba49f293c9df7bd3d18",
+      "packaged_sha256": "f99cb57314a6833c88a9bc355f59fe6684fa83eebf24469fb404b5e546b6a9c2",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/build_zero99_primitive_probe.py",
+      "source_sha256": "706412c8594ba05abd4461bc24a671d0c42206a1bf9606f58c3934a81fa97baa",
+      "packaged_sha256": "97163aaa6847bc5fee7e8fa4447d7e078cb562a7808980749908bbdc780ae757",
+      "entrypoint": false,
+      "exported_roots": [
+        "primitive_facts",
+        "read",
+        "rows",
+        "sha",
+        "write"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/zero99_registered_component.py",
+      "source_sha256": "9c54fd5c3f485fdae898aede755ef12f79a45d00fb47b955eb418f4ec78f85e3",
+      "packaged_sha256": "e1792e88a3bbf4de60e4b6fd6f46baac8b55361540f291bf9af42da26b264777",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/hf_training_adapter.py",
+      "source_sha256": "bc0ef36caa3ffcb73898cd1070dee8704c73a809c13aec8aec446b98147552f5",
+      "packaged_sha256": "57bd24704569fb08b7a61b6ef394a4f9a7ed52e53f7c4ad1403a56f7621783e2",
+      "entrypoint": false,
+      "exported_roots": [
+        "BudgetExceeded",
+        "LazyProcessor",
+        "base_config",
+        "input_construction_fingerprint",
+        "load_json",
+        "on_device",
+        "read_rows",
+        "write_json"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/inference_plan.py",
+      "source_sha256": "631bf16c705b936afadda2a63fe9cbf08c429356b1f757adcae74125cf6b7f2d",
+      "packaged_sha256": "5f293becf6be31e8b27b53eec750823be415fc5ffffb7b03109d7caaf8a1d349",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/probe_zero99_evidence_contract.py",
+      "source_sha256": "52326571e4b6b2f62b8c2c4bebde7d2e6ebca3df0db2420708d62c6dc1cc4a1d",
+      "packaged_sha256": "ef68448b2b6924e2cbf6dd54cfe77c9ca80f5b65ae28156aff484fa97b050169",
+      "entrypoint": false,
+      "exported_roots": [
+        "OBS",
+        "call"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/run_zero99_fact_probe.py",
+      "source_sha256": "21ca104253255322bd18dfb9b8ebc4838d4ebe8eab58f449280a39a19c758bc9",
+      "packaged_sha256": "cac5de5cef89814a01c1ce9c20786c8ed158404d4adba3dc48019be7edc876e5",
+      "entrypoint": false,
+      "exported_roots": [
+        "observation_valid",
+        "parse"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/zero99_toc_evidence.py",
+      "source_sha256": "54c876e39be5041adf669da80b2d61e44481b1e0fe7b798678bd6ad883e0c09a",
+      "packaged_sha256": "7af52990a8c209ba531d805dd542666df61850c10213f389c1c965078ff4ad7b",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/dev_calibration.py",
+      "source_sha256": "85310e176331229bb0156ae3f814d94399ebff05cd4a2df39cdbe853ab97a4f9",
+      "packaged_sha256": "4eddcfcc14bad83a4091fe7ec26b06f1bb175009102feeef3f6492e4f16ffd96",
+      "entrypoint": false,
+      "exported_roots": [
+        "policy_fingerprint"
+      ]
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/training_state.py",
+      "source_sha256": "8be48e8a3d38d8d89bb0f66f654b96f79427d5b31e3c7971f8aa7284d376f2eb",
+      "packaged_sha256": "14103dce21503ad45f40cb45455b1e3521e1f4165caed3a8b53deaa4849cb4c5",
+      "entrypoint": false,
+      "exported_roots": null
+    },
+    {
+      "source": "projects/bemarkdown-retention-training/tools/probe_zero99_vector_visibility.py",
+      "source_sha256": "9b091387a3e27b6795bf6f10ef7d4819a8e8384f961e5808215f1d67a516fc56",
+      "packaged_sha256": "21aedc25837aa3df7ec077768921f840328776a7772d3e376c2684e7b189ffec",
+      "entrypoint": false,
+      "exported_roots": null
+    }
+  ],
+  "contains_images_or_gold": false,
+  "development_path_findings": []
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "standalone-mcp-tool-v1",
+  "name": "semantic_retention",
+  "version": "20261008.1",
+  "release_id": "semantic-retention-20261008-v1",
+  "transport": "stdio",
+  "launcher": "launch.ps1",
+  "model_registry": "../../MODELS/MODEL_REGISTRY.json",
+  "scheme": "SCHEME.json",
+  "license": "AGPL-3.0-or-later",
+  "capabilities": [
+    "source_bound_image_retention",
+    "async_jobs",
+    "read_only_results"
+  ],
+  "bemarkdown_connected": false,
+  "source_deletion_enabled": false,
+  "host_runtime_external": true
+}

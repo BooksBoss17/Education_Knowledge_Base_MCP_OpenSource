@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.bemarkdown.invalid/retention-training/input",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "sample_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "book_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mime": {
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ]
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "ref",
+        "sha256",
+        "mime",
+        "width",
+        "height"
+      ],
+      "additionalProperties": false
+    },
+    "document": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "ref",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "scope": {
+      "enum": [
+        "asset_use_bag",
+        "use_set",
+        "abstention_stress"
+      ]
+    },
+    "uses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "use_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "context_status": {
+            "enum": [
+              "verified",
+              "verified_empty",
+              "missing"
+            ]
+          },
+          "spans": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "span_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "start_byte": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "end_byte": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "text": {
+                  "type": "string"
+                },
+                "text_sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "source_page_index": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "relation_to_use": {
+                  "enum": [
+                    "same_page",
+                    "verified_cross_page_reference"
+                  ]
+                },
+                "binding_evidence_refs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "span_id",
+                "start_byte",
+                "end_byte",
+                "text",
+                "text_sha256",
+                "source_page_index",
+                "relation_to_use",
+                "binding_evidence_refs"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "figure_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "figure": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "assignment": {
+                  "enum": [
+                    "TARGET_CAPTION_IMAGE",
+                    "TARGET_REGION_OR_COMPONENT",
+                    "TARGET_GROUP_CANDIDATE",
+                    "OTHER_IMAGE_REGION",
+                    "UNRESOLVED"
+                  ]
+                }
+              },
+              "required": [
+                "figure",
+                "assignment"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "selector_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_window_truncated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "use_id",
+          "page_index",
+          "context_status",
+          "spans",
+          "figure_refs",
+          "selector_version",
+          "source_window_truncated"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "expected_use_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "covered_use_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "enumeration_complete": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "expected_use_count",
+        "covered_use_ids",
+        "enumeration_complete"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "sample_id",
+    "book_id",
+    "synthetic",
+    "image",
+    "document",
+    "scope",
+    "uses",
+    "coverage"
+  ],
+  "additionalProperties": false
+}

@@ -34,6 +34,7 @@ jobs:
         run: |
           python scripts/verify_release.py
           python -m unittest discover -s tests -p test_downloads.py -v
+          python -m unittest discover -s tests -p test_semantic_retention_public.py -v
 
       - name: Build isolated published-wheel runtime
         shell: pwsh

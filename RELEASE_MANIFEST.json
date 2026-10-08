@@ -1,8 +1,8 @@
 {
   "schema": "education-public-file-inventory-v1",
-  "release_id": "retention-assets-aspect-padding-20261007-v1",
+  "release_id": "semantic-retention-20261008-v1",
   "license": "AGPL-3.0-only WITH third-party exceptions; standalone model Apache-2.0",
-  "source_formal_commit": "41093d3a2497600db39dca9c0087f32353236da3",
+  "source_formal_commit": "e6d983d59f1c01a04d74e4efdfe1c595bbe87e2f",
   "model_connected": false,
   "files": [
     {
@@ -12,48 +12,13 @@
     },
     {
       "path": ".github/workflows/public-mcp-sdk.yml",
-      "bytes": 1942,
-      "sha256": "e285ada4f85ab0acf7ba003e1bd621669872531925cf908e875cbfd5f6561d47"
+      "bytes": 2029,
+      "sha256": "4b47f01b958b46d9398f4425e972e22e81b4d435a39a34a0149b672097741ca9"
     },
     {
       "path": ".gitignore",
-      "bytes": 723,
-      "sha256": "03c824d32bd7c1648afd0791020b4c2e8b8781829a84e394b86b630b1b39e524"
-    },
-    {
-      "path": "docs/BEMARKDOWN_TECHNICAL_SCHEME.md",
-      "bytes": 12302,
-      "sha256": "1cfdb97f3c2d5bbf009ace6655a0c39f779e5bc05b453057310b65d0a97ccac2"
-    },
-    {
-      "path": "docs/EXTENDING.md",
-      "bytes": 2982,
-      "sha256": "439ceeaa30c15c7c23cfce767d2a43f38a63968f18842fb52cd1585ca74fa906"
-    },
-    {
-      "path": "docs/FIGURE_OWNERSHIP_20260922.md",
-      "bytes": 1868,
-      "sha256": "afa3fc5a5361725e13383c149998a857d8baa804998d9d29530a55d3e1836713"
-    },
-    {
-      "path": "docs/INSTALLATION_UPGRADE.md",
-      "bytes": 3556,
-      "sha256": "b5dc85ece2c7409898d5c0e1f67aed3df67ab3e77444f756d12e071b60f4b31f"
-    },
-    {
-      "path": "docs/LICENSE_AUDIT.md",
-      "bytes": 5621,
-      "sha256": "dda102dd05d3091bd0a7650e418f37fbea70e4723d14da1359e05126aa9e8f27"
-    },
-    {
-      "path": "docs/RELEASE_20261007.md",
-      "bytes": 1969,
-      "sha256": "d3b5ef9d424b7cf1f37ce82813d48afeab216bbe039d7bb2f66f0593c6192ab7"
-    },
-    {
-      "path": "docs/VALIDATION.md",
-      "bytes": 8082,
-      "sha256": "7a44105373cb385694def25a09af5b4363bc06d5684afa74ebd3efe8bdf616b4"
+      "bytes": 895,
+      "sha256": "d0a7b5910dfdeb7e36ad031c5de564c8278d70a74f6fbf9c011b0559418652e2"
     },
     {
       "path": "LICENSE",
@@ -61,39 +26,14 @@
       "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
     },
     {
-      "path": "licenses/KaTeX-fonts-MIT.txt",
-      "bytes": 1079,
-      "sha256": "a7bd44abd8419bf78185be51f34216356af1adb0806ce39d6a9ca0940bd49b70"
-    },
-    {
-      "path": "licenses/model-sources.json",
-      "bytes": 4365,
-      "sha256": "a17308850ce2efd355bb63ea3ab5577ce7232439cb83b4dcf837d9eb5a4235c9"
-    },
-    {
-      "path": "licenses/runtime-components.json",
-      "bytes": 210739,
-      "sha256": "19193cf94f3c2dca0034079ffb103cdf86c90110e4bf3381faadee886c0c64de"
-    },
-    {
-      "path": "MODELS/BeMarkdown-Retention-B200/adapter/adapter_config.json",
-      "bytes": 1136,
-      "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b"
-    },
-    {
       "path": "MODELS/BeMarkdown-Retention-B200/LICENSE",
       "bytes": 11358,
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
     },
     {
-      "path": "MODELS/BeMarkdown-Retention-B200/model-decision-system.txt",
-      "bytes": 1491,
-      "sha256": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878"
-    },
-    {
       "path": "MODELS/BeMarkdown-Retention-B200/MODEL_MANIFEST.json",
-      "bytes": 2862,
-      "sha256": "d89e095063245cea71b3bbd0c978c2ee465125ef20e97bdb24289055314570c1"
+      "bytes": 4377,
+      "sha256": "12a1d4bdc51b4b3c21ceca15e5744a0d6e3ebfa8d917264f17dbbe63276d4de7"
     },
     {
       "path": "MODELS/BeMarkdown-Retention-B200/NOTICE",
@@ -102,13 +42,18 @@
     },
     {
       "path": "MODELS/BeMarkdown-Retention-B200/README.md",
-      "bytes": 1935,
-      "sha256": "324e6b63ea644bde1fc410f1b067d16dd7641f6ee62db27266929323abef415e"
+      "bytes": 2258,
+      "sha256": "e71abb94e21e9f1fc27ace9334c9a49492c0e2ec0e8c07aea5efbe14292af25a"
     },
     {
-      "path": "MODELS/ch_SVTRv2_rec/MODEL_MANIFEST.json",
-      "bytes": 1814,
-      "sha256": "54a844f1dc30b9c5eeae60dfaf6992ef81cbe83577a3c4429aa612fc183cbca1"
+      "path": "MODELS/BeMarkdown-Retention-B200/adapter/adapter_config.json",
+      "bytes": 1136,
+      "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b"
+    },
+    {
+      "path": "MODELS/BeMarkdown-Retention-B200/model-decision-system.txt",
+      "bytes": 1491,
+      "sha256": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878"
     },
     {
       "path": "MODELS/GOT-OCR2.0/MODEL_MANIFEST.json",
@@ -117,8 +62,8 @@
     },
     {
       "path": "MODELS/MODEL_REGISTRY.json",
-      "bytes": 7521,
-      "sha256": "b69dcc2a22a419b03a8eec6b917a8d05af9065e88ae3a094cf6ec46386c7df2a"
+      "bytes": 8087,
+      "sha256": "af13bc0e09a49104c6bf5b82d491f172b90ce7c96efae0eb1f117453c8fa396d"
     },
     {
       "path": "MODELS/OvisOCR2/MODEL_MANIFEST.json",
@@ -156,6 +101,16 @@
       "sha256": "017b026143583f65c272a89b735c47e65e8eb7d5a85cb4d18aa45d559639198e"
     },
     {
+      "path": "MODELS/Qwen3.5-9B-Semantic-Reviewer/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "MODELS/Qwen3.5-9B-Semantic-Reviewer/MODEL_MANIFEST.json",
+      "bytes": 1370,
+      "sha256": "2e13e8313877ab83f13cb93eb4d8ea10390b21df5a484f5099e7a8c4b87216ba"
+    },
+    {
       "path": "MODELS/RT-DETR-L_wired_table_cell_det/MODEL_MANIFEST.json",
       "bytes": 1957,
       "sha256": "12ccdbf20d5b0f78b26cf5a12de5425e62d179a04bd9945798507829a147280b"
@@ -186,64 +141,14 @@
       "sha256": "c63298b42ccadc5daebf93537f41fa76477b8fc84a7751cda1cd813f903f87b5"
     },
     {
+      "path": "MODELS/ch_SVTRv2_rec/MODEL_MANIFEST.json",
+      "bytes": 1814,
+      "sha256": "54a844f1dc30b9c5eeae60dfaf6992ef81cbe83577a3c4429aa612fc183cbca1"
+    },
+    {
       "path": "README.md",
-      "bytes": 9421,
-      "sha256": "1a7e1eb5a02d69edf5bd65845621c5731b68da6046e6e4e3d04287cba0eb2789"
-    },
-    {
-      "path": "scripts/download_retention_model.py",
-      "bytes": 3823,
-      "sha256": "5b817b0b3fd82223528de191cdf9a63a97d648ccf2e5ba296560e4ac49c9a49c"
-    },
-    {
-      "path": "scripts/downloads.py",
-      "bytes": 4476,
-      "sha256": "e1b904aaea00ab73f9329d2976e413e65135cbc9620017f78a45d1fc3ac4b32a"
-    },
-    {
-      "path": "scripts/external-source.json",
-      "bytes": 237,
-      "sha256": "f868ef87891c5f18d3312195811d193b69f66087640882588ef3334ab0de8c4e"
-    },
-    {
-      "path": "scripts/install_qwen_runtime.py",
-      "bytes": 3271,
-      "sha256": "3905c4520116f9d289a6fc3ec2c6e65b19a7685061a9172b7518f5a15024d0f8"
-    },
-    {
-      "path": "scripts/model-downloads.json",
-      "bytes": 29665,
-      "sha256": "f07241e4649d062924ba5909ded5fa4b894e9ce035d725660f57014df5b526a3"
-    },
-    {
-      "path": "scripts/requirements-pypi.lock",
-      "bytes": 2101,
-      "sha256": "8f1263b7bd12f39cb0b98315fb8ad060a6e440ab3c468daae9b3f9bc19a24aca"
-    },
-    {
-      "path": "scripts/retention-model-weights.json",
-      "bytes": 5056,
-      "sha256": "d4393ccd49426370b806b59655ec7a277911ad3343bd20aa6c35df37755276b3"
-    },
-    {
-      "path": "scripts/runtime_setup.py",
-      "bytes": 10268,
-      "sha256": "065c811fcbf596163f686b37cfef0bb48c4d289653e1c3e044bd9b379d26bcb7"
-    },
-    {
-      "path": "scripts/setup.py",
-      "bytes": 10965,
-      "sha256": "761006893b46d20aa740cf5ca3f8f94ab4a55f3a45011662b136d4cd6b7da541"
-    },
-    {
-      "path": "scripts/verify_release.py",
-      "bytes": 4686,
-      "sha256": "0a1b185058677e04a4766498bf30967b1defad42eea8290fb34da9bbbb00e183"
-    },
-    {
-      "path": "setup.ps1",
-      "bytes": 5506,
-      "sha256": "98d30b9a7682e7cdb731d5b9672b9389141cd1152a8b07547e43be8e116d44c2"
+      "bytes": 9629,
+      "sha256": "4cbcaa38511063ff60fd3272dc54d3877ae5b71f996c7ebd2907a7f856050735"
     },
     {
       "path": "SKILLS/.gitkeep",
@@ -266,14 +171,14 @@
       "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
     },
     {
-      "path": "SOURCE/bemarkdown/pyproject.toml",
-      "bytes": 1215,
-      "sha256": "c2680c94ab3e3cd20f2fc5b54f1baf62fabecc1ae0520b8e23f8190edfb705e3"
-    },
-    {
       "path": "SOURCE/bemarkdown/README.md",
       "bytes": 217,
       "sha256": "512fc513a3f194f322af79cd3557031871ec439daeec6b2fa4255d516adee286"
+    },
+    {
+      "path": "SOURCE/bemarkdown/pyproject.toml",
+      "bytes": 1215,
+      "sha256": "c2680c94ab3e3cd20f2fc5b54f1baf62fabecc1ae0520b8e23f8190edfb705e3"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/__init__.py",
@@ -286,14 +191,14 @@
       "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
     },
     {
-      "path": "SOURCE/bemarkdown/src/bemarkdown/_vendor/__init__.py",
-      "bytes": 75,
-      "sha256": "33bfe1047145c90412a4270cb14586c8e27e804c24f033cee14ea24943feedf3"
-    },
-    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/_vendor/OMML2LATEX_LICENSE.txt",
       "bytes": 11360,
       "sha256": "240b8a39fdfd2bd3b3539c02e34466334884fc84b056b57f06e9da35323ecd97"
+    },
+    {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/_vendor/__init__.py",
+      "bytes": 75,
+      "sha256": "33bfe1047145c90412a4270cb14586c8e27e804c24f033cee14ea24943feedf3"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/_vendor/omml2latex_parser.py",
@@ -1201,6 +1106,11 @@
       "sha256": "74bc52819095f9d28528b0560d069e36b2b93519cd51961dae9f782118f796fc"
     },
     {
+      "path": "SOURCE/bemarkdown/src/bemarkdown/static/formula_review/mathlive/LICENSE.txt",
+      "bytes": 1099,
+      "sha256": "3caebd18611959ca725ab976a004d408017eb1d7093d6c9b9b09c5a4790eaff8"
+    },
+    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_AMS-Regular.woff2",
       "bytes": 28076,
       "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308"
@@ -1301,11 +1211,6 @@
       "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
     },
     {
-      "path": "SOURCE/bemarkdown/src/bemarkdown/static/formula_review/mathlive/LICENSE.txt",
-      "bytes": 1099,
-      "sha256": "3caebd18611959ca725ab976a004d408017eb1d7093d6c9b9b09c5a4790eaff8"
-    },
-    {
       "path": "SOURCE/bemarkdown/src/bemarkdown/static/formula_review/mathlive/mathlive-fonts.css",
       "bytes": 3012,
       "sha256": "be6061a80fe44965402fb5fcfc9f33d07a28f3529b770c4540aad3cb2ac39f5c"
@@ -1391,49 +1296,299 @@
       "sha256": "708777b14388a6f22583fa09253ab0cdca333031ba03ebc4e3917665ed90862d"
     },
     {
-      "path": "tests/make_fixtures.py",
-      "bytes": 2804,
-      "sha256": "5a21bbc18301652be959f34c1e021e0fde358d214fefc0f2f62cd186c7f2e47a"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/configs/resource-policy.json",
+      "bytes": 2708,
+      "sha256": "f4fdb4e01c7b389ec6803911d7a074dbb263e32a75cba5509b5fca9aca2daf88"
     },
     {
-      "path": "tests/test_downloads.py",
-      "bytes": 1982,
-      "sha256": "2ae0bd1158b9628fc0b0c6fba71452bec166fd3fedf42155c07ffd2e9240d12f"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/prompts/model-decision-system.txt",
+      "bytes": 1491,
+      "sha256": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878"
     },
     {
-      "path": "tests/test_figure_ownership.py",
-      "bytes": 3065,
-      "sha256": "8ae66b3f8835123177a0a709bc088b9e53d617a0b2b0dfb53cbfdbe8d4d99c11"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/reports/extreme_aspect_padding_candidate.py",
+      "bytes": 1420,
+      "sha256": "1a3b4a17ec55bfcc152681c62956666eeea5998a5cdbac95c72bd360de40f5ab"
     },
     {
-      "path": "tests/test_installer.py",
-      "bytes": 15416,
-      "sha256": "b0c9f7c0b4cf46b4a29b68f15d3cba80a9bc8995ac2afe4fb53019429e955fa9"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/schemas/asset-plan.schema.json",
+      "bytes": 1714,
+      "sha256": "1aa1915131c58d3446e01e7babac73780600ee4ae530edb67bd1efd8c7dd0d71"
     },
     {
-      "path": "tests/test_mcp_sdk_session.py",
-      "bytes": 5850,
-      "sha256": "4f0f194f6795be63b4701fbd3b3fa5990e8a7f04ec41c8b38057f100915f7728"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/schemas/decision-response.schema.json",
+      "bytes": 360,
+      "sha256": "adb4c881233264b0336f06bd324b1b3ca7345485442f1c593a206c5f2e1477f1"
     },
     {
-      "path": "tests/test_prose_edge_crop.py",
-      "bytes": 2935,
-      "sha256": "164b0bbc47e1617dea100e1f18c7c5b1f2c4cf6fbf1da9536823452a52f30d7a"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/schemas/evidence-response.schema.json",
+      "bytes": 476,
+      "sha256": "59fa07c47d31135d04df86de61ce157cfed57ff054ffb21a2121dc8b5ad098e0"
     },
     {
-      "path": "tests/test_retention_distribution.py",
-      "bytes": 5896,
-      "sha256": "112795c040a9593c26279f4bbde989070331e5a09da87f61a5b1cfc140d22a05"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/schemas/input.schema.json",
+      "bytes": 5951,
+      "sha256": "ec962daee2448273f86342de546f1db36f7eb11f08a8647d89a05d1e3de52a3b"
     },
     {
-      "path": "tests/test_source_graphics_render.py",
-      "bytes": 16594,
-      "sha256": "94fe166719423234a048e80cb017affa91515e3197bac501c437286d569467b3"
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/schemas/prediction-freeze.schema.json",
+      "bytes": 1409,
+      "sha256": "2d31695ce8e066eeb84edac150acf2b6d110612c4d2f430933f49f60f3341c88"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/schemas/prediction.schema.json",
+      "bytes": 2001,
+      "sha256": "eda858da4a82632869c85aee2cae58153f23780861e35ffc4d5a5e0f01cfb2de"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/schemas/target.schema.json",
+      "bytes": 3817,
+      "sha256": "5e746cb51e24fe15e3fba87081867e17b3e214bd515535273950fde3eb70a0cd"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/build_bound_md_probe.py",
+      "bytes": 2491,
+      "sha256": "2cae9f36f5b64e27acc8984ec593f6731983f55e4acf7711436981119c5c63b8"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/build_zero99_locality_probe.py",
+      "bytes": 1987,
+      "sha256": "dbf54d8beece3dc29389768c0852527fb8d4ef6cb200753486331844555a9ac4"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/build_zero99_primitive_probe.py",
+      "bytes": 4880,
+      "sha256": "97163aaa6847bc5fee7e8fa4447d7e078cb562a7808980749908bbdc780ae757"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/build_zero99_spatial_probe.py",
+      "bytes": 2300,
+      "sha256": "a96c03ff0930ce3dbba6d4393c75141d94b224e98842c1873b7b8bfc01c67acb"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/cold_merge_stage.py",
+      "bytes": 3369,
+      "sha256": "5e69d2501f6812418419134c1cb179292771b1dcbdc8c6ced24b0cf3b6ff0feb"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/cold_semantic_inputs.py",
+      "bytes": 8203,
+      "sha256": "7ca05d421fc7fb44e218fe1c46dd74d84f5d80709bd999ab4c4eb569bf5988f2"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/cold_semantic_review.py",
+      "bytes": 15054,
+      "sha256": "89480716af9676fb9d53e183f8709aa1c1117ca32a1e8b19a22d4a566aa482c6"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/cold_source_choice.py",
+      "bytes": 3866,
+      "sha256": "113330aef4054f391646e94a22bae250fc7fa5a60c33238a5034aa3cc20e58da"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/cold_source_components.py",
+      "bytes": 12663,
+      "sha256": "6887d12cc6226b561adc6c6a8ebefe6219bdb62ff444fe20bb1ce973a551f867"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/contracts.py",
+      "bytes": 8522,
+      "sha256": "d05c1ce6c815d2751fc445bfabc27c384fccdd8facc00035e44028a5cb9a9e2d"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/dev_calibration.py",
+      "bytes": 361,
+      "sha256": "4eddcfcc14bad83a4091fe7ec26b06f1bb175009102feeef3f6492e4f16ffd96"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/hf_training_adapter.py",
+      "bytes": 6877,
+      "sha256": "57bd24704569fb08b7a61b6ef394a4f9a7ed52e53f7c4ad1403a56f7621783e2"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/inference_plan.py",
+      "bytes": 2776,
+      "sha256": "5f293becf6be31e8b27b53eec750823be415fc5ffffb7b03109d7caaf8a1d349"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/prepare_gguf_input_lengths.py",
+      "bytes": 2877,
+      "sha256": "e3d764cd9ae55cb35d8bce0f2ae24ea570f5f78bc87a0ffb290c96c322d351b3"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/prepare_zero99_semantic_toc_reviews.py",
+      "bytes": 1499,
+      "sha256": "e908afc76a4dd2b795d8d3bea9a223772b94fb210425775692a36ca50f6008d5"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/probe_gguf_image_runtime.py",
+      "bytes": 2551,
+      "sha256": "66520fda2b42fa76e5acdb7f45427c3f5bb7178b35136b57e09581cc46b9620c"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/probe_zero99_body_photo_dependency.py",
+      "bytes": 4363,
+      "sha256": "6891ec0ebf94b67ab68964bde7b8cd9513958a4486f0b95e526f8473fb323587"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/probe_zero99_body_photo_semantic_v3.py",
+      "bytes": 4394,
+      "sha256": "833731367e54b4fc1bea3420af5a7a4cfe33b76b7af465c5b637626c560f99ba"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/probe_zero99_evidence_contract.py",
+      "bytes": 1174,
+      "sha256": "ef68448b2b6924e2cbf6dd54cfe77c9ca80f5b65ae28156aff484fa97b050169"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/probe_zero99_photo_guard.py",
+      "bytes": 10472,
+      "sha256": "ab255cd1b0b2821635a812fbdd85aa21dfbc2af363b478e5d335710fc1096fc5"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/probe_zero99_toc_semantic.py",
+      "bytes": 2939,
+      "sha256": "ecefbe038e4f24060aa57322d2fa8d5991e007a6a31236d66d9c4d7a5376c850"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/probe_zero99_vector_visibility.py",
+      "bytes": 1091,
+      "sha256": "21aedc25837aa3df7ec077768921f840328776a7772d3e376c2684e7b189ffec"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/repair_zero99_toc_contract.py",
+      "bytes": 906,
+      "sha256": "82756698ee035c5acbc1e749dc7d088e5dcf347e9f35519efdc1cfe69ad1fafa"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/retention_inference.py",
+      "bytes": 10905,
+      "sha256": "199d9be6b0a82a79c8f41210bf63a6458c1776e1746f1a41b56c06bcb743116e"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/run_cold_semantic_pipeline.py",
+      "bytes": 9144,
+      "sha256": "f68340778f79ec626a23007f9d9df1d4b41e7da8fa0ffaecac92197f7da655ba"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/run_gguf_partition_predictions.py",
+      "bytes": 12386,
+      "sha256": "232f71a8f31668a04a83b79992e5162d592048a906ca1d6c10b11048465330b4"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/run_native_model_stage.py",
+      "bytes": 11787,
+      "sha256": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/run_zero99_fact_probe.py",
+      "bytes": 1034,
+      "sha256": "cac5de5cef89814a01c1ce9c20786c8ed158404d4adba3dc48019be7edc876e5"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/source_choice_option.py",
+      "bytes": 1807,
+      "sha256": "f99cb57314a6833c88a9bc355f59fe6684fa83eebf24469fb404b5e546b6a9c2"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/toc_footer_position.py",
+      "bytes": 1690,
+      "sha256": "58513bda65224b9b953633b2889c157fb32adec183d512649dd58cd318d0bcc0"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/toc_semantic_contract_v2.py",
+      "bytes": 2835,
+      "sha256": "d26012160b3b14a588aa49b05206c050beace1bd7e40ade617fedd67a51d2d03"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/training_state.py",
+      "bytes": 5489,
+      "sha256": "14103dce21503ad45f40cb45455b1e3521e1f4165caed3a8b53deaa4849cb4c5"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/zero99_registered_component.py",
+      "bytes": 3586,
+      "sha256": "e1792e88a3bbf4de60e4b6fd6f46baac8b55361540f291bf9af42da26b264777"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/bemarkdown-retention-training/tools/zero99_toc_evidence.py",
+      "bytes": 1911,
+      "sha256": "7af52990a8c209ba531d805dd542666df61850c10213f389c1c965078ff4ad7b"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/education_mcp/context_retention.py",
+      "bytes": 2849,
+      "sha256": "b44cbdf6f7eefde3a1e8aeaf8309e188d052b6f3205fcf1a3231e432c4076958"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/education_mcp/image_occurrences.py",
+      "bytes": 7055,
+      "sha256": "a75e92e3dcd279090afd42a29daf7b6bbbbb9552c05e631b06ec3b3de5a14457"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/projects/education_mcp/retention_context_v8_7.py",
+      "bytes": 11679,
+      "sha256": "4f2ae67318cfd5c6236282aa3b175a975f9fe6f72715d69a3c33c75ec0d24f9e"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/memory_guard_v33.py",
+      "bytes": 934,
+      "sha256": "ddb81df2eecdfd60dc8248cdcaed26b9919b62349450c0d147a422b51b8997c2"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/memory_watchdog_v34.py",
+      "bytes": 2443,
+      "sha256": "4060f0f08b2ea708c45436bf80f10508b3fe8c8d7b8ce7634569724a6e51f562"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/source_builder_v29.py",
+      "bytes": 4332,
+      "sha256": "ecbeb8bff2c482ca2da8aa128c9ce6e923a50f3b5da68f3e6c2d59db599ba619"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/source_pairing_v20.py",
+      "bytes": 2525,
+      "sha256": "21cb73c0ac4d9d8f3d6d1b0d1efb29c177f81e5fed879cebd18e67cb7b246e41"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/source_pairing_v24.py",
+      "bytes": 2159,
+      "sha256": "1da82b3d246677cd8317416557d13b1659b20f14ab0f2feb4c78bd1eabc9c39c"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/v21-source-attribution/source_pairing_v21.py",
+      "bytes": 1670,
+      "sha256": "c35a56d63492d061a127b06633b17d0930ab6cbc6751f17851f530c969d712c0"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/v36-low-commit/job_family_v4.py",
+      "bytes": 4470,
+      "sha256": "8e23d51897d14d86d432b760a7243c87de123f6e6c7cb9b37dc5735ba4fdb83b"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/v36-low-commit/probe.py",
+      "bytes": 3322,
+      "sha256": "41f8b0e07eafaa0d2750b54e5a944187abcb158ce23c3d1f38d1b802da9e8820"
+    },
+    {
+      "path": "SOURCE/semantic_retention_engine/tmp/retention-v6-20261003/v41-family-monitor-bounded/job_family_v41.py",
+      "bytes": 5244,
+      "sha256": "f3b0387f56575e771be88e59893b39c51f7511456a3c9fc59e47682846fd095d"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
       "bytes": 2040,
       "sha256": "69edce6e04a9ca59decee94300e12bc39e4c523dc12324beacc7e175f351f0ce"
+    },
+    {
+      "path": "TOOLS/bemarkdown/RELEASE_MANIFEST.json",
+      "bytes": 504,
+      "sha256": "10bc9c2dc201ea6171456c25aef66cec56888235cee19515db2d17b8f8f02c1c"
+    },
+    {
+      "path": "TOOLS/bemarkdown/TOOL_MANIFEST.json",
+      "bytes": 74696,
+      "sha256": "04f593e285c1439843674d49bab7d78cafcc3f9fab96a4de195d721820f84078"
     },
     {
       "path": "TOOLS/bemarkdown/bemarkdown.toml",
@@ -1496,9 +1651,9 @@
       "sha256": "7b60f9bb01aeec0aa996c4e85eafc2720ff23bab8b61f650964bbe6569d75e2f"
     },
     {
-      "path": "TOOLS/bemarkdown/RELEASE_MANIFEST.json",
-      "bytes": 504,
-      "sha256": "10bc9c2dc201ea6171456c25aef66cec56888235cee19515db2d17b8f8f02c1c"
+      "path": "TOOLS/bemarkdown/runtime/RUNTIME_MANIFEST.json",
+      "bytes": 26503,
+      "sha256": "6cf6b219d6eff602550144b1c5b94335f1ec2458701969ce8434c123cbe5ed69"
     },
     {
       "path": "TOOLS/bemarkdown/runtime/model_suite.json",
@@ -1541,11 +1696,6 @@
       "sha256": "c6bc54186439683d117b5bcd2b7c21a867b31f9087e26427a6b187e3a8b63e9e"
     },
     {
-      "path": "TOOLS/bemarkdown/runtime/RUNTIME_MANIFEST.json",
-      "bytes": 26503,
-      "sha256": "6cf6b219d6eff602550144b1c5b94335f1ec2458701969ce8434c123cbe5ed69"
-    },
-    {
       "path": "TOOLS/bemarkdown/scripts/bootstrap.ps1",
       "bytes": 593,
       "sha256": "995aa053226429f5bfc11976d491f4df296453460ff50af2838e19d59c6a24fe"
@@ -1556,9 +1706,24 @@
       "sha256": "444872334585e887b737749ba0186feb3e11d1648aeec8c5bade51f29da7731e"
     },
     {
-      "path": "TOOLS/bemarkdown/TOOL_MANIFEST.json",
-      "bytes": 74696,
-      "sha256": "04f593e285c1439843674d49bab7d78cafcc3f9fab96a4de195d721820f84078"
+      "path": "TOOLS/education_mcp/IMAGE_SCREENING.md",
+      "bytes": 9208,
+      "sha256": "3fb4dbbaf96bd1e23237be5b53063251f3f77d929627175a72ced4515c426a22"
+    },
+    {
+      "path": "TOOLS/education_mcp/README.md",
+      "bytes": 16860,
+      "sha256": "ac2268beae0938602aa490d48e1bb540450e89f764c3a9018a5a1b048aa333e8"
+    },
+    {
+      "path": "TOOLS/education_mcp/RELEASE_MANIFEST.json",
+      "bytes": 3073,
+      "sha256": "179d531b2b1332c5f51fcd8de0b85d86104ab52c4b32fd6d5e1a58adc49a5f7f"
+    },
+    {
+      "path": "TOOLS/education_mcp/SEMANTIC_IMAGE_REVIEW_20260913.md",
+      "bytes": 3237,
+      "sha256": "168f51a3853fa681b8f4be581956877e06082f5383de62ab5e11ecdee0741bcc"
     },
     {
       "path": "TOOLS/education_mcp/asset_screening.py",
@@ -1581,11 +1746,6 @@
       "sha256": "74b9ae7f13882547eaaf3ddd31f50de19a193678285e173fe164da65a99de7ef"
     },
     {
-      "path": "TOOLS/education_mcp/IMAGE_SCREENING.md",
-      "bytes": 9208,
-      "sha256": "3fb4dbbaf96bd1e23237be5b53063251f3f77d929627175a72ced4515c426a22"
-    },
-    {
       "path": "TOOLS/education_mcp/install.py",
       "bytes": 948,
       "sha256": "9d98cde268bd50cd90f9d4b0d3909c715cb1c059d96bd8716789d1cb303256b3"
@@ -1594,16 +1754,6 @@
       "path": "TOOLS/education_mcp/launch.py",
       "bytes": 1854,
       "sha256": "c67b509f1e02ae46e2b9a1328c0fb9fc870edf3da9f9d0cf789d2e80a38f3be6"
-    },
-    {
-      "path": "TOOLS/education_mcp/README.md",
-      "bytes": 16860,
-      "sha256": "ac2268beae0938602aa490d48e1bb540450e89f764c3a9018a5a1b048aa333e8"
-    },
-    {
-      "path": "TOOLS/education_mcp/RELEASE_MANIFEST.json",
-      "bytes": 3073,
-      "sha256": "179d531b2b1332c5f51fcd8de0b85d86104ab52c4b32fd6d5e1a58adc49a5f7f"
     },
     {
       "path": "TOOLS/education_mcp/review_handoff.py",
@@ -1666,11 +1816,6 @@
       "sha256": "ad2e566c990053ffabe93853e82ae17e158f9f88a87b1aeed9a9afe0a151c4e2"
     },
     {
-      "path": "TOOLS/education_mcp/SEMANTIC_IMAGE_REVIEW_20260913.md",
-      "bytes": 3237,
-      "sha256": "168f51a3853fa681b8f4be581956877e06082f5383de62ab5e11ecdee0741bcc"
-    },
-    {
       "path": "TOOLS/education_mcp/semantic_review.py",
       "bytes": 5194,
       "sha256": "f1ae3fc8bbe4cc8bd336cf6f5e48917ba70429fe5925e1a45ccdb2b4f580581e"
@@ -1704,6 +1849,241 @@
       "path": "TOOLS/education_mcp/workspace_template.json",
       "bytes": 1762,
       "sha256": "48e33974a49a16bddbc58f20601c6fc3714ecd1f5f8aa59929080847ed4c67a5"
+    },
+    {
+      "path": "TOOLS/semantic_retention/LICENSE",
+      "bytes": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "path": "TOOLS/semantic_retention/PUBLIC_RUNTIME_LOCK.json",
+      "bytes": 5728,
+      "sha256": "2e80a045ec987249c1421d2de0c898b4996c436c6b7b027edfa3841038b19e2b"
+    },
+    {
+      "path": "TOOLS/semantic_retention/QUALIFICATION.json",
+      "bytes": 1485,
+      "sha256": "d10ce1bfd547b440a4a6f62f740ed653046efb7a44b8dc65d04abdce86c716b5"
+    },
+    {
+      "path": "TOOLS/semantic_retention/README.md",
+      "bytes": 3747,
+      "sha256": "7f65f230b764d6cca9e3fe5d281270729abe3f746b8c2097169b869c94509317"
+    },
+    {
+      "path": "TOOLS/semantic_retention/RELEASE_MANIFEST.json",
+      "bytes": 2758,
+      "sha256": "58fad49bf5b0f15a084cacc7b1d70011d587ac2e5544df0bfb3c60487249d4dc"
+    },
+    {
+      "path": "TOOLS/semantic_retention/SCHEME.json",
+      "bytes": 887,
+      "sha256": "c664d77afaed2bec191ebf5e97ef5f125eb7a66b4695a8b5f1c0b9afe41c9847"
+    },
+    {
+      "path": "TOOLS/semantic_retention/THIRD_PARTY_NOTICES.md",
+      "bytes": 499,
+      "sha256": "67f6bbeb6f4d68feff14b1450abc3337bf8b571ac32daaf4adc5dba5e28bac80"
+    },
+    {
+      "path": "TOOLS/semantic_retention/TOOL_MANIFEST.json",
+      "bytes": 523,
+      "sha256": "dd4a96f4cabac987d564b50110b9c1186b8e94ff460444da05ae06108fed7b0c"
+    },
+    {
+      "path": "TOOLS/semantic_retention/bootstrap.py",
+      "bytes": 5474,
+      "sha256": "a93df42fb8811f9a9cf22090056f9612f58b9ff275ddf3644b9995c39fc399cd"
+    },
+    {
+      "path": "TOOLS/semantic_retention/dist/engine-manifest.json",
+      "bytes": 25392,
+      "sha256": "eebfa2adc9748ef5b6b59eda54090e04daacd49185a4a47a2381993c37bf1c28"
+    },
+    {
+      "path": "TOOLS/semantic_retention/dist/engine.zip",
+      "bytes": 103003,
+      "sha256": "edfcaef2d4a4d09909152c41cfee27ed3af90feccbbe3e86818b30819ceeb4b7"
+    },
+    {
+      "path": "TOOLS/semantic_retention/launch.ps1",
+      "bytes": 927,
+      "sha256": "091a5af5efa0b2ecd43fd3d4b09aca4a064e70a7a65c9de0c56ed0c6de48e0e5"
+    },
+    {
+      "path": "TOOLS/semantic_retention/server.py",
+      "bytes": 10276,
+      "sha256": "e20c1bc011f0ef3961f8908366f35812159109e2d43515f83cf9a44281d3d8ee"
+    },
+    {
+      "path": "TOOLS/semantic_retention/source_prepare.py",
+      "bytes": 16127,
+      "sha256": "e3eb9d373fb66a0f89555d1ed29720af727de51bc7c618dc1d368a71ae0be479"
+    },
+    {
+      "path": "TOOLS/semantic_retention/worker.py",
+      "bytes": 6021,
+      "sha256": "70b8a2696f7b56c78b7ea35e91c3f7f848a82836658d717327f8b97cc849ce23"
+    },
+    {
+      "path": "docs/BEMARKDOWN_TECHNICAL_SCHEME.md",
+      "bytes": 12302,
+      "sha256": "1cfdb97f3c2d5bbf009ace6655a0c39f779e5bc05b453057310b65d0a97ccac2"
+    },
+    {
+      "path": "docs/EXTENDING.md",
+      "bytes": 2982,
+      "sha256": "439ceeaa30c15c7c23cfce767d2a43f38a63968f18842fb52cd1585ca74fa906"
+    },
+    {
+      "path": "docs/FIGURE_OWNERSHIP_20260922.md",
+      "bytes": 1868,
+      "sha256": "afa3fc5a5361725e13383c149998a857d8baa804998d9d29530a55d3e1836713"
+    },
+    {
+      "path": "docs/INSTALLATION_UPGRADE.md",
+      "bytes": 3556,
+      "sha256": "b5dc85ece2c7409898d5c0e1f67aed3df67ab3e77444f756d12e071b60f4b31f"
+    },
+    {
+      "path": "docs/LICENSE_AUDIT.md",
+      "bytes": 5899,
+      "sha256": "28a7b6eaf8199a24b73f36d6e0821d73b40af7385ec266b4da24cb2c792466a8"
+    },
+    {
+      "path": "docs/RELEASE_20261007.md",
+      "bytes": 1969,
+      "sha256": "d3b5ef9d424b7cf1f37ce82813d48afeab216bbe039d7bb2f66f0593c6192ab7"
+    },
+    {
+      "path": "docs/SEMANTIC_RETENTION.md",
+      "bytes": 3507,
+      "sha256": "ec389d74f49669d01f08e54736224b2280913d6471fba412576adf5cd8e5d161"
+    },
+    {
+      "path": "docs/VALIDATION.md",
+      "bytes": 8082,
+      "sha256": "7a44105373cb385694def25a09af5b4363bc06d5684afa74ebd3efe8bdf616b4"
+    },
+    {
+      "path": "licenses/KaTeX-fonts-MIT.txt",
+      "bytes": 1079,
+      "sha256": "a7bd44abd8419bf78185be51f34216356af1adb0806ce39d6a9ca0940bd49b70"
+    },
+    {
+      "path": "licenses/model-sources.json",
+      "bytes": 4365,
+      "sha256": "a17308850ce2efd355bb63ea3ab5577ce7232439cb83b4dcf837d9eb5a4235c9"
+    },
+    {
+      "path": "licenses/runtime-components.json",
+      "bytes": 210739,
+      "sha256": "19193cf94f3c2dca0034079ffb103cdf86c90110e4bf3381faadee886c0c64de"
+    },
+    {
+      "path": "scripts/download_retention_model.py",
+      "bytes": 3823,
+      "sha256": "5b817b0b3fd82223528de191cdf9a63a97d648ccf2e5ba296560e4ac49c9a49c"
+    },
+    {
+      "path": "scripts/downloads.py",
+      "bytes": 4476,
+      "sha256": "e1b904aaea00ab73f9329d2976e413e65135cbc9620017f78a45d1fc3ac4b32a"
+    },
+    {
+      "path": "scripts/external-source.json",
+      "bytes": 237,
+      "sha256": "f868ef87891c5f18d3312195811d193b69f66087640882588ef3334ab0de8c4e"
+    },
+    {
+      "path": "scripts/install_qwen_runtime.py",
+      "bytes": 3271,
+      "sha256": "3905c4520116f9d289a6fc3ec2c6e65b19a7685061a9172b7518f5a15024d0f8"
+    },
+    {
+      "path": "scripts/install_semantic_retention.py",
+      "bytes": 7623,
+      "sha256": "2b8f6c6fda695e646eccaed1779ab5dfad6fbf7096be73c8dc0d6b91c38933ce"
+    },
+    {
+      "path": "scripts/model-downloads.json",
+      "bytes": 33438,
+      "sha256": "1e30e956150a49f119caee1e3e47ccc7317dc414e9e8e41e21f6aca25dc94c22"
+    },
+    {
+      "path": "scripts/requirements-pypi.lock",
+      "bytes": 2101,
+      "sha256": "8f1263b7bd12f39cb0b98315fb8ad060a6e440ab3c468daae9b3f9bc19a24aca"
+    },
+    {
+      "path": "scripts/retention-model-weights.json",
+      "bytes": 5056,
+      "sha256": "d4393ccd49426370b806b59655ec7a277911ad3343bd20aa6c35df37755276b3"
+    },
+    {
+      "path": "scripts/runtime_setup.py",
+      "bytes": 10268,
+      "sha256": "065c811fcbf596163f686b37cfef0bb48c4d289653e1c3e044bd9b379d26bcb7"
+    },
+    {
+      "path": "scripts/setup.py",
+      "bytes": 11113,
+      "sha256": "72911bafd6214ab0332b3f1e25a05e2cc0f1eca21dcbfb14d7275f3629c112ab"
+    },
+    {
+      "path": "scripts/verify_release.py",
+      "bytes": 4686,
+      "sha256": "0a1b185058677e04a4766498bf30967b1defad42eea8290fb34da9bbbb00e183"
+    },
+    {
+      "path": "setup.ps1",
+      "bytes": 5506,
+      "sha256": "98d30b9a7682e7cdb731d5b9672b9389141cd1152a8b07547e43be8e116d44c2"
+    },
+    {
+      "path": "tests/make_fixtures.py",
+      "bytes": 2804,
+      "sha256": "5a21bbc18301652be959f34c1e021e0fde358d214fefc0f2f62cd186c7f2e47a"
+    },
+    {
+      "path": "tests/test_downloads.py",
+      "bytes": 1982,
+      "sha256": "2ae0bd1158b9628fc0b0c6fba71452bec166fd3fedf42155c07ffd2e9240d12f"
+    },
+    {
+      "path": "tests/test_figure_ownership.py",
+      "bytes": 3065,
+      "sha256": "8ae66b3f8835123177a0a709bc088b9e53d617a0b2b0dfb53cbfdbe8d4d99c11"
+    },
+    {
+      "path": "tests/test_installer.py",
+      "bytes": 15416,
+      "sha256": "b0c9f7c0b4cf46b4a29b68f15d3cba80a9bc8995ac2afe4fb53019429e955fa9"
+    },
+    {
+      "path": "tests/test_mcp_sdk_session.py",
+      "bytes": 5850,
+      "sha256": "4f0f194f6795be63b4701fbd3b3fa5990e8a7f04ec41c8b38057f100915f7728"
+    },
+    {
+      "path": "tests/test_prose_edge_crop.py",
+      "bytes": 2935,
+      "sha256": "164b0bbc47e1617dea100e1f18c7c5b1f2c4cf6fbf1da9536823452a52f30d7a"
+    },
+    {
+      "path": "tests/test_retention_distribution.py",
+      "bytes": 5896,
+      "sha256": "112795c040a9593c26279f4bbde989070331e5a09da87f61a5b1cfc140d22a05"
+    },
+    {
+      "path": "tests/test_semantic_retention_public.py",
+      "bytes": 2928,
+      "sha256": "9331e68859a43fa749290b79071ace4df378cfc683f6f1efd51c76b2eeecd18b"
+    },
+    {
+      "path": "tests/test_source_graphics_render.py",
+      "bytes": 16594,
+      "sha256": "94fe166719423234a048e80cb017affa91515e3197bac501c437286d569467b3"
     }
   ],
   "verification": {

@@ -40,6 +40,8 @@ def run(command, log, *, capture=False):
 def models(selection, cache, local_cache=None, workers=8, include_retention=False):
     plan = read(ROOT / 'scripts/model-downloads.json')['models']
     for model in plan:
+        if model.get('distribution') == 'standalone-semantic':
+            continue  # Installed only by the explicit semantic-retention installer.
         if model.get('distribution') == 'github-release' and not include_retention:
             continue
         if selection == 'conversion' and model['purpose'] != 'conversion':

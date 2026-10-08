@@ -1,0 +1,83 @@
+{
+  "schema": "semantic-retention-release-v1",
+  "release_id": "semantic-retention-20261008-v1",
+  "publication": {
+    "status": "FROZEN_PUBLIC_STANDALONE",
+    "distribution_scope": "PUBLIC",
+    "bemarkdown_connected": false,
+    "github_published": true,
+    "fully_offline_installer_ready": false
+  },
+  "qualification": "QUALIFICATION.json",
+  "payload_files": {
+    "bootstrap.py": {
+      "bytes": 5474,
+      "sha256": "a93df42fb8811f9a9cf22090056f9612f58b9ff275ddf3644b9995c39fc399cd"
+    },
+    "dist/engine-manifest.json": {
+      "bytes": 25392,
+      "sha256": "eebfa2adc9748ef5b6b59eda54090e04daacd49185a4a47a2381993c37bf1c28"
+    },
+    "dist/engine.zip": {
+      "bytes": 103003,
+      "sha256": "edfcaef2d4a4d09909152c41cfee27ed3af90feccbbe3e86818b30819ceeb4b7"
+    },
+    "launch.ps1": {
+      "bytes": 927,
+      "sha256": "091a5af5efa0b2ecd43fd3d4b09aca4a064e70a7a65c9de0c56ed0c6de48e0e5"
+    },
+    "LICENSE": {
+      "bytes": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    "PUBLIC_RUNTIME_LOCK.json": {
+      "bytes": 5728,
+      "sha256": "2e80a045ec987249c1421d2de0c898b4996c436c6b7b027edfa3841038b19e2b"
+    },
+    "QUALIFICATION.json": {
+      "bytes": 1485,
+      "sha256": "d10ce1bfd547b440a4a6f62f740ed653046efb7a44b8dc65d04abdce86c716b5"
+    },
+    "README.md": {
+      "bytes": 3747,
+      "sha256": "7f65f230b764d6cca9e3fe5d281270729abe3f746b8c2097169b869c94509317"
+    },
+    "SCHEME.json": {
+      "bytes": 887,
+      "sha256": "c664d77afaed2bec191ebf5e97ef5f125eb7a66b4695a8b5f1c0b9afe41c9847"
+    },
+    "server.py": {
+      "bytes": 10276,
+      "sha256": "e20c1bc011f0ef3961f8908366f35812159109e2d43515f83cf9a44281d3d8ee"
+    },
+    "source_prepare.py": {
+      "bytes": 16127,
+      "sha256": "e3eb9d373fb66a0f89555d1ed29720af727de51bc7c618dc1d368a71ae0be479"
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "bytes": 499,
+      "sha256": "67f6bbeb6f4d68feff14b1450abc3337bf8b571ac32daaf4adc5dba5e28bac80"
+    },
+    "TOOL_MANIFEST.json": {
+      "bytes": 523,
+      "sha256": "dd4a96f4cabac987d564b50110b9c1186b8e94ff460444da05ae06108fed7b0c"
+    },
+    "worker.py": {
+      "bytes": 6021,
+      "sha256": "70b8a2696f7b56c78b7ea35e91c3f7f848a82836658d717327f8b97cc849ce23"
+    }
+  },
+  "validation": {
+    "four_asset_live_prediction_parity": true,
+    "frozen_source_parity_members": 625,
+    "contract_checks": 17,
+    "full_benchmark_repeated_for_packaging": false,
+    "full_cold_benchmark_requires_checkpoint_recovery": true
+  },
+  "public_adaptations": [
+    "local runtime registration pointer",
+    "public model metadata fingerprints",
+    "source mirror and pinned upstream installer"
+  ],
+  "original_formal_release_id": "semantic-retention-20261008-v1"
+}

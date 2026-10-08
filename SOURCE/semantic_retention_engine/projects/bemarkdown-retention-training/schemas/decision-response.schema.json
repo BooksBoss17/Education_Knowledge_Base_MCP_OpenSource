@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.bemarkdown.invalid/retention-training/decision-response",
+  "type": "object",
+  "properties": {
+    "verdict": {
+      "enum": [
+        "K",
+        "D",
+        "U"
+      ]
+    }
+  },
+  "required": [
+    "verdict"
+  ],
+  "additionalProperties": false
+}

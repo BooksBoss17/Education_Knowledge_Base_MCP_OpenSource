@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "units": "GiB unless explicitly MiB",
+  "host_floors": {
+    "commit_headroom_gib": 3.0,
+    "physical_available_gib": 2.0
+  },
+  "training": {
+    "project_cap_gib": null,
+    "policy": "dynamic_remaining_resources",
+    "controller_reserve_gib": 0.25,
+    "admissible_private_gib_formula": "fresh_commit_headroom - training emergency_commit_headroom_gib - controller_reserve; hard owned Job cap; physical RAM and GPU admission remain required",
+    "admissible_ram_gib_formula": "fresh_physical_available -2.0 -controller_reserve",
+    "gpu_free_reserve_gib": 1.0,
+    "require_phase_specific_peak_estimate": true,
+    "unsafe_or_unknown_admission": "stop_before_heavy_load_and_report_resource_gap",
+    "no_fixed_six_gib_cap": true,
+    "only_one_large_model_at_a_time": true,
+    "dataset_workers": 0,
+    "physical_gpu_primary_admission": true,
+    "emergency_commit_headroom_gib": 0.5,
+    "user_authorization": "2026-10-05: user permits autonomous execution when physical RAM and VRAM headroom suffice; supersedes prior conservative fixed commit admission planning for training",
+    "system_settings_changed": false
+  },
+  "deployment": {
+    "project_working_set_cap_gib": 6.0,
+    "project_private_commit_cap_gib": 6.0,
+    "counts_scope": "whole_owned_BeMarkdown_pipeline_not_only_classifier",
+    "proposed_model_vram_planning_cap_gib": 8.0,
+    "device_free_reserve_gib": 1.0,
+    "vram_status": "8GiB is proposed design budget, not previously user-specified hard number",
+    "vram_if_process_attribution_unavailable": "report whole-device baseline/peak and guard free reserve; never label baseline-subtracted delta as exact model VRAM",
+    "unload_idle_OCR_and_other_owned_models_before_filter": true,
+    "formal_MCP_publication_authorized": false
+  },
+  "supervision": {
+    "sample_interval_seconds": 1,
+    "bounded_recent_samples": 64,
+    "stream_jsonl": true,
+    "save_stop_flag_before_termination": true,
+    "windows": "owned Job dynamic members + controller, PID/exe/create-time verified, page-aligned limits",
+    "wsl": "host floor/heartbeat monitor + owned Linux PGID/start-time (or delegated cgroup); no wsl --shutdown and no killing shared vmmem",
+    "gpu_oom": "save native diagnostics and last-valid checkpoint; at most two predeclared resource-profile adjustments, each revalidated",
+    "close_unrelated_apps_or_change_pagefile_driver": "not_authorized"
+  },
+  "disk": {
+    "work_cache_relative_to_repository": "tmp/rt-train",
+    "planning_envelope_gib": 120,
+    "minimum_free_disk_gib": 50,
+    "space_preallocated": false,
+    "delete_other_tasks_or_historical_evidence": false
+  }
+}

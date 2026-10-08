@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.bemarkdown.invalid/retention-training/prediction-freeze",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "evaluation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expected_inputs_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "expected_members_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "prediction_file_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "model_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "policy_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "complete": {
+      "const": true
+    },
+    "frozen_at_utc": {
+      "type": "string",
+      "minLength": 1
+    },
+    "score_after_freeze": {
+      "const": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "evaluation_id",
+    "expected_inputs_sha256",
+    "expected_members_sha256",
+    "prediction_file_sha256",
+    "model_fingerprint",
+    "policy_fingerprint",
+    "count",
+    "complete",
+    "frozen_at_utc",
+    "score_after_freeze"
+  ],
+  "additionalProperties": false
+}

@@ -7,13 +7,13 @@
       "model_id": "bemarkdown-retention-b200",
       "physical_directory": "BeMarkdown-Retention-B200",
       "manifest_path": "BeMarkdown-Retention-B200/MODEL_MANIFEST.json",
-      "manifest_sha256": "d89e095063245cea71b3bbd0c978c2ee465125ef20e97bdb24289055314570c1",
-      "model_fingerprint": "623e63e65901b0e2bcd69229032b339c5277e66f0de880818696c47febe44fb6",
+      "manifest_sha256": "12a1d4bdc51b4b3c21ceca15e5744a0d6e3ebfa8d917264f17dbbe63276d4de7",
+      "model_fingerprint": "f90d9a016408fbfb7db56ae541ed92f20d47b70085aa3f3421348106a6259dee",
       "task": "image_retention",
       "provider": "llama.cpp / PEFT",
-      "state": "ASSETS_ONLY_NOT_INTEGRATED",
-      "file_count": 8,
-      "total_bytes": 3577842851
+      "state": "STANDALONE_SEMANTIC_SCHEME",
+      "file_count": 16,
+      "total_bytes": 3600755576
     },
     {
       "model_id": "ovis-ocr2",
@@ -100,6 +100,18 @@
       "total_bytes": 8059521975
     },
     {
+      "model_id": "qwen35-9b-semantic-reviewer",
+      "physical_directory": "Qwen3.5-9B-Semantic-Reviewer",
+      "manifest_path": "Qwen3.5-9B-Semantic-Reviewer/MODEL_MANIFEST.json",
+      "manifest_sha256": "2e13e8313877ab83f13cb93eb4d8ea10390b21df5a484f5099e7a8c4b87216ba",
+      "model_fingerprint": "4c001ab8883d2bad2b7778c9154b4fc788781271ba48cdbf6c20782223233143",
+      "task": "image_retention_semantic_review",
+      "provider": "llama.cpp",
+      "state": "STANDALONE_SEMANTIC_SCHEME",
+      "file_count": 3,
+      "total_bytes": 5591821182
+    },
+    {
       "model_id": "rt-detr-l-wired-table-cell-det",
       "physical_directory": "RT-DETR-L_wired_table_cell_det",
       "manifest_path": "RT-DETR-L_wired_table_cell_det/MODEL_MANIFEST.json",
@@ -172,6 +184,6 @@
       "total_bytes": 1773842400
     }
   ],
-  "model_count": 14,
-  "registry_fingerprint": "c0aff9858a4afc75b6064c4c9f7e100a09e1b0d6c9150e5f46262a0bcdf462e5"
+  "model_count": 15,
+  "registry_fingerprint": "aa8f714ca1f0bc6f0217445d0334b07012b2d67060c7a45f17cc159f20bdbf54"
 }

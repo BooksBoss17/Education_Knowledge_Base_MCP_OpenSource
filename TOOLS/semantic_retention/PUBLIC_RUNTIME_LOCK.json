@@ -1,0 +1,174 @@
+{
+  "python_sha256": "6461fe8dc13c642302f591c0c1c16b220629f7a336f74ce88aa2cdd31c43e62a",
+  "inference_versions": {
+    "torch": "2.10.0+cu130",
+    "transformers": "5.5.0",
+    "tokenizers": "0.22.2",
+    "numpy": "2.5.3",
+    "Pillow": "12.3.0",
+    "safetensors": "0.8.0",
+    "jsonschema": "4.26.0"
+  },
+  "source_python_sha256": "3cce33d75d6fdae4e004d0bdf149320b3147482a9caf370079dcb9c191a1b260",
+  "source_versions": {
+    "PyMuPDF": "1.27.2.3",
+    "numpy": "2.2.6",
+    "Pillow": "10.4.0",
+    "scipy": "1.15.3",
+    "jsonschema": "4.26.0"
+  },
+  "llama_files": [
+    {
+      "file": "cublas64_12.dll",
+      "sha256": "e40202fe4223c1cd2d2dce7beec59e1ed61c7801bd827309183be9b50e358f4c"
+    },
+    {
+      "file": "cublasLt64_12.dll",
+      "sha256": "2a896460bef60ed57ef32b0875812f355a6984e671d638bb632f5e8c1d7a831f"
+    },
+    {
+      "file": "cudart64_12.dll",
+      "sha256": "d28e42265da7462162a54da6b7a99ea4fa2caf8139d862bb500db875d0b32dfc"
+    },
+    {
+      "file": "ggml-base.dll",
+      "sha256": "be315e18c795d15658f5d13b4a6e0b4cd534b7d69f6d4093db60ea74b0ada159"
+    },
+    {
+      "file": "ggml-cpu-alderlake.dll",
+      "sha256": "ccd9f3c469b360afd285a2a96c84474483e0be728046f4fdd5b1a71ed735648a"
+    },
+    {
+      "file": "ggml-cpu-cannonlake.dll",
+      "sha256": "e90b05f511dcc5df41f1a893c2e0aa9d5d20cc1ee41a064b1f85e7ed3c76da5e"
+    },
+    {
+      "file": "ggml-cpu-cascadelake.dll",
+      "sha256": "d30b718b83994b5fb582486145cbda054d5431f3699da9e938930132777b2530"
+    },
+    {
+      "file": "ggml-cpu-cooperlake.dll",
+      "sha256": "7c31b2439675d8c4be74a6a84d4d7747805ba9c51253ec4d87e7a3f767048877"
+    },
+    {
+      "file": "ggml-cpu-haswell.dll",
+      "sha256": "18c5489f5ef7260f198d18ba53056a63bfec625d7f91a9bee1a5226baea167bd"
+    },
+    {
+      "file": "ggml-cpu-icelake.dll",
+      "sha256": "55a4dde89c6e27142c7f7157b3eca2cbec15ae2ba6bc14172e4d73bb97bca3de"
+    },
+    {
+      "file": "ggml-cpu-ivybridge.dll",
+      "sha256": "bdca4d6649f1776f74d20698dab32f52d7cce4fd3e216facf6d27a461e7d31c6"
+    },
+    {
+      "file": "ggml-cpu-piledriver.dll",
+      "sha256": "2daf851d57d4556acafc01cb69626603ce13b7bbbe147ebaa471f67d96b65a8c"
+    },
+    {
+      "file": "ggml-cpu-sandybridge.dll",
+      "sha256": "6c6edc12155f798bdb6e82bdf905179f921dc250a8bd81f5a494cdeafa3ceb68"
+    },
+    {
+      "file": "ggml-cpu-sapphirerapids.dll",
+      "sha256": "dd05f6c9dfb65141c8532994d0a55014cbf8f1a0400fe83f8ebded6bef3c46e1"
+    },
+    {
+      "file": "ggml-cpu-skylakex.dll",
+      "sha256": "8a0b58839ac30b5d72c58808604e33e6f3262a43bd78167e0782f9945357700e"
+    },
+    {
+      "file": "ggml-cpu-sse42.dll",
+      "sha256": "9f824721d0df4bd8ec6849b1ff550b4d02dcc5d53a016ec41237ffbbd0417f03"
+    },
+    {
+      "file": "ggml-cpu-x64.dll",
+      "sha256": "ff312c4aa238d96ff6297384469235e37dde22a82df442d5b903546cf997b9c2"
+    },
+    {
+      "file": "ggml-cpu-zen4.dll",
+      "sha256": "06660a9ef42529bd49ee9f0fbc517a966c8b188097157c0eff0bbda256bdf75b"
+    },
+    {
+      "file": "ggml-cuda.dll",
+      "sha256": "a5a5e1e6c4a7cf9575ad7929dd1b5aca08dfbcbea2002e02b554a4895e03c679"
+    },
+    {
+      "file": "ggml-rpc.dll",
+      "sha256": "a0ce8dca03a4c7dce8c666a908f99ee7ae8ae83ceb410c27d93e9f16cd7d136f"
+    },
+    {
+      "file": "ggml.dll",
+      "sha256": "da454325a1cdb658c469983ef78bc7c23a2729394607c2583446db4c19f7bcda"
+    },
+    {
+      "file": "libomp.dll",
+      "sha256": "a12116ba72d1d6820407cf30be23da04ce79d6bb8a71a5ee71759c5a1faa6f1c"
+    },
+    {
+      "file": "llama-batched-bench-impl.dll",
+      "sha256": "492bbe1f6e56159a2b62976f2e56127d4a4cc70b0f605df07bed0528d1660167"
+    },
+    {
+      "file": "llama-bench-impl.dll",
+      "sha256": "7516b65ad8499d4a2022f6069bb6b9c164ae3da0b510a28beef4b6b8b27ef28e"
+    },
+    {
+      "file": "llama-cli-impl.dll",
+      "sha256": "86ecca1c6ec6fffe31ea10a6632c091b974d0f503cbf1d4ac173b5063688d10c"
+    },
+    {
+      "file": "llama-common.dll",
+      "sha256": "5a07bd8dfb7626476a47b4931e278c82518991b4faf85ce42cde82eb0ce6bb50"
+    },
+    {
+      "file": "llama-completion-impl.dll",
+      "sha256": "0b2d4bff0a64ca77359d186849b725333b2f359b7e85b649cff171758b38e967"
+    },
+    {
+      "file": "llama-fit-params-impl.dll",
+      "sha256": "2e5d8f907e6abc792cd8e9b53dfda437db0e8f09f1422e7dd0fbb485d6f5560f"
+    },
+    {
+      "file": "llama-perplexity-impl.dll",
+      "sha256": "6a317e19a995deab3407baa4ba483c63e84240b5596ba3c3ae304b80eb9dcadf"
+    },
+    {
+      "file": "llama-quantize-impl.dll",
+      "sha256": "338aa3636cf4061f52ba7c2ef61821a01942804e0a06a01c637fb51676a8b214"
+    },
+    {
+      "file": "llama-server-impl.dll",
+      "sha256": "fae1ca8959986062a24c7b0a92e12a782f2770fc5448c7cc631f0d4bb6cac4a0"
+    },
+    {
+      "file": "llama.dll",
+      "sha256": "8bc4713fde3b48a35c06c6d503c9fd128d349275e6fad6b48d235796c9d9739f"
+    },
+    {
+      "file": "mtmd.dll",
+      "sha256": "592ed18ee70d874c9d80ec0c9eb014258c10d9087462e03f8fc00b9acfb47b9a"
+    },
+    {
+      "file": "llama-server.exe",
+      "sha256": "7b886298b688509ced3e92b420edd57dd3d665da72c1fc207d7a537be5870352"
+    },
+    {
+      "file": "llama-quantize.exe",
+      "sha256": "dee025c8bd2b3e4679b766aa8fdac9fa393edd8259840f58af8832bf20708cf7"
+    }
+  ],
+  "native_archives": [
+    {
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11146/llama-b11146-bin-win-cuda-12.4-x64.zip",
+      "sha256": "3c806a6ceccc3dae1c743ceb1a1fb2cce5b76f40bfbd4c6b7b8afb6ef45a5807",
+      "bytes": 253869799
+    },
+    {
+      "url": "https://github.com/ggml-org/llama.cpp/releases/download/b11146/cudart-llama-bin-win-cuda-12.4-x64.zip",
+      "sha256": "8c79a9b226de4b3cacfd1f83d24f962d0773be79f1e7b75c6af4ded7e32ae1d6",
+      "bytes": 391443627
+    }
+  ]
+}

@@ -2,59 +2,6 @@
   "schema": "education-public-model-downloads-v1",
   "models": [
     {
-      "model_id": "bemarkdown-retention-b200",
-      "directory": "BeMarkdown-Retention-B200",
-      "manifest_path": "BeMarkdown-Retention-B200/MODEL_MANIFEST.json",
-      "repo": "BooksBoss17/BeMarkdown-Retention-B200",
-      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
-      "license": "Apache-2.0",
-      "purpose": "standalone-optional",
-      "distribution": "github-release",
-      "files": [
-        {
-          "path": "adapter/adapter_config.json",
-          "bytes": 1136,
-          "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b"
-        },
-        {
-          "path": "adapter/adapter_model.safetensors",
-          "bytes": 121957008,
-          "sha256": "5ba6f8a44f4dd50e37429a46e4f108b92afd9105cc90dd7deebc325ea74296ba"
-        },
-        {
-          "path": "B200-Q4_K_M.gguf",
-          "bytes": 2783446432,
-          "sha256": "04a3a93d42ccb74fca20225c8568912039d458ff40d99bdbaece35d996c807de"
-        },
-        {
-          "path": "LICENSE",
-          "bytes": 11358,
-          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
-        },
-        {
-          "path": "mmproj-F16.gguf",
-          "bytes": 672423040,
-          "sha256": "f09979e4cc9b96df37110605c49becd7ab353cd3f1b0e6fafc9937dc5b708d0e"
-        },
-        {
-          "path": "model-decision-system.txt",
-          "bytes": 1491,
-          "sha256": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878"
-        },
-        {
-          "path": "NOTICE",
-          "bytes": 451,
-          "sha256": "d37bb194fe0102beed6c0050f914aa7cd0cefeb01d31539f84a17a6bec7d3ac4"
-        },
-        {
-          "path": "README.md",
-          "bytes": 1935,
-          "sha256": "324e6b63ea644bde1fc410f1b067d16dd7641f6ee62db27266929323abef415e"
-        }
-      ],
-      "manifest_sha256": "d89e095063245cea71b3bbd0c978c2ee465125ef20e97bdb24289055314570c1"
-    },
-    {
       "model_id": "ovis-ocr2",
       "directory": "OvisOCR2",
       "manifest_path": "OvisOCR2/MODEL_MANIFEST.json",
@@ -834,6 +781,137 @@
         }
       ],
       "manifest_sha256": "c63298b42ccadc5daebf93537f41fa76477b8fc84a7751cda1cd813f903f87b5"
+    },
+    {
+      "model_id": "bemarkdown-retention-b200",
+      "directory": "BeMarkdown-Retention-B200",
+      "manifest_path": "BeMarkdown-Retention-B200/MODEL_MANIFEST.json",
+      "manifest_sha256": "12a1d4bdc51b4b3c21ceca15e5744a0d6e3ebfa8d917264f17dbbe63276d4de7",
+      "repo": "Qwen/Qwen3.5-4B",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "license": "Apache-2.0",
+      "purpose": "standalone-optional",
+      "distribution": "github-release",
+      "files": [
+        {
+          "path": "adapter/adapter_config.json",
+          "bytes": 1136,
+          "sha256": "2c27e3c2a1b5db9c126076c2f14ca450be67dde25ad803e5c4e54cb56642169b"
+        },
+        {
+          "path": "adapter/adapter_model.safetensors",
+          "bytes": 121957008,
+          "sha256": "5ba6f8a44f4dd50e37429a46e4f108b92afd9105cc90dd7deebc325ea74296ba"
+        },
+        {
+          "path": "B200-Q4_K_M.gguf",
+          "bytes": 2783446432,
+          "sha256": "04a3a93d42ccb74fca20225c8568912039d458ff40d99bdbaece35d996c807de"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "path": "mmproj-F16.gguf",
+          "bytes": 672423040,
+          "sha256": "f09979e4cc9b96df37110605c49becd7ab353cd3f1b0e6fafc9937dc5b708d0e"
+        },
+        {
+          "path": "model-decision-system.txt",
+          "bytes": 1491,
+          "sha256": "9ce574bd7bb9909dc9dce23bc168cb89758d4f3519bf611bb7adaec1dc693878"
+        },
+        {
+          "path": "NOTICE",
+          "bytes": 451,
+          "sha256": "d37bb194fe0102beed6c0050f914aa7cd0cefeb01d31539f84a17a6bec7d3ac4"
+        },
+        {
+          "path": "processor/chat_template.jinja",
+          "bytes": 7756,
+          "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/chat_template.jinja"
+        },
+        {
+          "path": "processor/config.json",
+          "bytes": 3161,
+          "sha256": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/config.json"
+        },
+        {
+          "path": "processor/merges.txt",
+          "bytes": 3353259,
+          "sha256": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/merges.txt"
+        },
+        {
+          "path": "processor/preprocessor_config.json",
+          "bytes": 390,
+          "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/preprocessor_config.json"
+        },
+        {
+          "path": "processor/tokenizer.json",
+          "bytes": 12807982,
+          "sha256": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/tokenizer.json"
+        },
+        {
+          "path": "processor/tokenizer_config.json",
+          "bytes": 16710,
+          "sha256": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/tokenizer_config.json"
+        },
+        {
+          "path": "processor/video_preprocessor_config.json",
+          "bytes": 385,
+          "sha256": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/video_preprocessor_config.json"
+        },
+        {
+          "path": "processor/vocab.json",
+          "bytes": 6722759,
+          "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+          "url": "https://huggingface.co/Qwen/Qwen3.5-4B/resolve/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a/vocab.json"
+        },
+        {
+          "path": "README.md",
+          "bytes": 2258,
+          "sha256": "e71abb94e21e9f1fc27ace9334c9a49492c0e2ec0e8c07aea5efbe14292af25a"
+        }
+      ]
+    },
+    {
+      "model_id": "qwen35-9b-semantic-reviewer",
+      "directory": "Qwen3.5-9B-Semantic-Reviewer",
+      "manifest_path": "Qwen3.5-9B-Semantic-Reviewer/MODEL_MANIFEST.json",
+      "manifest_sha256": "2e13e8313877ab83f13cb93eb4d8ea10390b21df5a484f5099e7a8c4b87216ba",
+      "repo": "unsloth/Qwen3.5-9B-GGUF",
+      "revision": "3885219b6810b007914f3a7950a8d1b469d598a5",
+      "license": "Apache-2.0",
+      "purpose": "standalone-optional",
+      "distribution": "standalone-semantic",
+      "files": [
+        {
+          "path": "LICENSE",
+          "bytes": 11358,
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "path": "mmproj-F16.gguf",
+          "bytes": 918166080,
+          "sha256": "f70dc3509053962b0d0d3ee8a7eacebf5d60aa560cad78254ae8698516ae029f",
+          "url": "https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/3885219b6810b007914f3a7950a8d1b469d598a5/mmproj-F16.gguf"
+        },
+        {
+          "path": "Qwen3.5-9B-Q3_K_M.gguf",
+          "bytes": 4673643744,
+          "sha256": "8fed90306e4f019e2bf35f3766470b7bc59ea1a9dae00f5ceb20b43cb5514393",
+          "url": "https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/3885219b6810b007914f3a7950a8d1b469d598a5/Qwen3.5-9B-Q3_K_M.gguf"
+        }
+      ]
     }
   ]
 }

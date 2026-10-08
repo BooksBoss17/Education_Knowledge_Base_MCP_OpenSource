@@ -120,3 +120,7 @@
 
 
 2026-10-07: [Latest release notes](docs/RELEASE_20261007.md). [Standalone retention model](https://github.com/BooksBoss17/BeMarkdown-Retention-B200). Model assets are not connected to the BeMarkdown pipeline.
+
+## 独立语义筛图 MCP
+
+新增冻结的 B200 + Qwen3.5-9B 语义筛图工具，独立调用，不自动接入转换。安装、评测口径和限制见 [语义筛图说明](docs/SEMANTIC_RETENTION.md)。
