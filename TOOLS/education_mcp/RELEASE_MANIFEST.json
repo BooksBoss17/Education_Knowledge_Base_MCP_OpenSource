@@ -39,9 +39,9 @@
   "bemarkdown_wheel_sha256": "1cbb838958dfb283be02d5693a00d89213880a51478f4cdfc88f639b1aeb3e6d",
   "quality_status": "CANDIDATES_AND_REVIEW_REUSE_NOT_GENERAL_AUTO_DELETION",
   "optimized_ocr_route": {
-    "release_id": "bemarkdown-managed-screening-20261016-v2",
+    "release_id": "bemarkdown-managed-screening-20261016-v3",
     "tool": "TOOLS/bemarkdown_optimized",
-    "route_manifest_sha256": "601ed528e6f106c2a5d23d69c779b6ad40cb550e92ccd55f28167978e71b0cf8",
+    "route_manifest_sha256": "28085db386a6cd0e1ba7c863fc7fe39777be283622e9d8e9ffc29e5a77c98c25",
     "status": "MEASURED_OPT_IN_CANDIDATE",
     "resource_policy": "ADAPTIVE_RAM_AND_WHOLE_GPU_SINGLE_DEVICE_ZERO",
     "semantic_repairs_enabled": false,
@@ -64,6 +64,6 @@
     "classifier_guard": "EXISTING_FROZEN_SEMANTIC_SUPERVISOR_AFTER_OCR_EXIT"
   },
   "documentation_revision": "delivery-cleanup-20261016",
-  "public_release_id": "bemarkdown-managed-screening-20261016-v2",
+  "public_release_id": "bemarkdown-managed-screening-20261016-v3",
   "distribution_scope": "PUBLIC"
 }

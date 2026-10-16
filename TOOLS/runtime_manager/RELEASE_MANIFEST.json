@@ -35,6 +35,6 @@
     "scope": "INTEGRATION_ONLY_NOT_FULL_ACCURACY",
     "classifier_guard": "EXISTING_FROZEN_SEMANTIC_SUPERVISOR_AFTER_OCR_EXIT"
   },
-  "public_release_id": "bemarkdown-managed-screening-20261016-v2",
+  "public_release_id": "bemarkdown-managed-screening-20261016-v3",
   "distribution_scope": "PUBLIC"
 }

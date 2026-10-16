@@ -1,6 +1,6 @@
 {
   "schema": "education-public-file-inventory-v1",
-  "release_id": "bemarkdown-managed-screening-20261016-v2",
+  "release_id": "bemarkdown-managed-screening-20261016-v3",
   "license": "AGPL-3.0-only WITH third-party exceptions; standalone model Apache-2.0",
   "source_formal_commit": "e6d983d59f1c01a04d74e4efdfe1c595bbe87e2f",
   "model_connected": false,
@@ -12,8 +12,8 @@
     },
     {
       "path": ".github/workflows/public-mcp-sdk.yml",
-      "bytes": 2115,
-      "sha256": "51ba967e08fc8fae03bb8d956c31c8b0a1a6f1fab2347e320342ed33f0b51ce0"
+      "bytes": 2710,
+      "sha256": "9a599d18fdafe579bbcacb1d9ae08dda0e595765af1a39c7348e648dbdad10f9"
     },
     {
       "path": ".gitignore",
@@ -1728,7 +1728,7 @@
     {
       "path": "TOOLS/bemarkdown_optimized/ROUTE_MANIFEST.json",
       "bytes": 36760,
-      "sha256": "601ed528e6f106c2a5d23d69c779b6ad40cb550e92ccd55f28167978e71b0cf8"
+      "sha256": "28085db386a6cd0e1ba7c863fc7fe39777be283622e9d8e9ffc29e5a77c98c25"
     },
     {
       "path": "TOOLS/bemarkdown_optimized/convert.py",
@@ -4603,7 +4603,7 @@
     {
       "path": "TOOLS/education_mcp/RELEASE_MANIFEST.json",
       "bytes": 4548,
-      "sha256": "836be485a79861db4fa2cf0126147245f8c4063bb07332567fafcd0d1ad9db77"
+      "sha256": "3fed22043e6ce535cbd40a04c1bfe5176d7758bb6ade9756d92f530029a21c06"
     },
     {
       "path": "TOOLS/education_mcp/asset_screening.py",
@@ -4753,7 +4753,7 @@
     {
       "path": "TOOLS/runtime_manager/RELEASE_MANIFEST.json",
       "bytes": 3445,
-      "sha256": "178fdf7cbd9c042135ddb2d939b0b5e8f48893cb1e7cb9702898fce37eb24707"
+      "sha256": "fdb78cbbc5f53315cbbd1a440b23ddea4a5f676a1f7dac7771d970fc087e7184"
     },
     {
       "path": "TOOLS/runtime_manager/bootstrap.py",
@@ -4913,7 +4913,7 @@
     {
       "path": "TOOLS/semantic_retention/RELEASE_MANIFEST.json",
       "bytes": 5553,
-      "sha256": "687ac457166078fbfdd74837d19bf24250117b0fb6b67fb009b63a600e3860d2"
+      "sha256": "ef101b362257bb88931c6578a729bd63b7148e3ee073ffbbf2c3f2dd656b2d9b"
     },
     {
       "path": "TOOLS/semantic_retention/SCHEME.json",
@@ -5170,5 +5170,5 @@
   },
   "source_identity": "Installed source inventory; formal working tree included, not solely its last commit",
   "file_count": 1030,
-  "total_bytes": 17925284
+  "total_bytes": 17925879
 }

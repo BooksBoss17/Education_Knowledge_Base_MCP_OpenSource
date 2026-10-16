@@ -123,6 +123,6 @@
     "dist/engine-manifest.json": "f23921818f89bd7ef624f5d19f02ee90ca35dae5973750ff4d3222488ac64a39",
     "dist/engine.zip": "01001a215a6f817be7c11e8800c24dc1d10c9e927a6e39e36cfaec8a7fb977c9"
   },
-  "public_release_id": "bemarkdown-managed-screening-20261016-v2",
+  "public_release_id": "bemarkdown-managed-screening-20261016-v3",
   "distribution_scope": "PUBLIC"
 }
