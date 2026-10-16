@@ -1,6 +1,6 @@
 {
   "schema": "education-public-file-inventory-v1",
-  "release_id": "bemarkdown-managed-screening-20261016-v1",
+  "release_id": "bemarkdown-managed-screening-20261016-v2",
   "license": "AGPL-3.0-only WITH third-party exceptions; standalone model Apache-2.0",
   "source_formal_commit": "e6d983d59f1c01a04d74e4efdfe1c595bbe87e2f",
   "model_connected": false,
@@ -1728,7 +1728,7 @@
     {
       "path": "TOOLS/bemarkdown_optimized/ROUTE_MANIFEST.json",
       "bytes": 36760,
-      "sha256": "6d2b7f37bf7f9c812cd92ee468c4b9d5c170782a8e0d6d859c9521d88f8ca40a"
+      "sha256": "601ed528e6f106c2a5d23d69c779b6ad40cb550e92ccd55f28167978e71b0cf8"
     },
     {
       "path": "TOOLS/bemarkdown_optimized/convert.py",
@@ -4603,7 +4603,7 @@
     {
       "path": "TOOLS/education_mcp/RELEASE_MANIFEST.json",
       "bytes": 4548,
-      "sha256": "ab010b24cbf5edd9ef8f144eb7b1b17b180965756d6184dc34954d965a9bd185"
+      "sha256": "836be485a79861db4fa2cf0126147245f8c4063bb07332567fafcd0d1ad9db77"
     },
     {
       "path": "TOOLS/education_mcp/asset_screening.py",
@@ -4712,8 +4712,8 @@
     },
     {
       "path": "TOOLS/education_mcp/server.py",
-      "bytes": 54308,
-      "sha256": "3c2f3531c351180ef44aaaf813450c7d24a3be2e0d7cdae9ba8f06edc1e28582"
+      "bytes": 54678,
+      "sha256": "4419ca22c83bbacfcd892e1f05623009475a28a8c4a8ef272540c799b02a837d"
     },
     {
       "path": "TOOLS/education_mcp/textbook_revision.py",
@@ -4753,7 +4753,7 @@
     {
       "path": "TOOLS/runtime_manager/RELEASE_MANIFEST.json",
       "bytes": 3445,
-      "sha256": "6aad0ba8919616b266b027981562cf58707d340de5ecf84d33705bf283811603"
+      "sha256": "178fdf7cbd9c042135ddb2d939b0b5e8f48893cb1e7cb9702898fce37eb24707"
     },
     {
       "path": "TOOLS/runtime_manager/bootstrap.py",
@@ -4913,7 +4913,7 @@
     {
       "path": "TOOLS/semantic_retention/RELEASE_MANIFEST.json",
       "bytes": 5553,
-      "sha256": "f5e18bb515f54d53288b7fad218f0aead4522e034b16589cae3482fc7b1df727"
+      "sha256": "687ac457166078fbfdd74837d19bf24250117b0fb6b67fb009b63a600e3860d2"
     },
     {
       "path": "TOOLS/semantic_retention/SCHEME.json",
@@ -5012,8 +5012,8 @@
     },
     {
       "path": "docs/MANAGED_CONVERSION.md",
-      "bytes": 4314,
-      "sha256": "1b05613647caa6841b443b18f8bba553d3e9fe2699e9f7c2c4dc690a9ec54e68"
+      "bytes": 4534,
+      "sha256": "b46a5497af681acb92a14113651207a55ff00577261bc2df21b8cee940db956d"
     },
     {
       "path": "docs/RELEASE_20261007.md",
@@ -5127,13 +5127,13 @@
     },
     {
       "path": "tests/test_managed_screening_public.py",
-      "bytes": 4711,
-      "sha256": "149cd435311d3ec13622fad25832ac44a018851ce1d82d8a3b75b45ccb414bf8"
+      "bytes": 6208,
+      "sha256": "c67b50d48c25e43b3b59d271b28c01de66f9c52d675387430aa400918c78a85f"
     },
     {
       "path": "tests/test_mcp_sdk_session.py",
-      "bytes": 5870,
-      "sha256": "aacb4f4ab4c1323c16f6b751ea80059077cdc3fdc75432e6bcd1eabcb0513b0c"
+      "bytes": 5891,
+      "sha256": "c3970ae1afa611ee051f46c43386f13ca0d293745813a1aa39fd5841510dbedb"
     },
     {
       "path": "tests/test_prose_edge_crop.py",
@@ -5170,5 +5170,5 @@
   },
   "source_identity": "Installed source inventory; formal working tree included, not solely its last commit",
   "file_count": 1030,
-  "total_bytes": 17923176
+  "total_bytes": 17925284
 }

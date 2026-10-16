@@ -1,5 +1,5 @@
 {
-  "release_id": "bemarkdown-managed-screening-20261016-v1",
+  "release_id": "bemarkdown-managed-screening-20261016-v2",
   "status": "PUBLIC_EXPORT_OF_INSTALLED_VALIDATED_SOURCE",
   "engine": "ACCEPTED_NATIVE_CORE_NO_AUTOMATIC_COMPLETION",
   "resource_policy": "ADAPTIVE_RAM_AND_WHOLE_GPU_SINGLE_DEVICE_ZERO",

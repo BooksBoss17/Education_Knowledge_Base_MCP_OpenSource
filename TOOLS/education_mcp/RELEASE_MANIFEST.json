@@ -28,7 +28,7 @@
     "screening_templates.json": "6029cace1601862ff020f5ddf9871d21b525bba6208e041352f5d3ea048051fd",
     "section_anchors.py": "35980559907b502b82e9e90c457d8970b867ad52f7e8d37af5dd1fac38ab6cc9",
     "semantic_review.py": "50ce268f9bc65916a94cb2bfc27ef41fafdcbcdf783713c7272e94d0de26fa5d",
-    "server.py": "3c2f3531c351180ef44aaaf813450c7d24a3be2e0d7cdae9ba8f06edc1e28582",
+    "server.py": "4419ca22c83bbacfcd892e1f05623009475a28a8c4a8ef272540c799b02a837d",
     "textbook_revision.py": "a58f8f96d529cabe685642bd96b7754709a6acdfc5054ea8e5b9cbf41c32cf3d",
     "textbook_workflow.py": "1b591df6d4257c1686b08c4c94c886a3102f4b8e4dfde50ee311c7c2b9ae121e",
     "vision_gate.py": "9b5bfae36675f6d78ef678ca3012baa9424958b441922db0629db2c2d4e1b58d",
@@ -39,9 +39,9 @@
   "bemarkdown_wheel_sha256": "1cbb838958dfb283be02d5693a00d89213880a51478f4cdfc88f639b1aeb3e6d",
   "quality_status": "CANDIDATES_AND_REVIEW_REUSE_NOT_GENERAL_AUTO_DELETION",
   "optimized_ocr_route": {
-    "release_id": "bemarkdown-managed-screening-20261016-v1",
+    "release_id": "bemarkdown-managed-screening-20261016-v2",
     "tool": "TOOLS/bemarkdown_optimized",
-    "route_manifest_sha256": "6d2b7f37bf7f9c812cd92ee468c4b9d5c170782a8e0d6d859c9521d88f8ca40a",
+    "route_manifest_sha256": "601ed528e6f106c2a5d23d69c779b6ad40cb550e92ccd55f28167978e71b0cf8",
     "status": "MEASURED_OPT_IN_CANDIDATE",
     "resource_policy": "ADAPTIVE_RAM_AND_WHOLE_GPU_SINGLE_DEVICE_ZERO",
     "semantic_repairs_enabled": false,
@@ -64,6 +64,6 @@
     "classifier_guard": "EXISTING_FROZEN_SEMANTIC_SUPERVISOR_AFTER_OCR_EXIT"
   },
   "documentation_revision": "delivery-cleanup-20261016",
-  "public_release_id": "bemarkdown-managed-screening-20261016-v1",
+  "public_release_id": "bemarkdown-managed-screening-20261016-v2",
   "distribution_scope": "PUBLIC"
 }

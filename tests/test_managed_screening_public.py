@@ -5,7 +5,10 @@ import json
 import os
 from pathlib import Path
 import shutil
+import runpy
+import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -16,6 +19,30 @@ def module(name,path):
     value=importlib.util.module_from_spec(spec);spec.loader.exec_module(value);return value
 
 class PublicManagedContract(unittest.TestCase):
+    def info_with_policy(self,callback):
+        namespace=runpy.run_path(str(ROOT/'TOOLS/education_mcp/server.py'))
+        service=namespace['Service'].__new__(namespace['Service'])
+        service.mcp_root=ROOT;service.workspace=ROOT;service.output=ROOT
+        service.python=Path(sys.executable);service.allowed=[];service.runtime_identity=None
+        service.workspace_manager=SimpleNamespace(inspect=lambda:{'complete':True})
+        service.vision=SimpleNamespace(status=lambda:{'verified':False})
+        with patch.object(runpy,'run_path',return_value={'configured_policy':callback}):return service.info()
+
+    def test_info_remains_available_without_gpu_driver(self):
+        def missing(_):raise OSError('NVML_DEVICE_ZERO_UNAVAILABLE')
+        result=self.info_with_policy(missing)
+        self.assertFalse(result['host_memory_policy']['supported'])
+        self.assertEqual(result['host_memory_policy']['status'],'DEVICE_OBSERVATION_UNAVAILABLE')
+        self.assertIn('wheel_sha256',result)
+
+    def test_info_does_not_hide_invalid_policy(self):
+        def invalid(_):raise ValueError('HOST_RAM_CONFIG_SCHEMA_INVALID')
+        with self.assertRaisesRegex(ValueError,'HOST_RAM_CONFIG_SCHEMA_INVALID'):self.info_with_policy(invalid)
+
+    def test_info_preserves_valid_policy(self):
+        policy={'supported':True,'mode':'auto'}
+        self.assertEqual(self.info_with_policy(lambda _:policy)['host_memory_policy'],policy)
+
     def test_registered_public_runtime_is_used_by_queue(self):
         bootstrap=module('public_queue',ROOT/'TOOLS/runtime_manager/bootstrap.py')
         with tempfile.TemporaryDirectory() as folder:

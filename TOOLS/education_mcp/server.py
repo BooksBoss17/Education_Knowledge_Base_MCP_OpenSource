@@ -184,7 +184,13 @@ class Service:
     def info(self):
         manifest = json.loads((self.mcp_root / "TOOLS/bemarkdown/TOOL_MANIFEST.json").read_text(encoding="utf-8"))
         ram_path=self.mcp_root / "TOOLS/bemarkdown_optimized/core/bemarkdown/host_memory_policy.py"
-        host_ram_policy=runpy.run_path(str(ram_path))["configured_policy"](ram_path.parents[2]) if ram_path.is_file() else None
+        try:
+            host_ram_policy=runpy.run_path(str(ram_path))["configured_policy"](ram_path.parents[2]) if ram_path.is_file() else None
+        except OSError as error:
+            # Read-only inspection remains available without NVIDIA drivers.
+            # Task execution still uses the unchanged fail-closed admission.
+            host_ram_policy=dict(supported=False,status="DEVICE_OBSERVATION_UNAVAILABLE",
+                                 reason=f"{type(error).__name__}: {error}")
         return dict(host_memory_policy=host_ram_policy, server_version=VERSION, workspace=str(self.workspace), output_root=str(self.output),
                     workspace_check=self.workspace_manager.inspect(),
                     models_root=str(self.mcp_root / "MODELS"), python=str(self.python),

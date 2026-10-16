@@ -83,7 +83,7 @@ async def exercise(root: Path, runtime_python: Path, workspace: Path, mode: str)
         assert workspace_info["complete"] is True, workspace_info
 
         info_result = await client.call_tool("bemarkdown_info", {})
-        assert not info_result.is_error
+        assert not info_result.is_error, info_result.content
         info = text_json(info_result)
         assert info["server_version"] == "0.5.4"
         assert info["installed_runtime"]["verified"] is True
