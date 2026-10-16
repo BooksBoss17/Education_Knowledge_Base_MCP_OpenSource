@@ -1,10 +1,10 @@
 {
   "release_id": "semantic-retention-20261008-v1",
   "runtime_id": "0e46bef39554ddf9",
-  "engine_zip_sha256": "edfcaef2d4a4d09909152c41cfee27ed3af90feccbbe3e86818b30819ceeb4b7",
+  "engine_zip_sha256": "01001a215a6f817be7c11e8800c24dc1d10c9e927a6e39e36cfaec8a7fb977c9",
   "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
   "converter_commit": "7fe450e19305b828c199d602c23a8337aaa1f03b",
-  "bemarkdown_auto_integrated": false,
+  "bemarkdown_auto_integrated": true,
   "models": {
     "base": {
       "directory": "BeMarkdown-Retention-B200",
@@ -19,5 +19,20 @@
       "weights": "Qwen3.5-9B-Q3_K_M.gguf",
       "projector": "mmproj-F16.gguf"
     }
+  },
+  "resource_policy_adaptation": {
+    "status": "POLICY_ONLY_PENDING_PARENT_VALIDATION",
+    "module": "runtime/host_memory_policy.py",
+    "sha256": "d7c6348c18046afae40c3585c742ff4bcd0c82199757a8e64ac2e64444f46454",
+    "snapshot_env": "BEMARKDOWN_HOST_MEMORY_POLICY_JSON",
+    "training_branch_changed": false,
+    "expected_requirement_arguments_changed": false,
+    "models_run": false
+  },
+  "integration": {
+    "mode": "SEQUENTIAL_AFTER_OCR",
+    "protect_transcription_evidence": true,
+    "purpose_observation": "QWEN_SAME_REVIEWER",
+    "frozen_retention_models_changed": false
   }
 }

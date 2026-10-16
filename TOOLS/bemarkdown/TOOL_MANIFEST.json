@@ -26,7 +26,8 @@
     "docx": true,
     "pdf": {
       "publication_status": "PUBLICATION_CANDIDATE",
-      "independent_quality_validation": "PENDING_ZCODE"
+      "independent_quality_validation": "PENDING_ZCODE",
+      "suite_fingerprint": "11a58c0127ce52ce892996dc75c6e62cbaf0bab9e09c15696028da3460996565"
     },
     "wmf_render": {
       "platform": "win32-gdi",
@@ -35,18 +36,19 @@
     "formula_ocr": {
       "model_id": "pp-formulanet-plus-l",
       "required_for_full_quality": true,
-      "cpu_fallback": false
+      "cpu_fallback": false,
+      "suite_fingerprint": "3fa40b07667d08d53a2fb2c720b6977eb26e1c94d396999b69c52c6c4511ec56"
     },
     "paddle_model_suite": {
       "suite_id": "bemarkdown-paddle-document-suite-v1",
-      "suite_fingerprint": "3fa40b07667d08d53a2fb2c720b6977eb26e1c94d396999b69c52c6c4511ec56",
+      "suite_fingerprint": "a1b5bcb551798268cbf91824f683046d0809efd70a9bdb9586be3d574a2cb235",
       "model_count": 9,
       "status": "MODEL_READY",
       "pdf_pipeline_ready": false
     },
     "pdf_production_suite": {
       "suite_id": "bemarkdown-pdf-production-suite-v1",
-      "suite_fingerprint": "11a58c0127ce52ce892996dc75c6e62cbaf0bab9e09c15696028da3460996565",
+      "suite_fingerprint": "8c6fa5273ea76f20c1b833ba084c5f31f26957e42b2e67c5a13e3417f6e7b1ac",
       "model_count": 11,
       "status": "MODEL_READY",
       "pdf_pipeline_ready": true,
@@ -59,22 +61,22 @@
   "build_commit": "46fd7b1ba9f733a4488a68802a9e776d307be2ec",
   "wheel": {
     "path": "dist/bemarkdown-0.2.0-py3-none-any.whl",
-    "sha256": "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c",
-    "bytes": 1409842,
+    "sha256": "1cbb838958dfb283be02d5693a00d89213880a51478f4cdfc88f639b1aeb3e6d",
+    "bytes": 1409746,
     "content_inventory": {
-      "content_sha256": "7fb75646965662fdb486645250f9fd678b2621b7d9f47f04224469be947e5281",
+      "content_sha256": "6cf7eeab240cde30db297fb6db5358b9cb21b7ecf4211dbf4b685c178ef6de40",
       "file_count": 228,
-      "total_uncompressed_bytes": 4553802,
+      "total_uncompressed_bytes": 4553510,
       "files": [
         {
           "path": "bemarkdown-0.2.0.dist-info/METADATA",
-          "bytes": 13578,
-          "sha256": "4b3d5587905736b845e253d4375634dd10f72a5383c19abd4d701cd92702390b"
+          "bytes": 13286,
+          "sha256": "b94c02c5cf0621d0f11f12f53439d2a1ac77abb9963d598e2704dd6bd7a685c7"
         },
         {
           "path": "bemarkdown-0.2.0.dist-info/RECORD",
           "bytes": 21630,
-          "sha256": "4c881c9b443c54dc7b9d5ba7d88541973b7a6810a4c27e269d17ffc6f43af607"
+          "sha256": "d01e02089ba6bbdce673fd8e7854bf872dd8ec8f7b119d24079766cdfe27ded4"
         },
         {
           "path": "bemarkdown-0.2.0.dist-info/WHEEL",
@@ -1809,7 +1811,7 @@
   "runtime": {
     "manifest": {
       "path": "runtime/RUNTIME_MANIFEST.json",
-      "sha256": "6cf6b219d6eff602550144b1c5b94335f1ec2458701969ce8434c123cbe5ed69"
+      "sha256": "34adff3d08ea13481f1f475942c1e8657427da351d0e939e1294a6c3d1f37103"
     },
     "core_lock": {
       "path": "runtime/requirements-core.lock",
@@ -1825,11 +1827,11 @@
     },
     "qwen_ocr_lock": {
       "path": "runtime/requirements-qwen-ocr.lock",
-      "sha256": "c64cd37ba17f8874f475f28de3b79f78131fb699d71352d3543bacea7ce4e11d"
+      "sha256": "c955f3ee92b90c1fd6955679a3a65e1a19e8308260e0083a5c4079fcaf850a6a"
     }
   },
   "publication": {
-    "release_id": "retention-assets-aspect-padding-20261007-v1",
+    "release_id": "bemarkdown-managed-screening-20261016-v1",
     "status": "PRODUCTION_READY_INTERNAL",
     "distribution_scope": "PUBLIC",
     "public_redistribution_ready": true,

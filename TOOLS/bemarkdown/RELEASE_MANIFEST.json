@@ -1,10 +1,9 @@
 {
   "schema": "education-public-tool-release-v1",
-  "release_id": "retention-assets-aspect-padding-20261007-v1",
-  "status": "VALIDATED_PUBLIC_BASE",
+  "release_id": "bemarkdown-managed-screening-20261016-v1",
+  "status": "PUBLIC_SOURCE_EXPORT",
   "source": "../../SOURCE/bemarkdown",
-  "wheel_sha256": "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c",
+  "wheel_sha256": "1cbb838958dfb283be02d5693a00d89213880a51478f4cdfc88f639b1aeb3e6d",
   "internal_wheel_sha256": "e6f39ef0d490c49d029b86794fd09f28158677684a647f78eb33bac971bec86b",
-  "byte_normalization": "CRLF to LF in text wheel members; Python source semantics preserved",
-  "retention_model_connected": false
+  "byte_normalization": "LF normalization and public metadata; source mirror matches wheel"
 }

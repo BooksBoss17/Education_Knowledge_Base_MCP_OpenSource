@@ -1,0 +1,591 @@
+{
+  "release_id": "ocr-source-bound-freeze-20261011-v1",
+  "status": "STAGED_NOT_INSTALLED",
+  "base_wheel_sha256": "e6f39ef0d490c49d029b86794fd09f28158677684a647f78eb33bac971bec86b",
+  "files": {
+    "convert.py": "c40d773c72eb7ca0cbd4f7343bdd6f12b54efcc2fa94f016e2ae37a81e0d99a7",
+    "README.md": "8e9a941289e02f136a63dd922b41510d52726072f62f2ec3ef9b74c396c2fbb0",
+    "RESOURCE_STAGES.json": "e01e31500f87101b2fa68d9f7ba7eed7865c8c66a05dd77b31daea4a202f518d",
+    "core/isolated_native_backends.py": "118365a2df3f1d3f1c400d347c68c55ffa4e489a3318a8a2b8b4986021110090",
+    "core/bemarkdown/agent_execution.py": "5f3b71b6c016dffa519d76fb9aa280ea78f5cc7ba69f63ba027d31bef248e99e",
+    "core/bemarkdown/agent_task_contract.py": "0b0fa6a23a129dddc0e500c4510efcd26f5c60e9f99f184af287fe2bd21e362d",
+    "core/bemarkdown/agent_transcription.py": "d53ea860cd4169d469fa89c3c7f1aaf788e2a78314cdc3e5837c47dc1c856bb7",
+    "core/bemarkdown/agent_usage.py": "81dd83c35ba3dae08ad9a47df5001251d8d08730deeece651f9d6d0200fa0a3c",
+    "core/bemarkdown/asset_contract.py": "8dbd761fcdfcf6f61b51d789624ccf768374b299283c04cfb2421383e15eab09",
+    "core/bemarkdown/asset_delivery.py": "0b1dbfeb4854f4b89c7e450ea82131cf4861574984563ead6a2841b05108066f",
+    "core/bemarkdown/asset_local_evidence.py": "2e2dc59f4ff35510cdde56b93e75260a7cc048e4e48f18c61ada0aaab3567c3c",
+    "core/bemarkdown/asset_text_content.py": "5e0a8ddb8461d052f3b56b2deb26ef442c1d382762d7f45aa6554b804f23845a",
+    "core/bemarkdown/audit_batching.py": "771b0fd48580768643f120697cfc24fb1d30cbfabbbf49bcaa77258108a78622",
+    "core/bemarkdown/batch.py": "766ff87a5190d71be1af76964a329d8b9c913902e641ca9aa0ebaaa6bba8b99d",
+    "core/bemarkdown/blank_images.py": "1c9bb75e2e3a2c3f4363daacdf7fbe25fa45c55b74d1f6623ef76a8ff24a0295",
+    "core/bemarkdown/blind_vision_formula.py": "42744bdb72b158ae357cbda6f5e114e67a1dec7f3d72ab942f3652315a3dd154",
+    "core/bemarkdown/census.py": "d1f1c3474cbd90d4ac7b5e9336ed70a712899cbf5e861837186719cdc5dc0e4c",
+    "core/bemarkdown/ch_svtrv2_rec_trial_v1.py": "e1c945a1e1d6b6acfcc5b5664009dd3dbaa0f851968a742c211934cc23179d00",
+    "core/bemarkdown/cli.py": "bd6327775d0dc0d264d4db95a80b7368da9928682fadb2051e306d02cd0214ba",
+    "core/bemarkdown/config.py": "6758681cb5d463424bf26f20b4cdf3f4fa15b89abb0cb641e7932385ef7eaf2d",
+    "core/bemarkdown/corpus_v3_preregistration.py": "6457ad562081b6ca0015e3fc5fca031d2b656ec9745266187fa142fd8348e9d8",
+    "core/bemarkdown/developer_cli.py": "97363249246bcce478369e4a2f244c3c7772de0c9bc08be88e64684126616a26",
+    "core/bemarkdown/doctor.py": "c5a9fd16024fd89301947e602125c9af17664067a0b45a199bf472fb2e560646",
+    "core/bemarkdown/docx_census.py": "c811a08cb38ebad0d5c703fb31a85134345eecbe8ba4e1bd5301faf0ca0282cb",
+    "core/bemarkdown/docx_edge_census.py": "27431054c61a944b3cf8b65d08a077df6202cddd2a8a15008bc864cd97431592",
+    "core/bemarkdown/docx_figure_labels.py": "141b477a31e5ad4d679696e8cfc3085674d152c31abc047439a6cde5a5927da5",
+    "core/bemarkdown/docx_footer_delivery.py": "6308790af77519321c0637e08bad5172766243cd9301364358918fc2d1d39c2c",
+    "core/bemarkdown/docx_image_content.py": "fc902ea7564225ccc3ae1f0f53ac72e51f3bc3378fe5f8f9b5187b1d12d0dd6b",
+    "core/bemarkdown/docx_visual.py": "1b89171a0f3003e76d0f25572769bc17307c9ad1678641f9a073e9795516e510",
+    "core/bemarkdown/drawingml.py": "61b02ceef26cbe1549fca7915de226233a551c90b1c668d552fe9dc0f0758d18",
+    "core/bemarkdown/eq.py": "9152937b686f60f79b00233529bb226c620b766a96a59582cd3853ef2a0edb81",
+    "core/bemarkdown/formula.py": "db6320db9bb0060bec27fab6718f9b0913cae1249d613f6f5013f2515346f794",
+    "core/bemarkdown/formulanet_benchmark.py": "a030102a8ae1450af9bb418478fbb19d1cf9ab8fcb4eb7b1af0abddc724e0103",
+    "core/bemarkdown/formulanet_runtime.py": "e15fce3c845c22608d44b3f241e7f2f137e705d11fb79b13b80a3fedd0f1aa3c",
+    "core/bemarkdown/formula_gt_evaluation.py": "349feecf0dd55bad2f9f8ab7c5ca5a078c654e6c52379af1450168cc99bfe458",
+    "core/bemarkdown/formula_ocr.py": "dddd1f94984be9113b4443f106f580104f2d87efd08be323d8dc629cbc30a49c",
+    "core/bemarkdown/formula_page_audit.py": "b3d86a0565ce76d35c31e955cd29a582d8fa27e2202608fe889dcf3a89e47bac",
+    "core/bemarkdown/formula_quality_benchmark.py": "7a8aa7d431c999929e569efa643a0e2154158149f673467a497ac4071db02518",
+    "core/bemarkdown/formula_review.py": "834e76ae430708d44459ec92d5f995abbba56f169fb1ed38bc417efbe72654fe",
+    "core/bemarkdown/formula_review_server.py": "3c24bb7982c2abda5e2509189dd2beb0658c7525ef0809b9c65427dd21b8b27e",
+    "core/bemarkdown/formula_runtime_owner.py": "be016b63509c3d2735713cf392042bdfc640bee5980fe370ff9f8e3085daf6ce",
+    "core/bemarkdown/fresh_reference_pass.py": "1b5845501bc99528781ef647a68045f2f0e73b7e0cf60417cfd073883d780f44",
+    "core/bemarkdown/image_input.py": "3329590400b95896e27dc59cf688d97911e3b2928ff4cd08edbabf05127ad46a",
+    "core/bemarkdown/ir.py": "58226d0c6a4c111ce2b72df4d6da4848adc42f6def05e3bc7d0c42f39bae8b27",
+    "core/bemarkdown/large_e2e_validation.py": "b7ab43220411fb5ad8a4498aa9647cc92d5abe4e24fbd83bfd738d21ab8d8010",
+    "core/bemarkdown/live_pipeline_continuity.py": "a09d3b1548463a67a0c032e9597982565e2f14f1cf4302422ec4ecfe8eb92559",
+    "core/bemarkdown/local_plain_acceptance.py": "5ae8c14343aa39aef6149baac88c49564a468fc3c593e58d6c02a58c71f0b60f",
+    "core/bemarkdown/markdown_asset_refs.py": "b81052087a0e653cb64e071f000ad174b60aabaa356561d373be64d855bb0f34",
+    "core/bemarkdown/model_registry.py": "1ca842ef82c50542b1deee8e18422aa21c92e5fbeb818930608671c862e8a9f0",
+    "core/bemarkdown/model_runtime.py": "b3217c085f99cf5f80f8173bb82c7e8f06d89f850f1dde557563261fd35061b1",
+    "core/bemarkdown/model_suite.py": "c24f270e54933a478549bbf4788a9de97c99687bc57fb02e8a7f4f10aecc8c13",
+    "core/bemarkdown/model_suite_runtime.py": "00b53ff16e27e94aabdca96b34d6a25e2964ef368b7f0b1f78f80fde51d34b3b",
+    "core/bemarkdown/mtef_cache.py": "a983781f17e23236d815ab8874bd16a2fb8f12079c5afbf2b469d07d6687fd31",
+    "core/bemarkdown/namespaces.py": "c92c067316f9c3c45539522a5052b7d8685727126b161765eeef73e0702bc830",
+    "core/bemarkdown/native_reference_salvage.py": "f71b15e3e63db740f977f8161ba93f29427b41daaa0804d4f4921116354583ad",
+    "core/bemarkdown/native_symbol_evidence.py": "fbe0b9d7e7a843c19057654455f071857627f155cbd7ffe6f899ff98d937b2ad",
+    "core/bemarkdown/ocr_ensemble_benchmark.py": "1b801df8347e685940d0b209ee37775f61bca8777123af7108862ba53c830baa",
+    "core/bemarkdown/ocr_ensemble_round2.py": "229495ae277cb0b8503536fa3624c6663327be81b8ab2437f65ac6459650cb64",
+    "core/bemarkdown/ocr_ensemble_round3.py": "e03a9fc6b2965817dd42c29dd574aae6d81697453c4b0c1cd10e5934671951de",
+    "core/bemarkdown/ocr_provider_selection_v3.py": "a7cd47043202eb497a89a1a5db9b60ff5521d84e78aff41d608e7c82f0c5573f",
+    "core/bemarkdown/output_audit_production.py": "10e133f35e6bbe7998b2b267e4fb3c52de2dc634266632115930ac24cefa27a3",
+    "core/bemarkdown/ovisocr2_benchmark.py": "0537aedb80a3a84e5ae1fb5bc5f4439aa7e043eeda7dfeb25c20a9c075c1bbe6",
+    "core/bemarkdown/package.py": "9163c60033e6f7332f0db4fafd2ffb0fd5e94f6657ba19245d6241c45059e733",
+    "core/bemarkdown/paddlex_runtime.py": "b7c34654936405021eab9a6fa00bd353a8e429d876583438eb337df94b1fae06",
+    "core/bemarkdown/paddle_memory.py": "347582a14c7df57db0e0416640e532e9401be975dabebee04fb69fef8753608a",
+    "core/bemarkdown/pdf_census.py": "16dbae576dd3feb7a57216d8bd6198ad9e5cdcb211d74fa7d0ce1c2485d195c1",
+    "core/bemarkdown/pdf_content_quality.py": "ea8c0b419ea92fdb6eb4d16faf54daa6b80aa63f1f5477d96b76daa81e9edb8c",
+    "core/bemarkdown/pdf_content_router.py": "e5f1760a80599109d52bc287444c045537326db2c322a8845148a87b9485e1dd",
+    "core/bemarkdown/pdf_delivery_projection.py": "e44e1d74b6f63a2a70f09123a46db8b30c4645d86710c2eea001b72e2f4f0944",
+    "core/bemarkdown/pdf_document_ir.py": "7e18ed7bcf7f9618d9736525648eeccf4a39f371526d5316a1a362093208dba6",
+    "core/bemarkdown/pdf_dual_paddle_evidence.py": "77fcf9f898fb47064901e391d57053046c07f9e3f400ff53b0c83fdaada772c9",
+    "core/bemarkdown/pdf_formula_consensus.py": "62d565c8cc75f1595b80e9dc6d5ebacbbf4ac374c7d4c1a3c62330124eced029",
+    "core/bemarkdown/pdf_formula_visual.py": "88617f491bc96c9cf63dda026e159c9ab565d5c89ec302acb4bafc66cccf5f59",
+    "core/bemarkdown/pdf_layout_benchmark.py": "64b57f80f262c7ad148ade413d292d49b68af7735369ce345dc9555eb8fe9bc3",
+    "core/bemarkdown/pdf_layout_calibration.py": "b52523a5a749f6606ed95c6c6a3bbe4a13423e255851b9f75eea45ac1917bed9",
+    "core/bemarkdown/pdf_layout_evaluation.py": "b6e67cdf17c6c7e765a2a25de11cf48ea34f6aec0f603512c4dc21cc0289baf7",
+    "core/bemarkdown/pdf_layout_fusion.py": "24af72f76dce7024bf2077b79048668d96d7bb519a49fe2006aee8e726c95916",
+    "core/bemarkdown/pdf_layout_runtime.py": "c96b69002620f39e05b23229fdef1bf3d132d525b96559d38a266c5ab4d4c0d9",
+    "core/bemarkdown/pdf_ocr_recovery.py": "bb79b50b25ce9053fb4e87412d27dbe6dbe02ad74726c6482e813af23250df59",
+    "core/bemarkdown/pdf_output_audit.py": "599c9e94bc916bc671d70b992b908e923668ef7ebd8d4909655206a1c3f30f6c",
+    "core/bemarkdown/pdf_region_ir.py": "db8467a68b8633a8010b01869198597a2cc29a5ae16b94970571b683079b2d38",
+    "core/bemarkdown/pdf_source.py": "c7def4a0c77f7c538899efc36a98d2daa97f521e59da818005400369c49195b7",
+    "core/bemarkdown/pdf_table_engine.py": "277ba74cf9c017dfcc06613ae116d163a4c0cbf6ef2765b90276d2f172b53c35",
+    "core/bemarkdown/pdf_visual_text_gate.py": "b9bcdf8d4ec8d9999a10aac9f9e493573e992895f53d67c97221c4b359920c54",
+    "core/bemarkdown/phase3b_integration.py": "71f2413122fb6581b5cfe81d21e86685eecf9cace1e146c90235661e7abc1827",
+    "core/bemarkdown/phase3c_benchmark.py": "77e6c08c23dc2d03c9f1538fbcc983b50a22e2427a63018453972b1c657ecd8d",
+    "core/bemarkdown/phase3d2_validation.py": "917df6819952d6a681b07b1b04fcc1d375730e5b87be25717b76dd7086839aec",
+    "core/bemarkdown/phase4a_validation.py": "36caa70a4a878b513bff95cdb6f913699bec579ef228d5626c757497d4f029b0",
+    "core/bemarkdown/phase4b_validation.py": "53408a96434764ede96e17e05a1b1ab0a759bbf53ad58fa832831b235753a9c1",
+    "core/bemarkdown/pipeline.py": "cd4c3e12f71f15c87364546c8f480793c31911344b8e3b3bd8de51ee9f97c8f8",
+    "core/bemarkdown/pp_error_root_cause_audit_v1.py": "e95915acf043f1e00cbe18be3883da08069b918275684a50618cc6b10911ce95",
+    "core/bemarkdown/production.py": "870b1d62cafa9bb7af3ca36ad0f934fa3c7c665bb340742315bc5356ab20f7dc",
+    "core/bemarkdown/production_audit_orchestration.py": "1215d070bceabfc027a1804661d6bb963d27acc7d7ff5544aa29d5360630a786",
+    "core/bemarkdown/production_gpu_closeout.py": "e92dd5009ecfbb2c903d5a224c838221b221b55ec5087f5ceba7d36bfe9a7193",
+    "core/bemarkdown/production_runtime.py": "be5acbf7d914aaabee3e4a4d369b2d012ff04e45a7d3c794202424a41f12dd89",
+    "core/bemarkdown/raw_transcription_cache.py": "1ea25d4dd70ba7a78a3506839b4d6e12e4d45683ff9dcc4e674d229dded1c614",
+    "core/bemarkdown/reference_evaluation.py": "2bef8f04d5a44620d3646163e1b3da66d6b2a9ad273e4c84aadc945f78d1c6c5",
+    "core/bemarkdown/reference_patch_planning.py": "16126801be1e270d613faf82bcee09232971704d1efe831c902d3652b8535cbd",
+    "core/bemarkdown/regression.py": "653ac8fb10f85a3dcfe897b6029115c288b42e4ddf9e4e7980d0d4b1c2f04139",
+    "core/bemarkdown/release.py": "b6ab5209af481d05888521201a4207a1a03ae42c3e51e8b52a7f9851222117eb",
+    "core/bemarkdown/residual_source_delivery.py": "52d0960f2b54a4e58001bc6f9c085f101cabee60d66d1d7e01dbf10743a59ef2",
+    "core/bemarkdown/resource_audit.py": "291a2426b35cb49e8f3c2e71a74421a7298dcb2aedf44b192b79a5072c527598",
+    "core/bemarkdown/resource_profiles.py": "670b984334c10a4b30613bd7856c7c9c1ce4b032ba3d961f2056a8001d68f80e",
+    "core/bemarkdown/reviewed_pdf_scope.py": "8aa76947b3e29705a6556452f2c25d0ab9f39b7401ac5d8b0d583b1db5cab82a",
+    "core/bemarkdown/scanner.py": "bf2e5aa3e8b0bc806abdaf1800874731e3b104d8ec91c2c5a9576e265d94a628",
+    "core/bemarkdown/semantic_candidates.py": "9c06fc4015040cedfb6456b63bc1fc60aae4265d3ac94ce0d5a3ebc0a6983a4f",
+    "core/bemarkdown/serializer.py": "95a1d79ea3b2c0ed8dee47400b6aa291675906fc24b37495ab9cb210382ff6aa",
+    "core/bemarkdown/shared_runtime_bridge.py": "257a7652255ddacb4f6aa97b918e982071764f72d1e058dae0fe85ca4aa98caf",
+    "core/bemarkdown/source_disposition.py": "de5e31d08bfa001865e07fd3af1a3a61bd6ebb8fcdd9704d672d6a2ce49eac84",
+    "core/bemarkdown/source_lexical_guard.py": "eee4a2fb3fea9700e1cde88b3368d801e5ad82116344d7aed079ea293673b508",
+    "core/bemarkdown/source_line_correspondence.py": "d6da32f8809f5043075e8693e1f5250e021e27eba5c07fd26787ba4eb8d64558",
+    "core/bemarkdown/source_review_cache.py": "c8ea6a49ed0a1662b69de1f74c7f6cffe6c07116eb96d31724a25fc19e069c58",
+    "core/bemarkdown/source_review_evidence.py": "48eaeeeaf33f37635942aa9724caca0af0c3842007128a5dbe30085b387f196b",
+    "core/bemarkdown/source_routing_risk.py": "6e087b593ccc32ee50187404c187687c978c4966309e25cad0af3fc1704f94fb",
+    "core/bemarkdown/stage_admission.py": "153c9898a30f47772d98c89017f6095c239990793293f43251ad045146b09296",
+    "core/bemarkdown/text_recognition_contract.py": "ffda24a15bcdfa406c235d08a7fd92d4de847ac9bbd6fb186c5b3df0edf4f861",
+    "core/bemarkdown/transcription_geometry.py": "7b05ad74c7999c0685bf2379d67a11384a4af0259e7f427094fda23254cb9ed0",
+    "core/bemarkdown/transcription_repair.py": "3604d8d6cb1ca9cf4bf4581fe498d867fe2655fb5bacbaa33e317b4c4e728fd6",
+    "core/bemarkdown/validator.py": "9592529e54d4d1cc19d6021f829387e3c681db8229bd683af6c26bc2d786b974",
+    "core/bemarkdown/vision_evaluation_context.py": "db8d9ab02456d52d3c07e414407cc2b0d8ef9977f404d88ff416672cb4c3b670",
+    "core/bemarkdown/vision_recognition_evaluation.py": "0d22889fd39bee0b99aef145b1f61c2985b7db5f4294fede3ce097cf53a40985",
+    "core/bemarkdown/vision_reference_evaluation.py": "55295c0e0d4f1e5a753b72232bc5a739c8ceec9cb768b371ff199cd8669fce4c",
+    "core/bemarkdown/vision_reference_gate.py": "910326a6391e364d4a70dddf0968c82fa78dc6418833f75ff249863d8e4ab917",
+    "core/bemarkdown/wmf.py": "ac078d87d99e62ee133afb0b2f3f4cdf7c5ea07fa7265b50f6db13254ee742e0",
+    "core/bemarkdown/wmf_renderer.py": "f59573a69f93ec21b1cb5a0c0515689ee9f12f70df91d683a026f8fa5d1eac1c",
+    "core/bemarkdown/word_formula_occurrences.py": "1c0f366fb4f00ce2b67df8b8daf1faed6d001b93a8a39eff7fb65178b6d078ce",
+    "core/bemarkdown/__init__.py": "3b0935a8fc08af5b27a7bafee31227535895c1a9e017837d964c6601197da3c8",
+    "core/bemarkdown/__main__.py": "482b8693e2fe6dbd732e3d7961e03827d3efa187bad11d29da188be580ebbeea",
+    "core/bemarkdown/figure_benchmark/core.py": "802986600bf21f50e037dbddc8e836238e7703072e803d5c5d2afcf431392fb0",
+    "core/bemarkdown/figure_benchmark/runner.py": "cc2f3eeb7d9f0cd87121ba9c1afcd3f6116b49914f78583d6fb323a377678b28",
+    "core/bemarkdown/figure_benchmark/__init__.py": "d8893b01b2a174e367d24e0f9316230844d5f16f2c60c15f2d29dea0b32265a7",
+    "core/bemarkdown/figure_benchmark/__main__.py": "efaaebd1489e66619520f6cfe171d62a2bab6a1a4d9d78041a9c205517028cb6",
+    "core/bemarkdown/pdf/adaptive_ocr.py": "a4d697b5c600b775f34d2639b3dc15077fbb2c9958cfcc21e4bdb6dede4f34a7",
+    "core/bemarkdown/pdf/adaptive_ocr_live.py": "4fb271794ca62c968fd2425bd2b0c7d1770bd2e14e284220060b29c57b2d1b81",
+    "core/bemarkdown/pdf/adaptive_pipeline.py": "20d0dcf989b8835b5dc9ad090a0383d52862e60d18a99a2905dab91204182a49",
+    "core/bemarkdown/pdf/background_vector_rules.py": "44fc46648c05c3b45321b9c355812b7c8019002fadc2521f7c5e90e5ba6a2d92",
+    "core/bemarkdown/pdf/balanced_ocr.py": "91ca10e88359d4d95d0c5a6a3cca160034711ab1e8fb85f25bf1c00aef4577c4",
+    "core/bemarkdown/pdf/caption_order.py": "74fd8d87600e25a9b9f6d037574c7211164345fe83d69168b0c1642a74be172b",
+    "core/bemarkdown/pdf/cff_glyph_bounds.py": "cc6f7703caa99e6ee2c64e2f6ebd84a702fbd004c55f46058712d81768adfb68",
+    "core/bemarkdown/pdf/clean_markdown.py": "392fd08d6a47dbd3686cd594cf16a5772c2d93d3fbac0c0aaee769de1c842e76",
+    "core/bemarkdown/pdf/detection_batches.py": "9776b586111de76b57c824ddb6af16f33098eaae508afd665ec2643e65124e4e",
+    "core/bemarkdown/pdf/diagram_bounds.py": "758f599928a641b5da0eaff7758b232c36029f8c7118efd5bafb02e491b709f0",
+    "core/bemarkdown/pdf/evidence_resolver.py": "e70b83f264be53b1d7d7f42ccf2835484664f1e9825deeedd3e4f2c1604d7a75",
+    "core/bemarkdown/pdf/figure_formula_support.py": "be4774b6bc455bfd2b39dc92d39907a7706ca03c550cd7bb2d4fcb28f509848a",
+    "core/bemarkdown/pdf/figure_graphic_markers.py": "d9ea82a2547e67d7035c15d2c234dd9ef2695365ea7b82d0d9c76272c2f306bc",
+    "core/bemarkdown/pdf/figure_labels.py": "a665f06d9eae7dfd5bf2e6b4c9a689ff9f8b0de10fc032e2f1e75425eca0d6d2",
+    "core/bemarkdown/pdf/figure_label_debug.py": "9ae463ec88029f1759f65679ff81633f66dc2dbd5e5f527297d6fb8a3fc47734",
+    "core/bemarkdown/pdf/figure_label_segments.py": "d2edcc364285e1cb1a56d1954972d1fe039ae909aa70fc9dc4fd9e6e9ad7b611",
+    "core/bemarkdown/pdf/figure_symbols.py": "601792884843bfdf83192f86f62bb38a9bd8d4010d1426feee223b25410f0c49",
+    "core/bemarkdown/pdf/figure_waveforms.py": "62e005b048a9366e2ba5820874399e0360709eccb55f4831ff9fbc7d6ea3b0d6",
+    "core/bemarkdown/pdf/formula_containment.py": "c2fbb68c33cd5ab67b7cccbd1cc5989fe12474512d677556d0868ad102cf2d84",
+    "core/bemarkdown/pdf/formula_ink_bounds.py": "639c7b5c730bc4bae9f0731e670aa04f2e938ef9bfecbb6e488e124aa950d58e",
+    "core/bemarkdown/pdf/fraction_repair_runtime.py": "f7780138376cb78372bcef0c0988dbba2ce9edfdfaf27af8429d4a033f4527fb",
+    "core/bemarkdown/pdf/fraction_structure_repair.py": "185d224839eff3d7c4f2a9389efc9e2991002e5123dd3d8e3ca18de4f9f7a9c5",
+    "core/bemarkdown/pdf/got_batching.py": "d6d2ffc44d5608e68293adfda71675945cd7a5d67e07ee5c160d417a4601eae3",
+    "core/bemarkdown/pdf/graphics_render.py": "5be723b87c6ac50f35dd328515130a2526beb2c9f9e3ea95a89edf2a4c5c9131",
+    "core/bemarkdown/pdf/image_containment.py": "737d570c7022b3153dd7f76758c2295575c3580406736c1bc1c93e37618703a9",
+    "core/bemarkdown/pdf/inline_atomic_superscript.py": "9c848b049d2da1b9d53fb880db87d544fe03293e5fc3d6bd02e3207c0880b594",
+    "core/bemarkdown/pdf/inline_math_candidates.py": "47aff0eef57dd785d310b1f9438a5f4b5d216f5892bc1a47ecae1b67e9fc9c58",
+    "core/bemarkdown/pdf/inline_math_repair.py": "d41489fdc03b3d3a8653cfe7999936671350e8425afc9bbfecad8718387ba4fc",
+    "core/bemarkdown/pdf/inline_math_runtime.py": "5a2a2d4626830769b6575b325ae546d60141dd0c336b62b810f74e286926e475",
+    "core/bemarkdown/pdf/isolated_image_content.py": "f7f2466c5f6ceb71221b977be0bbcea5ca292c73ca2a8cbdf04c9e15ddcbc1f1",
+    "core/bemarkdown/pdf/modular_pipeline.py": "a0541a2c62e127692d5dcf80524040f44f20c6a3b11fadd9aa3aee4cda231725",
+    "core/bemarkdown/pdf/native_character_sources.py": "ab0ff908ae971ede085845c4bb7a740a28f5ab4f116d0e9452d1cf91f8d01c4b",
+    "core/bemarkdown/pdf/native_column_order.py": "2c1216103858a0c0a56d5251233c0ec55175f32dee4eebfc9d301124884f3573",
+    "core/bemarkdown/pdf/native_delivery_coverage.py": "bc4c003ebf5c56fb41135be630fb34fd709ab2b17510ff7dd1f88098241cdaf7",
+    "core/bemarkdown/pdf/native_delivery_spans.py": "359f1e9f05c5bc0c47f9ec9a12bd8c46d70a954a4a00894c1fe2bff392123be3",
+    "core/bemarkdown/pdf/native_drawn_blanks.py": "6feb84085550667ebf95cd9bb6c786e3ea02623a7762e6162b6ad63d23596065",
+    "core/bemarkdown/pdf/native_evidence.py": "e9da30eab21a0826e63dfa86e9fb360d8f8f22c25405ac662fdd6774754765e1",
+    "core/bemarkdown/pdf/native_figure_labels.py": "ee088ec6caa1f7d41b34c37c5e1d9bf1bc31680beda9e9f59831194734e56cad",
+    "core/bemarkdown/pdf/native_font_unicode.py": "1a4152a4c3c642724305aef0455378188f3a4e1746b16ae9394ca8b91381b129",
+    "core/bemarkdown/pdf/native_glyph_bounds.py": "52eeba5d90210b8298550a969050647a01c200fd2a7410cbca8f7a2575128924",
+    "core/bemarkdown/pdf/native_image_appearance.py": "0050173edfc8108540243af3c52aa37379dd7daeb3717a02ae8e714459c2d9b8",
+    "core/bemarkdown/pdf/native_margin_notes.py": "ca17f828a8292639afafc731602615603be3d67ae6015e99ce86ec7d386d97e9",
+    "core/bemarkdown/pdf/native_margin_titles.py": "98d972351e8cae558d7fc2405bd24bd7ae53bf32355e4c5daeeff67c94686a2b",
+    "core/bemarkdown/pdf/native_math.py": "0b25ccdaeb18df74e8cc9714ca515bc5b080285388bc10e26f2b923d4c07c633",
+    "core/bemarkdown/pdf/native_paint_receipt.py": "4288c7f6d4be2a1e46d88f61c48dfb59369ee33dc4f039c4c1c9f981740f5e16",
+    "core/bemarkdown/pdf/native_visibility.py": "da5bcb3e3135d628575a74931340a7eb49d66c58d255c8d23398f9a8796049b6",
+    "core/bemarkdown/pdf/non_text_ownership.py": "2fe11d639762bc4c7e700b44af5e60b37430fa99822cb3a7c6b4a02ce8c62c6c",
+    "core/bemarkdown/pdf/object_profiler.py": "2f8453abe57a305d8ff99c1eeedf131b9d4008d9ec8d229b6f2acd33675cdad5",
+    "core/bemarkdown/pdf/ocr_character_geometry.py": "88122d122cda0433c41f530fdd7b6f23f7ae96b560a340f263a248227eccbbac",
+    "core/bemarkdown/pdf/page_review.py": "9c7e733fb6c61dc41e8c792fd2ed866b81cd98a48b5cd0de28714ba88c0a9d0d",
+    "core/bemarkdown/pdf/page_visual_text_recovery.py": "5a122fbeeba9b422012aea173f0d7187a965aa5f95efd01ce9ad3d19db0d2d4b",
+    "core/bemarkdown/pdf/phase7a_oracle_adapter.py": "1c783943a5904b269c0ca27c680784e9af29bbc1d144be14e37b90665abb6dbf",
+    "core/bemarkdown/pdf/pipeline_mode.py": "ffe7403807ecdf751352ced970a0a89659b76e0151f11aff245606c3e8ab8fc8",
+    "core/bemarkdown/pdf/production_runtime.py": "b39effb9e78f7716aa7f8b719e6571ee68dc9f224c877d110cc3fd69b2af2110",
+    "core/bemarkdown/pdf/production_three_model_live.py": "2f60f5d55d4bf0a34a09fceccd16c56d6b24a8416b3e720f4fc5fd5a2d72520a",
+    "core/bemarkdown/pdf/prose_edge_crop.py": "d4d7965944325bef942e893804317581083678b16815ea852a291df66a0edb26",
+    "core/bemarkdown/pdf/qwen_stage.py": "47013ce67fcc30bafd3f3d6b05596aafc9791d768888757c47d460e0f7bf91d6",
+    "core/bemarkdown/pdf/reading_order_v2.py": "b80cf384bd2afa465709168cc09c4c04605f14d547458f5efcb69a52d746a3f2",
+    "core/bemarkdown/pdf/region_line_coverage.py": "b9f6bbcf8d1b0dd6a7fc5cc335506a21d9e09ddaef9047e0d66ac4139aaa2085",
+    "core/bemarkdown/pdf/residual_agent.py": "80e03d6f8c7e2294b25671af3bda0f272dcf98338988a64e9be4e175d79d914b",
+    "core/bemarkdown/pdf/risk_manifest_v2.py": "204ca9cc4b7dfe5e5f363904c87a51fb21fa992aebb8af4c81f98dd447e79521",
+    "core/bemarkdown/pdf/ruled_writing_area.py": "2c07e1f945ce6c9a621f0d2a7b2a884a8b8b9063cb99a984a4cb4d4eda0c186a",
+    "core/bemarkdown/pdf/source_evidence.py": "89d4a92c9f3fe22af07ab4b910c90d70a77e56aaad43bba0b650fab23099d4f9",
+    "core/bemarkdown/pdf/source_table_grid.py": "8c8cccb692a0c0e2983b5bc63738a3d1a594a5dc091ae2f7992f10a2f331ec7c",
+    "core/bemarkdown/pdf/source_table_math.py": "d48b13b99ba45938aec80c9e29b66604e8e4d885cadb7a517e59b0a50f52efe9",
+    "core/bemarkdown/pdf/specialist_router.py": "72030343cf9ab3c574cc6a4788b09ac9f4a4f85055512994a3e6949845511c09",
+    "core/bemarkdown/pdf/table_bounds.py": "6d5ee1651e5d30001f02bafbc48b62afcc1ff106979128f06ae4989e2f46f82e",
+    "core/bemarkdown/pdf/table_evidence_v2.py": "37fbda22e04412bfc04adbb4a2e2dfc4d5167a50cf6186115e05f07c45edf030",
+    "core/bemarkdown/pdf/table_formula_review.py": "1b3107b0d51fd41eaa1ea44e163c2f18f0232d48f478ea84af258e27c463c584",
+    "core/bemarkdown/pdf/table_runtime.py": "8ab5bfa13568a5f52a2136b29c35ee9c6ba833472cf6e90e5042885ae7ddfeaf",
+    "core/bemarkdown/pdf/table_source_markers.py": "bbdbd7216dee5f910fe32d4d8a4ffa37ce5a2993de8bbff112875e43e07d8b94",
+    "core/bemarkdown/pdf/table_staged_runtime.py": "c636a941993a4ac9023392f8e9a15ff06143adc81ac2c5f26ae43ca2d23af8f5",
+    "core/bemarkdown/pdf/text_containment.py": "c907fb941dd2ed4117f99e03283aa94c9b55dab042143de6d00d7a5a4dcbb4c3",
+    "core/bemarkdown/pdf/text_evidence.py": "dc17f99a5086500645b2e9ce49e23ec5e5f9de65008e0136dd9e835257776828",
+    "core/bemarkdown/pdf/text_scope_review.py": "14ad43ea2aeb89fa8283d1bda7d2d8ade8dc1d943f421abf65932ecd6e4be34d",
+    "core/bemarkdown/pdf/text_trace.py": "90ea879a1ae16fe61bd782e5b4f05051ffd149ed7bf79d2063ec997df50d61f8",
+    "core/bemarkdown/pdf/three_model_ocr.py": "c2a042a2293f2090a8c95265c2415b27e0af5b3101df10bbe1c9f74b696dce37",
+    "core/bemarkdown/pdf/typed_authority.py": "389cf8294ebe537170e4219242cb61463d071276def3d7ba25a2f3d747cdc4bf",
+    "core/bemarkdown/pdf/visible_vectors.py": "3e3f4b2c2339d3fdb4fc473a0d54ab4a746fcdf1017755b7fbabe82e4ce476e7",
+    "core/bemarkdown/pdf/visual_router.py": "f6e216735966e3e50e965aa9e777c3a67c368ff2a3a3ce977dfaf94c1b023489",
+    "core/bemarkdown/pdf/vram_monitor.py": "9578c7f253f403e98f4edc44623a532cdd6d7fa779cef8e25f64ad2f49042138",
+    "core/bemarkdown/pdf/__init__.py": "18f670a3fda12eaf137bfe87539c09f421d0048f4347fe3c97cbb8d3cfe18081",
+    "core/bemarkdown/pdf/workers/ch_svtrv2_rec.py": "951ef8dad114aa74b7a9183e0d76c8508a14acf2fc5bd8e23a164e2634d078bc",
+    "core/bemarkdown/pdf/workers/deferred_got.py": "b966e82db21503ac8323d1b66f4a888067b15448b09d7fcbbfe25f463e11a0de",
+    "core/bemarkdown/pdf/workers/got_ocr2.py": "456e04bbbd5c7d0c3666c1ae0c90813417406ba099bc34844ffb0f0c33e8dcee",
+    "core/bemarkdown/pdf/workers/qwen_ocr.py": "77b8dc6a209ef443f9baf7b3196b1ca2c58fa97dfba06e2cedc41c6e76b812a7",
+    "core/bemarkdown/pdf/workers/readonly_safetensors.py": "8f46cb1e78d0450ba80fc2a345d634edf0c47a4d849f5f3c2b2710527e7f10a5",
+    "core/bemarkdown/pdf/workers/table_stage.py": "1c59719e9c2c65f04b95e5050ffda0b512b9070d8fd47b50d5b490218d13c36a",
+    "core/bemarkdown/pdf/workers/__init__.py": "c4a0bcaa4483cee250552ecd1799965965ce8b8c32353ad0fdeb16fce00ffa5f",
+    "core/bemarkdown/static/formula_review/app.js": "20fcac8f092de371f8801fc5a204d9387797033408902ff72796635de687fb70",
+    "core/bemarkdown/static/formula_review/index.html": "74bc52819095f9d28528b0560d069e36b2b93519cd51961dae9f782118f796fc",
+    "core/bemarkdown/static/formula_review/styles.css": "eaaec442cc6459193362f3d83b9fcac5e8d4a7075431f4b5e28cfdc4e53b1141",
+    "core/bemarkdown/static/formula_review/mathlive/LICENSE.txt": "3caebd18611959ca725ab976a004d408017eb1d7093d6c9b9b09c5a4790eaff8",
+    "core/bemarkdown/static/formula_review/mathlive/mathlive-fonts.css": "be6061a80fe44965402fb5fcfc9f33d07a28f3529b770c4540aad3cb2ac39f5c",
+    "core/bemarkdown/static/formula_review/mathlive/mathlive-static.css": "0d0d6d95ae4f252f6b9ffe64933e499fa5625d66e6998bdcd63980847ea4a72f",
+    "core/bemarkdown/static/formula_review/mathlive/mathlive.min.js": "e99e6d2fa19137e9abf13b58f34cc5d2455cea5067b8cd4018c270825caf1c27",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_AMS-Regular.woff2": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Caligraphic-Bold.woff2": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Caligraphic-Regular.woff2": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Fraktur-Bold.woff2": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Fraktur-Regular.woff2": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-Bold.woff2": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-BoldItalic.woff2": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-Italic.woff2": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Main-Regular.woff2": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Math-BoldItalic.woff2": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Math-Italic.woff2": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_SansSerif-Bold.woff2": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_SansSerif-Italic.woff2": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_SansSerif-Regular.woff2": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Script-Regular.woff2": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size1-Regular.woff2": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size2-Regular.woff2": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size3-Regular.woff2": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Size4-Regular.woff2": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+    "core/bemarkdown/static/formula_review/mathlive/fonts/KaTeX_Typewriter-Regular.woff2": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+    "core/bemarkdown/static/formula_review/mathlive/sounds/keypress-delete.wav": "66ce5505c7a224196bad7bfea8bcfceefb1307c68977693c85277e674bf69ac9",
+    "core/bemarkdown/static/formula_review/mathlive/sounds/keypress-return.wav": "3203e6b8cab71154ae09f8883e6bd40865125a0618675b360557badba96aae7c",
+    "core/bemarkdown/static/formula_review/mathlive/sounds/keypress-spacebar.wav": "b4e698a82d66179fbb40d9594fcef2fdbb0e9f0091c880d919b646888c9d3e6d",
+    "core/bemarkdown/static/formula_review/mathlive/sounds/keypress-standard.wav": "2a73d5303f5d80cd22ba991b6e6f2a9dd58c5bbff3b36f95b24348c81c172088",
+    "core/bemarkdown/static/formula_review/mathlive/sounds/plonk.wav": "bc0fc69c4c5536be9212aac02fcaafc345e7ba60e3702236846db545d66ea11a",
+    "core/bemarkdown/_vendor/OMML2LATEX_LICENSE.txt": "240b8a39fdfd2bd3b3539c02e34466334884fc84b056b57f06e9da35323ecd97",
+    "core/bemarkdown/_vendor/omml2latex_parser.py": "3073557b5c7133e6e511720996e856a227fe6fa2d5b7921987a781cd8566959b",
+    "core/bemarkdown/_vendor/__init__.py": "ce8aa8420ab4ec10fa3ec8f402dc5457df6db8e9b59e654ede1f3870ed50ebe0",
+    "route/bootstrap.py": "66fa75294c2b3c2b78c1e40dfe184aa45d3ddf75d37ae1a82f9e0c0df469a402",
+    "route/docx_retention_worker.py": "33caa36f47c9e1e3af1498d9d201258c9b4ecdd275ddffbd8ac69e9cbf6dfb28",
+    "route/e2e_completion.py": "48ddaf724c9052f7da5597fe936111f7022128137dbba5fff634d8f28da75be0",
+    "route/e2e_supervise.py": "b55b25e1c4a8ad754cd470a57b5e32f2465467d562bb00afb82c57a1bd6c9364",
+    "route/e2e_supervise_v3.py": "09c8f1f9956d409b0f79f17fe0a6d0a4bddeacef5115ff44dd65d0d80883e8a3",
+    "route/flash_text_resolver.py": "2efcad27572e31a4d25636b436ea277ffc9f23776c0751ac9f0b565881e11480",
+    "route/isolated_native_backends.py": "d0bf8f79856dd077f7eaf4df7bde9b62352e33b2dc5a52397cbfcd0a6e009751",
+    "route/job_family_v4.py": "50d347bafd25e9355b4aa2b82b9c7490221e47d08ef7f0eb4ea1e0c20b788b57",
+    "route/job_family_v41.py": "23a33d82f8ccb812c28d4e3b7e31b43bc85a6d24f9ab9dd078642cc357da67cb",
+    "route/job_membership.py": "e9020cf7e15d6e7146371cb3d8f5280d2b1055fb914961ff6b38cfa23a1805d7",
+    "route/memory_guard_v33.py": "a21fa64424c58c60f6ecfa75677bff2d4313d0b35025253e9e51406f98e6165d",
+    "route/memory_watchdog_v34.py": "d7a71c4046051dee6504c1fe4339766c95ddcd4779c73f2c6c3133cf3440f50d",
+    "route/native_local_flash_resolver.py": "46940715d72685ea06a39d182915bd47aa1e028b15f7bce4f2e471703ac7cb3c",
+    "route/native_source_review_delivery.py": "948ee1898b88a3cafcf9e64677a1a35821edf55a285e57893b109d17d0d1839d",
+    "route/portable_native_conversion.py": "50a56463f1f404a1b5d853860f3062194b5d6e518404034df98e4c88fc633df2",
+    "route/portable_optimization_worker.py": "996515cfccd63fce00521627fee53bc9dfb574100c9db891106f8b61e947109a",
+    "route/probe.py": "e0e2c9ea83a26fdc1ade7f51f1e8ef61ab69573782a6f90ea6a540fe8199757e",
+    "route/retention_stage_admission.py": "ad50b8e15aa9834c9ac99ab609a45a9f8fe54a8035a0de6ee9fc07b3e0241609",
+    "route/stage_admission_check.py": "243c2ee249642a6069876e1fd9e7c7247d78518a02dce633d9165329a6870937"
+  },
+  "core_module_delta": [
+    {
+      "module": "bemarkdown/agent_transcription.py",
+      "published_sha256": null,
+      "frozen_sha256": "d53ea860cd4169d469fa89c3c7f1aaf788e2a78314cdc3e5837c47dc1c856bb7"
+    },
+    {
+      "module": "bemarkdown/agent_usage.py",
+      "published_sha256": null,
+      "frozen_sha256": "81dd83c35ba3dae08ad9a47df5001251d8d08730deeece651f9d6d0200fa0a3c"
+    },
+    {
+      "module": "bemarkdown/asset_delivery.py",
+      "published_sha256": null,
+      "frozen_sha256": "0b1dbfeb4854f4b89c7e450ea82131cf4861574984563ead6a2841b05108066f"
+    },
+    {
+      "module": "bemarkdown/asset_local_evidence.py",
+      "published_sha256": null,
+      "frozen_sha256": "2e2dc59f4ff35510cdde56b93e75260a7cc048e4e48f18c61ada0aaab3567c3c"
+    },
+    {
+      "module": "bemarkdown/asset_text_content.py",
+      "published_sha256": null,
+      "frozen_sha256": "5e0a8ddb8461d052f3b56b2deb26ef442c1d382762d7f45aa6554b804f23845a"
+    },
+    {
+      "module": "bemarkdown/docx_footer_delivery.py",
+      "published_sha256": null,
+      "frozen_sha256": "6308790af77519321c0637e08bad5172766243cd9301364358918fc2d1d39c2c"
+    },
+    {
+      "module": "bemarkdown/docx_image_content.py",
+      "published_sha256": "707a56d9ff001647b47cac18ac1bf51d0bdfba60b51a2555c1e9b7968720457e",
+      "frozen_sha256": "fc902ea7564225ccc3ae1f0f53ac72e51f3bc3378fe5f8f9b5187b1d12d0dd6b"
+    },
+    {
+      "module": "bemarkdown/formulanet_runtime.py",
+      "published_sha256": "d56bd3dc63dadf9b97509792dfeaa493e4cd38b2d8d3205587487521e0a15363",
+      "frozen_sha256": "e15fce3c845c22608d44b3f241e7f2f137e705d11fb79b13b80a3fedd0f1aa3c"
+    },
+    {
+      "module": "bemarkdown/local_plain_acceptance.py",
+      "published_sha256": null,
+      "frozen_sha256": "5ae8c14343aa39aef6149baac88c49564a468fc3c593e58d6c02a58c71f0b60f"
+    },
+    {
+      "module": "bemarkdown/markdown_asset_refs.py",
+      "published_sha256": null,
+      "frozen_sha256": "b81052087a0e653cb64e071f000ad174b60aabaa356561d373be64d855bb0f34"
+    },
+    {
+      "module": "bemarkdown/native_reference_salvage.py",
+      "published_sha256": null,
+      "frozen_sha256": "f71b15e3e63db740f977f8161ba93f29427b41daaa0804d4f4921116354583ad"
+    },
+    {
+      "module": "bemarkdown/native_symbol_evidence.py",
+      "published_sha256": null,
+      "frozen_sha256": "fbe0b9d7e7a843c19057654455f071857627f155cbd7ffe6f899ff98d937b2ad"
+    },
+    {
+      "module": "bemarkdown/pdf_content_router.py",
+      "published_sha256": "74a0e7b9202915d862373ae0fbde60c6d73ea95050fb908a60dbb66aa264cc72",
+      "frozen_sha256": "e5f1760a80599109d52bc287444c045537326db2c322a8845148a87b9485e1dd"
+    },
+    {
+      "module": "bemarkdown/pdf_delivery_projection.py",
+      "published_sha256": null,
+      "frozen_sha256": "e44e1d74b6f63a2a70f09123a46db8b30c4645d86710c2eea001b72e2f4f0944"
+    },
+    {
+      "module": "bemarkdown/pdf_document_ir.py",
+      "published_sha256": "e01a5762f672b42570b143147b9f0a32e65cef19b4a023c6bb6d3ead902890d2",
+      "frozen_sha256": "7e18ed7bcf7f9618d9736525648eeccf4a39f371526d5316a1a362093208dba6"
+    },
+    {
+      "module": "bemarkdown/pdf_layout_runtime.py",
+      "published_sha256": "b0a300b96447cf6f26fe72bf65cc49198bd085776bb052f51c0a987115d54326",
+      "frozen_sha256": "c96b69002620f39e05b23229fdef1bf3d132d525b96559d38a266c5ab4d4c0d9"
+    },
+    {
+      "module": "bemarkdown/production.py",
+      "published_sha256": "dd88bbc8fdc251b20cad72659d00c06b8955abfe108acb55358f4e4a39ec5a9b",
+      "frozen_sha256": "870b1d62cafa9bb7af3ca36ad0f934fa3c7c665bb340742315bc5356ab20f7dc"
+    },
+    {
+      "module": "bemarkdown/raw_transcription_cache.py",
+      "published_sha256": null,
+      "frozen_sha256": "1ea25d4dd70ba7a78a3506839b4d6e12e4d45683ff9dcc4e674d229dded1c614"
+    },
+    {
+      "module": "bemarkdown/residual_source_delivery.py",
+      "published_sha256": null,
+      "frozen_sha256": "52d0960f2b54a4e58001bc6f9c085f101cabee60d66d1d7e01dbf10743a59ef2"
+    },
+    {
+      "module": "bemarkdown/reviewed_pdf_scope.py",
+      "published_sha256": null,
+      "frozen_sha256": "8aa76947b3e29705a6556452f2c25d0ab9f39b7401ac5d8b0d583b1db5cab82a"
+    },
+    {
+      "module": "bemarkdown/semantic_candidates.py",
+      "published_sha256": null,
+      "frozen_sha256": "9c06fc4015040cedfb6456b63bc1fc60aae4265d3ac94ce0d5a3ebc0a6983a4f"
+    },
+    {
+      "module": "bemarkdown/source_disposition.py",
+      "published_sha256": null,
+      "frozen_sha256": "de5e31d08bfa001865e07fd3af1a3a61bd6ebb8fcdd9704d672d6a2ce49eac84"
+    },
+    {
+      "module": "bemarkdown/source_lexical_guard.py",
+      "published_sha256": null,
+      "frozen_sha256": "eee4a2fb3fea9700e1cde88b3368d801e5ad82116344d7aed079ea293673b508"
+    },
+    {
+      "module": "bemarkdown/source_line_correspondence.py",
+      "published_sha256": null,
+      "frozen_sha256": "d6da32f8809f5043075e8693e1f5250e021e27eba5c07fd26787ba4eb8d64558"
+    },
+    {
+      "module": "bemarkdown/source_review_cache.py",
+      "published_sha256": null,
+      "frozen_sha256": "c8ea6a49ed0a1662b69de1f74c7f6cffe6c07116eb96d31724a25fc19e069c58"
+    },
+    {
+      "module": "bemarkdown/source_review_evidence.py",
+      "published_sha256": null,
+      "frozen_sha256": "48eaeeeaf33f37635942aa9724caca0af0c3842007128a5dbe30085b387f196b"
+    },
+    {
+      "module": "bemarkdown/source_routing_risk.py",
+      "published_sha256": null,
+      "frozen_sha256": "6e087b593ccc32ee50187404c187687c978c4966309e25cad0af3fc1704f94fb"
+    },
+    {
+      "module": "bemarkdown/stage_admission.py",
+      "published_sha256": null,
+      "frozen_sha256": "153c9898a30f47772d98c89017f6095c239990793293f43251ad045146b09296"
+    },
+    {
+      "module": "bemarkdown/transcription_geometry.py",
+      "published_sha256": null,
+      "frozen_sha256": "7b05ad74c7999c0685bf2379d67a11384a4af0259e7f427094fda23254cb9ed0"
+    },
+    {
+      "module": "bemarkdown/transcription_repair.py",
+      "published_sha256": null,
+      "frozen_sha256": "3604d8d6cb1ca9cf4bf4581fe498d867fe2655fb5bacbaa33e317b4c4e728fd6"
+    },
+    {
+      "module": "bemarkdown/word_formula_occurrences.py",
+      "published_sha256": null,
+      "frozen_sha256": "1c0f366fb4f00ce2b67df8b8daf1faed6d001b93a8a39eff7fb65178b6d078ce"
+    },
+    {
+      "module": "bemarkdown/pdf/adaptive_ocr.py",
+      "published_sha256": "9054e7d0ee12d8adefdfa1ac8e6ccd69ae6c9d2e9ba53583b8fb3b4102fff0f2",
+      "frozen_sha256": "a4d697b5c600b775f34d2639b3dc15077fbb2c9958cfcc21e4bdb6dede4f34a7"
+    },
+    {
+      "module": "bemarkdown/pdf/balanced_ocr.py",
+      "published_sha256": null,
+      "frozen_sha256": "91ca10e88359d4d95d0c5a6a3cca160034711ab1e8fb85f25bf1c00aef4577c4"
+    },
+    {
+      "module": "bemarkdown/pdf/modular_pipeline.py",
+      "published_sha256": "f253fb44df01bce0a94ba6e526ff434c48c40dd247d5af5e0e9ce34bdb753f4f",
+      "frozen_sha256": "a0541a2c62e127692d5dcf80524040f44f20c6a3b11fadd9aa3aee4cda231725"
+    },
+    {
+      "module": "bemarkdown/pdf/production_runtime.py",
+      "published_sha256": "643d676100c8ace4f84236be5c31e17775099c7aef8ffb734c5c40c4f5095f38",
+      "frozen_sha256": "b39effb9e78f7716aa7f8b719e6571ee68dc9f224c877d110cc3fd69b2af2110"
+    },
+    {
+      "module": "bemarkdown/pdf/qwen_stage.py",
+      "published_sha256": "f878dbadbb4e7fe77b8a8a51c1dd86612ed4d39c4dcd7cb267b0277e345569de",
+      "frozen_sha256": "47013ce67fcc30bafd3f3d6b05596aafc9791d768888757c47d460e0f7bf91d6"
+    },
+    {
+      "module": "bemarkdown/pdf/table_runtime.py",
+      "published_sha256": "08dbb74e7b7a8b0f046addffa6c0550deac1293212002253c26930e22b9a287c",
+      "frozen_sha256": "8ab5bfa13568a5f52a2136b29c35ee9c6ba833472cf6e90e5042885ae7ddfeaf"
+    },
+    {
+      "module": "bemarkdown/pdf/table_staged_runtime.py",
+      "published_sha256": null,
+      "frozen_sha256": "c636a941993a4ac9023392f8e9a15ff06143adc81ac2c5f26ae43ca2d23af8f5"
+    },
+    {
+      "module": "bemarkdown/pdf/workers/qwen_ocr.py",
+      "published_sha256": "55ac4d1f60d05c15eac3a24da9e26d5247be37807c49bdc34a1dc4343a7da67d",
+      "frozen_sha256": "77b8dc6a209ef443f9baf7b3196b1ca2c58fa97dfba06e2cedc41c6e76b812a7"
+    },
+    {
+      "module": "bemarkdown/pdf/workers/readonly_safetensors.py",
+      "published_sha256": null,
+      "frozen_sha256": "8f46cb1e78d0450ba80fc2a345d634edf0c47a4d849f5f3c2b2710527e7f10a5"
+    },
+    {
+      "module": "bemarkdown/pdf/workers/table_stage.py",
+      "published_sha256": null,
+      "frozen_sha256": "1c59719e9c2c65f04b95e5050ffda0b512b9070d8fd47b50d5b490218d13c36a"
+    }
+  ],
+  "route_source_origins": [
+    {
+      "module": "route/bootstrap.py",
+      "development_sha256": "6b293068a169c0d139e68cebb7eb58afe9c7194401fe243b6926a520fa64c5ee",
+      "payload_sha256": "66fa75294c2b3c2b78c1e40dfe184aa45d3ddf75d37ae1a82f9e0c0df469a402"
+    },
+    {
+      "module": "route/e2e_completion.py",
+      "development_sha256": "249a0060eebeed03fd18ee2d689922f029bad48b97324ee195965572a653d637",
+      "payload_sha256": "48ddaf724c9052f7da5597fe936111f7022128137dbba5fff634d8f28da75be0"
+    },
+    {
+      "module": "route/flash_text_resolver.py",
+      "development_sha256": "0cb0145f9856762e91040ac452a688994d26db5211784b5c18e353fad5f3dfa1",
+      "payload_sha256": "2efcad27572e31a4d25636b436ea277ffc9f23776c0751ac9f0b565881e11480"
+    },
+    {
+      "module": "route/native_local_flash_resolver.py",
+      "development_sha256": "e9a599b343c149c487352bc2e2863085ea517cdb8b78b523432fca7f59255878",
+      "payload_sha256": "46940715d72685ea06a39d182915bd47aa1e028b15f7bce4f2e471703ac7cb3c"
+    },
+    {
+      "module": "route/native_source_review_delivery.py",
+      "development_sha256": "5c136d477b6e5d18957c209f9947eb1d32efe6a9489295ed646193f7955e2e46",
+      "payload_sha256": "948ee1898b88a3cafcf9e64677a1a35821edf55a285e57893b109d17d0d1839d"
+    },
+    {
+      "module": "route/docx_retention_worker.py",
+      "development_sha256": "6677bd71a4b480f8f3055a7b51aec42c9e58d3f239cc036853672f7619daa278",
+      "payload_sha256": "33caa36f47c9e1e3af1498d9d201258c9b4ecdd275ddffbd8ac69e9cbf6dfb28"
+    },
+    {
+      "module": "route/isolated_native_backends.py",
+      "development_sha256": "118365a2df3f1d3f1c400d347c68c55ffa4e489a3318a8a2b8b4986021110090",
+      "payload_sha256": "d0bf8f79856dd077f7eaf4df7bde9b62352e33b2dc5a52397cbfcd0a6e009751"
+    },
+    {
+      "module": "route/retention_stage_admission.py",
+      "development_sha256": "01a923f232333b2522316473f9716248e08bf4683a339250170e8a977eb5ca5a",
+      "payload_sha256": "ad50b8e15aa9834c9ac99ab609a45a9f8fe54a8035a0de6ee9fc07b3e0241609"
+    },
+    {
+      "module": "route/e2e_supervise.py",
+      "development_sha256": "d963711b45dabf1308d8d51b04412491ac2140cef174a03f6139682cd7116326",
+      "payload_sha256": "b55b25e1c4a8ad754cd470a57b5e32f2465467d562bb00afb82c57a1bd6c9364"
+    },
+    {
+      "module": "route/e2e_supervise_v3.py",
+      "development_sha256": "1d50def1f5602bfa7b503f191e92f01eccf9fa8a64d3439b71c63a14ed8d68bd",
+      "payload_sha256": "09c8f1f9956d409b0f79f17fe0a6d0a4bddeacef5115ff44dd65d0d80883e8a3"
+    },
+    {
+      "module": "route/stage_admission_check.py",
+      "development_sha256": "31e7654cee0578238546aafbdfa1d02df9e2ea98ae0da054adbde056e87d87dc",
+      "payload_sha256": "243c2ee249642a6069876e1fd9e7c7247d78518a02dce633d9165329a6870937"
+    },
+    {
+      "module": "route/job_membership.py",
+      "development_sha256": "ff3368aa543abce32f578977c5009124702f8c05a0d1b284eab463c9302cf1e0",
+      "payload_sha256": "e9020cf7e15d6e7146371cb3d8f5280d2b1055fb914961ff6b38cfa23a1805d7"
+    },
+    {
+      "module": "route/portable_native_conversion.py",
+      "development_sha256": "b5fc8a5617985583d4e8dd5fb8bbc1dc33e833f07504c3e20b02c1fe55312236",
+      "payload_sha256": "50a56463f1f404a1b5d853860f3062194b5d6e518404034df98e4c88fc633df2"
+    },
+    {
+      "module": "route/portable_optimization_worker.py",
+      "development_sha256": "a5ede2de1f3138f3c77b33f5639d93e33f5c8bb55bb976880131f10914660aaf",
+      "payload_sha256": "996515cfccd63fce00521627fee53bc9dfb574100c9db891106f8b61e947109a"
+    },
+    {
+      "module": "route/memory_guard_v33.py",
+      "development_sha256": "f2f25111e685ff136939642795138ad71b2b8bc659d824a87be6adca840c9e1b",
+      "payload_sha256": "a21fa64424c58c60f6ecfa75677bff2d4313d0b35025253e9e51406f98e6165d"
+    },
+    {
+      "module": "route/memory_watchdog_v34.py",
+      "development_sha256": "3f2b53ea677629680104d211e6b656b7915838588fd44c4a9265c9a59fee11ae",
+      "payload_sha256": "d7a71c4046051dee6504c1fe4339766c95ddcd4779c73f2c6c3133cf3440f50d"
+    },
+    {
+      "module": "route/probe.py",
+      "development_sha256": "42bc99f0a2eba6257cd55a9693959eb8894e6925c08d80455a933f5b5fdfc77d",
+      "payload_sha256": "e0e2c9ea83a26fdc1ade7f51f1e8ef61ab69573782a6f90ea6a540fe8199757e"
+    },
+    {
+      "module": "route/job_family_v4.py",
+      "development_sha256": "7074b10393fa13b2af682421fc7433f0022ed018e2838134d23683bb22e68d05",
+      "payload_sha256": "50d347bafd25e9355b4aa2b82b9c7490221e47d08ef7f0eb4ea1e0c20b788b57"
+    },
+    {
+      "module": "route/job_family_v41.py",
+      "development_sha256": "e31eaf03db82d36b1764a6eaafba16ed1f348ead3ed8cd3df0e8ff4769d234c6",
+      "payload_sha256": "23a33d82f8ccb812c28d4e3b7e31b43bc85a6d24f9ab9dd078642cc357da67cb"
+    }
+  ],
+  "semantic_repairs_enabled": false,
+  "resource_policy": "6GiB/6144MiB/8GiB/9GiB",
+  "source_review_is_human_gold": false,
+  "private_samples_or_credentials_packaged": false,
+  "quality_qualification": "PENDING_FINAL_FOUR_DOCUMENT_CLOSEOUT"
+}

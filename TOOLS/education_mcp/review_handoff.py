@@ -174,7 +174,30 @@ def build_handoff(source, markdown, report, document_ir=None):
                 evidence_available=bool(document_ir) if pagination else source_type == ".docx" or bool(document_ir),
                 scope="Three-model text candidates are in items, table content tasks in content_reviews, and region inspection in image_region_reviews. Formula/table/layout review markers are separate, not silently treated as OCR disagreements.",
                 items=items, image_region_reviews=_image_region_reviews(report, media_by_relationship, media_sizes, document_ir),
-                content_reviews=content_reviews, content_review_count=len(content_reviews))
+                content_reviews=content_reviews, content_review_count=len(content_reviews),
+                image_screening_summary={key: report.get('image_screening', {}).get(key) for key in
+                    ('status','protected_count','classified_count','excluded_count')},
+                image_screening_tasks=_screening_tasks(report, document_ir))
+
+
+def _screening_tasks(report, document_ir):
+    """Only new transcription/uncertain-classification work, never protected OCR."""
+    assets={row['asset_uid']:row for row in report.get('assets',{}).get('records',[]) if row.get('asset_uid')}
+    blocks={row['node_id']:row for row in (document_ir or {}).get('blocks',[]) if row.get('node_id')}
+    tasks=[]
+    for row in report.get('image_screening',{}).get('decisions',[]):
+        if row['action']=='EXCLUDE' or not (row.get('needs_transcription') or row.get('classification_review_required')):
+            continue
+        asset=assets.get(row['asset_uid'])
+        if not asset or not asset.get('relative_path'):continue
+        nodes=[blocks[node] for node in row['node_ids'] if node in blocks]
+        tasks.append(dict(task_id='screen-'+row['asset_uid'],asset_uid=row['asset_uid'],
+            asset_name=asset['relative_path'],asset_sha256=asset['content_sha256'],
+            kind=row['purpose']['kind'],action=row['action'],needs_transcription=row['needs_transcription'],
+            preserve_image_until_transcription_verified=True,
+            source_regions=[dict(page_index=node['page_index'],bbox_pdf_pt=node.get('bbox_pdf_pt')) for node in nodes],
+            scope='Classify uncertain images or transcribe title/text images; no repetition of protected OCR evidence.'))
+    return tasks
 
 
 def _table_contexts(markup, markdown, span=None):

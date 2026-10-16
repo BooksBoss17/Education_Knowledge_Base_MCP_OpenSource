@@ -27,10 +27,11 @@ EXPECTED_TOOLS = {
     "bemarkdown_review_context",
     "bemarkdown_review",
     "textbook_organize",
+    "runtime_jobs",
 }
 EXPECTED_PROTOCOL = "2025-11-25"
 EXPECTED_SERVER = ("education-knowledge-base", "0.5.4")
-EXPECTED_WHEEL_SHA256 = "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c"
+EXPECTED_WHEEL_SHA256 = "1cbb838958dfb283be02d5693a00d89213880a51478f4cdfc88f639b1aeb3e6d"
 BLOCKED_CALLS = {
     "bemarkdown_convert": {"source": "not-used-before-vision-gate.pdf"},
     "bemarkdown_status": {"job_id": "0" * 32},
@@ -74,7 +75,7 @@ async def exercise(root: Path, runtime_python: Path, workspace: Path, mode: str)
         listing = await client.list_tools()
         names = {tool.name for tool in listing.tools}
         assert names == EXPECTED_TOOLS, (sorted(names), sorted(EXPECTED_TOOLS))
-        assert len(listing.tools) == 11
+        assert len(listing.tools) == 12
 
         workspace_result = await client.call_tool("knowledge_workspace", {"action": "inspect"})
         assert not workspace_result.is_error

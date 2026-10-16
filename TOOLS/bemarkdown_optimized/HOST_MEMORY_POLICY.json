@@ -1,0 +1,5 @@
+{
+  "schema": "bemarkdown-device-resource-policy-v2",
+  "mode": "auto",
+  "gpu_index": 0
+}

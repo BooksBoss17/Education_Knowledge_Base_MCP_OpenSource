@@ -37,7 +37,7 @@
     "projects/bemarkdown-retention-training/tools/retention_inference.py": "199d9be6b0a82a79c8f41210bf63a6458c1776e1746f1a41b56c06bcb743116e",
     "projects/bemarkdown-retention-training/tools/run_cold_semantic_pipeline.py": "f68340778f79ec626a23007f9d9df1d4b41e7da8fa0ffaecac92197f7da655ba",
     "projects/bemarkdown-retention-training/tools/run_gguf_partition_predictions.py": "232f71a8f31668a04a83b79992e5162d592048a906ca1d6c10b11048465330b4",
-    "projects/bemarkdown-retention-training/tools/run_native_model_stage.py": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec",
+    "projects/bemarkdown-retention-training/tools/run_native_model_stage.py": "f8b4a62114547130ead0febaae53e0168b69d0676d36100e27ac74464590abdc",
     "projects/bemarkdown-retention-training/tools/run_zero99_fact_probe.py": "cac5de5cef89814a01c1ce9c20786c8ed158404d4adba3dc48019be7edc876e5",
     "projects/bemarkdown-retention-training/tools/source_choice_option.py": "f99cb57314a6833c88a9bc355f59fe6684fa83eebf24469fb404b5e546b6a9c2",
     "projects/bemarkdown-retention-training/tools/toc_footer_position.py": "58513bda65224b9b953633b2889c157fb32adec183d512649dd58cd318d0bcc0",
@@ -48,6 +48,7 @@
     "projects/education_mcp/context_retention.py": "b44cbdf6f7eefde3a1e8aeaf8309e188d052b6f3205fcf1a3231e432c4076958",
     "projects/education_mcp/image_occurrences.py": "a75e92e3dcd279090afd42a29daf7b6bbbbb9552c05e631b06ec3b3de5a14457",
     "projects/education_mcp/retention_context_v8_7.py": "4f2ae67318cfd5c6236282aa3b175a975f9fe6f72715d69a3c33c75ec0d24f9e",
+    "runtime/host_memory_policy.py": "d7c6348c18046afae40c3585c742ff4bcd0c82199757a8e64ac2e64444f46454",
     "tmp/retention-v6-20261003/memory_guard_v33.py": "ddb81df2eecdfd60dc8248cdcaed26b9919b62349450c0d147a422b51b8997c2",
     "tmp/retention-v6-20261003/memory_watchdog_v34.py": "4060f0f08b2ea708c45436bf80f10508b3fe8c8d7b8ce7634569724a6e51f562",
     "tmp/retention-v6-20261003/source_builder_v29.py": "ecbeb8bff2c482ca2da8aa128c9ce6e923a50f3b5da68f3e6c2d59db599ba619",
@@ -125,9 +126,11 @@
     {
       "source": "projects/bemarkdown-retention-training/tools/run_native_model_stage.py",
       "source_sha256": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec",
-      "packaged_sha256": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec",
+      "packaged_sha256": "f8b4a62114547130ead0febaae53e0168b69d0676d36100e27ac74464590abdc",
       "entrypoint": true,
-      "exported_roots": null
+      "exported_roots": null,
+      "policy_only_parent_packaged_sha256": "b1e958505f60c8bcafe1b542627b7e610b8ddba0b33c625fc6a41ff5339630ec",
+      "policy_only_resource_adapter": true
     },
     {
       "source": "projects/education_mcp/context_retention.py",
@@ -471,5 +474,14 @@
     }
   ],
   "contains_images_or_gold": false,
-  "development_path_findings": []
+  "development_path_findings": [],
+  "resource_policy_adaptation": {
+    "status": "POLICY_ONLY_PENDING_PARENT_VALIDATION",
+    "module": "runtime/host_memory_policy.py",
+    "sha256": "d7c6348c18046afae40c3585c742ff4bcd0c82199757a8e64ac2e64444f46454",
+    "snapshot_env": "BEMARKDOWN_HOST_MEMORY_POLICY_JSON",
+    "training_branch_changed": false,
+    "expected_requirement_arguments_changed": false,
+    "models_run": false
+  }
 }

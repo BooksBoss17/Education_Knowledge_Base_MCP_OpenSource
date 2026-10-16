@@ -36,13 +36,23 @@ def members(job):
         raise RuntimeError('INCOMPLETE_JOB_MEMBERSHIP')
     return list(p.pids[:p.listed])
 
+_deployment_module=None
+_deployment_policy=None
 def gpu():
+    if _deployment_module is not None:
+        row=_deployment_module['sample_device'](gpu_uuid=_deployment_policy['gpu_uuid'] if _deployment_policy else None)
+        return dict(total_mib=row['gpu_total_bytes']/2**20,used_mib=row['gpu_used_bytes']/2**20,
+            free_mib=row['gpu_free_bytes']/2**20,raw_observation=row)
+    return _legacy_gpu()
+
+def _legacy_gpu():
     raw = subprocess.check_output(['nvidia-smi', '--query-gpu=memory.total,memory.used,memory.free', '--format=csv,noheader,nounits'], text=True, timeout=5)
     rows = [[int(v.strip()) for v in line.split(',')] for line in raw.strip().splitlines()]
     assert len(rows) == 1, 'SINGLE_DEVICE_PLAN_ONLY'
     return dict(zip(('total_mib', 'used_mib', 'free_mib'), rows[0]))
 
 def main():
+    global _deployment_module, _deployment_policy
     ap = argparse.ArgumentParser()
     ap.add_argument('worker')
     ap.add_argument('--expected-private-gib', type=float, required=True)
@@ -64,7 +74,7 @@ def main():
     out.mkdir(parents=True)
     ctrl = process_info(os.getpid())
     host = sample()
-    before_gpu = gpu()
+    before_gpu = None if args.deployment_budget else gpu()
     policy = json.loads((P / 'configs/resource-policy.json').read_text('utf-8'))
     commit_floor = policy['training'].get('emergency_commit_headroom_gib', policy['host_floors']['commit_headroom_gib'])
     if args.minimum_host_commit_gib is not None:
@@ -72,17 +82,43 @@ def main():
         commit_floor = max(commit_floor, args.minimum_host_commit_gib)
     private_cap = host['commit_headroom_gib'] - commit_floor - .25
     working_cap = host['PhysicalAvailable_gib'] - 2 - .25
+    deployment_decision=None
     if args.deployment_budget:
-        commit_floor = max(3., commit_floor)
-        private_cap = min(host['commit_headroom_gib'] - commit_floor - .25,
-                          6. - ctrl['private_commit_gib'] - .02)
-        working_cap = min(working_cap, 6.)
-    admitted = private_cap >= args.expected_private_gib and working_cap >= args.expected_working_gib and before_gpu['free_mib'] / 1024 >= args.expected_gpu_gib + 1
+        import runpy
+        _deployment_module=runpy.run_path(str(R/'runtime/host_memory_policy.py'))
+        if os.environ.get(_deployment_module['ENV']):
+            _deployment_policy=_deployment_module['current_memory_policy']()
+        else:
+            observed=_deployment_module['sample_device']()
+            _deployment_policy=_deployment_module['resolve_device_policy'](observed['total_physical_bytes'],observed['commit_limit_bytes'],observed['gpu_total_bytes'],
+                gpu_uuid=observed['gpu_uuid'],gpu_count=observed['gpu_count'],mapping_supported=observed['mapping_supported'])
+            os.environ[_deployment_module['ENV']]=json.dumps(_deployment_policy,separators=(',',':'))
+        requirement=dict(extra_private_bytes=args.expected_private_gib*2**30,
+            extra_physical_bytes=args.expected_working_gib*2**30,extra_gpu_mib=args.expected_gpu_gib*1024)
+        commit_floor=max(commit_floor,_deployment_policy['commit_headroom_floor_gib'])
+        wait_until=time.monotonic()+_deployment_policy['stage_wait_timeout_seconds']
+        while True:
+            host=sample();before_gpu=gpu();ctrl=process_info(os.getpid())
+            converted=dict(before_gpu['raw_observation'],group_current_bytes=ctrl['private_commit_gib']*2**30,
+                group_working_bytes=ctrl['working_gib']*2**30,physical_free_bytes=host['PhysicalAvailable_gib']*2**30,
+                commit_headroom_bytes=host['commit_headroom_gib']*2**30)
+            deployment_decision=_deployment_module['evaluate_admission'](_deployment_policy,converted,requirement)
+            if host['commit_headroom_gib']-args.expected_private_gib<commit_floor and deployment_decision['decision']!='CAPACITY_INSUFFICIENT':
+                deployment_decision=dict(deployment_decision,decision='WAIT',reasons=deployment_decision['reasons']+['EXPLICIT_COMMIT_FLOOR'])
+            if deployment_decision['decision']!='WAIT' or time.monotonic()>=wait_until:break
+            save(out/'stage-wait-progress.json',dict(event='stage_wait',decision=deployment_decision,epoch=time.time()))
+            time.sleep(min(_deployment_policy['stage_wait_poll_seconds'],max(0,wait_until-time.monotonic())))
+        private_cap=max(0,_deployment_policy['project_ram_cap_gib']-ctrl['private_commit_gib']-.03)
+        working_cap=_deployment_policy['project_ram_cap_gib']
+        admitted=deployment_decision['decision']=='ADMIT'
+    else:
+        admitted = private_cap >= args.expected_private_gib and working_cap >= args.expected_working_gib and before_gpu['free_mib'] / 1024 >= args.expected_gpu_gib + 1
     admission = {'admitted': admitted, 'phase': worker.stem, 'host': host, 'gpu_whole_device': before_gpu,
                  'controller': ctrl, 'dynamic_private_cap_gib': private_cap, 'dynamic_working_cap_gib': working_cap,
                  'expected_private_gib': args.expected_private_gib, 'expected_working_gib': args.expected_working_gib,
                  'expected_gpu_gib': args.expected_gpu_gib, 'no_fixed_six_gib_training_cap': not args.deployment_budget,
-                 'resource_mode': 'deployment_process_family_6gib' if args.deployment_budget else 'dynamic_training_offline',
+                 'resource_mode': 'deployment_shared_device_policy' if args.deployment_budget else 'dynamic_training_offline',
+                 'device_policy':_deployment_policy,'deployment_decision':deployment_decision,
                  'commit_gap_gib': max(0, args.expected_private_gib - private_cap),
                  'commit_emergency_floor_gib': commit_floor, 'physical_gpu_primary_admission': policy['training'].get('physical_gpu_primary_admission', False)}
     save(out / 'admission.json', admission)
@@ -161,12 +197,18 @@ def main():
                 recent.append(row)
                 stream.write(json.dumps(row) + '\n')
                 save(out / 'latest-resource.json', row)
-                reason = ('HOST_COMMIT_EMERGENCY_FLOOR' if now_host['commit_headroom_gib'] < commit_floor else
-                          'HOST_PHYSICAL_FLOOR' if now_host['PhysicalAvailable_gib'] < 2 else
-                          'PROJECT_WORKING_BUDGET' if working > working_cap else
-                          'PROJECT_PRIVATE_BUDGET' if private > private_cap else
-                          'GPU_FREE_RESERVE' if now_gpu['free_mib'] < 1024 else
-                          'PHASE_TIMEOUT' if time.monotonic() - start > args.timeout else None)
+                if args.deployment_budget:
+                    converted=dict(now_gpu['raw_observation'],group_current_bytes=private*2**30,group_working_bytes=working*2**30,
+                        physical_free_bytes=now_host['PhysicalAvailable_gib']*2**30,commit_headroom_bytes=now_host['commit_headroom_gib']*2**30)
+                    current=_deployment_module['check_current'](_deployment_policy,converted,raise_on_violation=False)
+                    reason=','.join(current['reasons']) if not current['allowed'] else 'HOST_COMMIT_EXPLICIT_FLOOR' if now_host['commit_headroom_gib']<commit_floor else 'PHASE_TIMEOUT' if time.monotonic()-start>args.timeout else None
+                else:
+                    reason = ('HOST_COMMIT_EMERGENCY_FLOOR' if now_host['commit_headroom_gib'] < commit_floor else
+                              'HOST_PHYSICAL_FLOOR' if now_host['PhysicalAvailable_gib'] < 2 else
+                              'PROJECT_WORKING_BUDGET' if working > working_cap else
+                              'PROJECT_PRIVATE_BUDGET' if private > private_cap else
+                              'GPU_FREE_RESERVE' if now_gpu['free_mib'] < 1024 else
+                              'PHASE_TIMEOUT' if time.monotonic() - start > args.timeout else None)
                 if reason:
                     save(out / 'stop.json', {'reason': reason, 'epoch': time.time()})
                     F.probe.K.TerminateJobObject(job.handle, 91)

@@ -2,7 +2,7 @@
 
 面向教学知识库的本地 MCP。当前主要工具 **BeMarkdown** 将 DOCX、PDF 转成保留来源信息的中间 Markdown，供 agent 继续复核和整理。
 
-2026-09-22 更新：[图形残余归属、图题关联与保守顶部正文裁切](docs/FIGURE_OWNERSHIP_20260922.md)。
+2026-10-16 更新：受管任务队列、跨会话恢复、内存/显存准入、提速选项及内置图片分类。安装前请读[本版使用与升级说明](docs/MANAGED_CONVERSION.md)，尤其是图片分类的独立运行环境要求。
 
 安装脚本现支持兼容依赖复用和验证后的运行时切换，详见[安装与升级说明](docs/INSTALLATION_UPGRADE.md)。
 
@@ -15,9 +15,9 @@
 - 解析正文、公式与表格，将示意图保存成图片并在 Markdown 中引用。
 - 提供异步转换任务、状态查询、日志、原文件证据和待复核候选项。
 - 让 agent 根据原文证据执行精确替换，保留原始 Markdown 和修改记录；对三模型文字候选支持上下文语义修复（字数变化受正负 1 字限制并单独记录推断依据）。
-- 支持显式声明的**教材导入**：先按 SHA-256 备份原件，转换后由 `textbook_organize` 完成图片复核、章节边界确认、装饰清理与标题转写，分章发布到 `KNOWLEDGE_BASE/TEXTBOOKS/`；随包提供 `textbook-import` skill 编排整个流程。
+- 保留教材组织接口，但当前交付未附带 `textbook-import` skill；普通转换可用，缺少匹配编排包时不要启用教材导入模式。
 - 正文段落图片可调用局部转换复用同一模型与 GPU 队列，不重新转换整份文档。
-- 共享登记 13 个模型，包括 Qwen3-Embedding-4B 和 WeMM-Embedding-4B。两套 Embedding 模型目前是可下载资源，检索、索引及对应 MCP 工具作为后续扩展。
+- 共享登记 15 个模型，包含转换模型、B200、Qwen3.5-9B 和 Embedding 资源。实际依赖按工具及下载计划安装，不将可下载资源等同于已接入的能力。
 
 输出定位是**中间产物**。按教学资料类型删减、拼接、整理成知识库条目的流程，可继续通过 Skills 或新工具实现。
 
@@ -119,8 +119,8 @@
 
 
 
-2026-10-07: [Latest release notes](docs/RELEASE_20261007.md). [Standalone retention model](https://github.com/BooksBoss17/BeMarkdown-Retention-B200). Model assets are not connected to the BeMarkdown pipeline.
+历史记录：[2026-10-07 版本说明](docs/RELEASE_20261007.md)。[B200 模型资产](https://github.com/BooksBoss17/BeMarkdown-Retention-B200)沿用已发布权重；当前集成行为以本版使用说明为准。
 
 ## 独立语义筛图 MCP
 
-新增冻结的 B200 + Qwen3.5-9B 语义筛图工具，独立调用，不自动接入转换。安装、评测口径和限制见 [语义筛图说明](docs/SEMANTIC_RETENTION.md)。
+冻结的 B200 + Qwen3.5-9B 独立接口继续可用；本版 BeMarkdown 在 OCR 后串行调用分类并生成派生包。独立运行环境的安装方式及原冻结评测口径见[语义筛图说明](docs/SEMANTIC_RETENTION.md)，新增用途观察与待审边界见[本版说明](docs/MANAGED_CONVERSION.md)。

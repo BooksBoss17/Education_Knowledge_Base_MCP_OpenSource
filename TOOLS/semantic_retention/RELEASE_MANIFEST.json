@@ -2,69 +2,81 @@
   "schema": "semantic-retention-release-v1",
   "release_id": "semantic-retention-20261008-v1",
   "publication": {
-    "status": "FROZEN_PUBLIC_STANDALONE",
-    "distribution_scope": "PUBLIC",
+    "status": "FROZEN_STANDALONE_INTERNAL",
+    "distribution_scope": "INTERNAL",
     "bemarkdown_connected": false,
-    "github_published": true,
+    "github_published": false,
     "fully_offline_installer_ready": false
   },
   "qualification": "QUALIFICATION.json",
   "payload_files": {
     "bootstrap.py": {
-      "bytes": 5474,
-      "sha256": "a93df42fb8811f9a9cf22090056f9612f58b9ff275ddf3644b9995c39fc399cd"
+      "sha256": "74ff33c6df67f189d8c0a76abe26a03023a3d8046bda30d0c54232855e410b74",
+      "bytes": 5364
     },
-    "dist/engine-manifest.json": {
-      "bytes": 25392,
-      "sha256": "eebfa2adc9748ef5b6b59eda54090e04daacd49185a4a47a2381993c37bf1c28"
+    "image_purpose.py": {
+      "sha256": "97ff9607a3253ca4d4971d997e3c7ea7abe03dc7d17a5e92591263d9bc2ecc22",
+      "bytes": 4699
     },
-    "dist/engine.zip": {
-      "bytes": 103003,
-      "sha256": "edfcaef2d4a4d09909152c41cfee27ed3af90feccbbe3e86818b30819ceeb4b7"
+    "inline_entry.py": {
+      "sha256": "e01b6e66fd88ba721bbd645891fbdd1889049f02386745d6f51471ab809e1e79",
+      "bytes": 2279
     },
     "launch.ps1": {
-      "bytes": 927,
-      "sha256": "091a5af5efa0b2ecd43fd3d4b09aca4a064e70a7a65c9de0c56ed0c6de48e0e5"
+      "sha256": "aea04f45da26f9d26b823bd98ce2bb6b121e95a68f03bcc46d4ac4e08d2bf6d9",
+      "bytes": 571
     },
     "LICENSE": {
-      "bytes": 34523,
-      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "bytes": 34523
     },
-    "PUBLIC_RUNTIME_LOCK.json": {
-      "bytes": 5728,
-      "sha256": "2e80a045ec987249c1421d2de0c898b4996c436c6b7b027edfa3841038b19e2b"
+    "managed_worker.py": {
+      "sha256": "81e689a92c88eeb167fb4c145f3ad32ee6d03d3f422a61240103fbde4fc0d87d",
+      "bytes": 1997
+    },
+    "manager_bridge.py": {
+      "sha256": "d3dcd4bebd465b8422934d742f6f491af0cf89812dbbd20318275f48ec9d0064",
+      "bytes": 6649
     },
     "QUALIFICATION.json": {
-      "bytes": 1485,
-      "sha256": "d10ce1bfd547b440a4a6f62f740ed653046efb7a44b8dc65d04abdce86c716b5"
+      "sha256": "d10ce1bfd547b440a4a6f62f740ed653046efb7a44b8dc65d04abdce86c716b5",
+      "bytes": 1485
     },
     "README.md": {
-      "bytes": 3747,
-      "sha256": "7f65f230b764d6cca9e3fe5d281270729abe3f746b8c2097169b869c94509317"
+      "sha256": "f74071093962b24ebf8c7a4ebfb32fe5639aa2ea7c8d74e461f63e78030f6e41",
+      "bytes": 5114
     },
     "SCHEME.json": {
-      "bytes": 887,
-      "sha256": "c664d77afaed2bec191ebf5e97ef5f125eb7a66b4695a8b5f1c0b9afe41c9847"
+      "sha256": "248925a1eb55e69cf9112e351cff3bced487268421e56a87660b4bbd8e91fd40",
+      "bytes": 1480
     },
     "server.py": {
-      "bytes": 10276,
-      "sha256": "e20c1bc011f0ef3961f8908366f35812159109e2d43515f83cf9a44281d3d8ee"
+      "sha256": "5a17825e259a5e8ee5601e6a4fe50c209f27a0c82685641cba57c4bdfb87a423",
+      "bytes": 10284
     },
     "source_prepare.py": {
-      "bytes": 16127,
-      "sha256": "e3eb9d373fb66a0f89555d1ed29720af727de51bc7c618dc1d368a71ae0be479"
+      "sha256": "e3eb9d373fb66a0f89555d1ed29720af727de51bc7c618dc1d368a71ae0be479",
+      "bytes": 16127
     },
     "THIRD_PARTY_NOTICES.md": {
-      "bytes": 499,
-      "sha256": "67f6bbeb6f4d68feff14b1450abc3337bf8b571ac32daaf4adc5dba5e28bac80"
+      "sha256": "a2609f5cc46f67eb52e8a5f64640db44f348a60913e89f5d7b4eece09a84545d",
+      "bytes": 504
     },
     "TOOL_MANIFEST.json": {
-      "bytes": 523,
-      "sha256": "dd4a96f4cabac987d564b50110b9c1186b8e94ff460444da05ae06108fed7b0c"
+      "sha256": "dd4a96f4cabac987d564b50110b9c1186b8e94ff460444da05ae06108fed7b0c",
+      "bytes": 523
     },
     "worker.py": {
-      "bytes": 6021,
-      "sha256": "70b8a2696f7b56c78b7ea35e91c3f7f848a82836658d717327f8b97cc849ce23"
+      "sha256": "de745e8b80ce607be50b0c987da124fc3bdf8252deb2892709cd89da685cae32",
+      "bytes": 6345
+    },
+    "dist/engine-manifest.json": {
+      "sha256": "f23921818f89bd7ef624f5d19f02ee90ca35dae5973750ff4d3222488ac64a39",
+      "bytes": 26537
+    },
+    "dist/engine.zip": {
+      "sha256": "01001a215a6f817be7c11e8800c24dc1d10c9e927a6e39e36cfaec8a7fb977c9",
+      "bytes": 109155
     }
   },
   "validation": {
@@ -74,10 +86,43 @@
     "full_benchmark_repeated_for_packaging": false,
     "full_cold_benchmark_requires_checkpoint_recovery": true
   },
-  "public_adaptations": [
-    "local runtime registration pointer",
-    "public model metadata fingerprints",
-    "source mirror and pinned upstream installer"
-  ],
-  "original_formal_release_id": "semantic-retention-20261008-v1"
+  "resource_policy_adaptation": {
+    "status": "POLICY_ONLY_PENDING_PARENT_VALIDATION",
+    "module": "runtime/host_memory_policy.py",
+    "sha256": "d7c6348c18046afae40c3585c742ff4bcd0c82199757a8e64ac2e64444f46454",
+    "snapshot_env": "BEMARKDOWN_HOST_MEMORY_POLICY_JSON",
+    "training_branch_changed": false,
+    "expected_requirement_arguments_changed": false,
+    "models_run": false
+  },
+  "runtime_manager_integration": "managed-adaptive-20261015-rm8",
+  "image_screening_validation": {
+    "status": "REAL_MCP_IMAGE_PDF_VALIDATED",
+    "receipt_sha256": "8921b04e699d8f17e3542e2112317847ab547738fe294f00dba4a7fe9fc7f835",
+    "scope": "INTEGRATION_ONLY_NOT_FULL_ACCURACY",
+    "classifier_guard": "EXISTING_FROZEN_SEMANTIC_SUPERVISOR_AFTER_OCR_EXIT"
+  },
+  "files": {
+    "bootstrap.py": "35bcc815c8c601aa183883f570a23a221b26c346b42369d651d053074a0942a0",
+    "image_purpose.py": "97ff9607a3253ca4d4971d997e3c7ea7abe03dc7d17a5e92591263d9bc2ecc22",
+    "IMAGE_SCREENING.md": "e7a29aa0c94566bb2573bed526b23ef000404711854c875334bcefdd1c5d33b7",
+    "inline_entry.py": "e01b6e66fd88ba721bbd645891fbdd1889049f02386745d6f51471ab809e1e79",
+    "launch.ps1": "091a5af5efa0b2ecd43fd3d4b09aca4a064e70a7a65c9de0c56ed0c6de48e0e5",
+    "LICENSE": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+    "managed_worker.py": "81e689a92c88eeb167fb4c145f3ad32ee6d03d3f422a61240103fbde4fc0d87d",
+    "manager_bridge.py": "d3dcd4bebd465b8422934d742f6f491af0cf89812dbbd20318275f48ec9d0064",
+    "PUBLIC_RUNTIME_LOCK.json": "2e80a045ec987249c1421d2de0c898b4996c436c6b7b027edfa3841038b19e2b",
+    "QUALIFICATION.json": "d10ce1bfd547b440a4a6f62f740ed653046efb7a44b8dc65d04abdce86c716b5",
+    "README.md": "5d4387f5f90438e70db9c714e669c6d67e14d97040193457b4640cb8a9f82e07",
+    "SCHEME.json": "2f30949c699fdf4d501408592ceae10e583349e8c7b01850f5dc7d6af2d8c5c0",
+    "server.py": "77916e9a367c6e46e62cd029c0015f1b469be0a67d8ce4f7378db38936717865",
+    "source_prepare.py": "e3eb9d373fb66a0f89555d1ed29720af727de51bc7c618dc1d368a71ae0be479",
+    "THIRD_PARTY_NOTICES.md": "a2609f5cc46f67eb52e8a5f64640db44f348a60913e89f5d7b4eece09a84545d",
+    "TOOL_MANIFEST.json": "dd4a96f4cabac987d564b50110b9c1186b8e94ff460444da05ae06108fed7b0c",
+    "worker.py": "de745e8b80ce607be50b0c987da124fc3bdf8252deb2892709cd89da685cae32",
+    "dist/engine-manifest.json": "f23921818f89bd7ef624f5d19f02ee90ca35dae5973750ff4d3222488ac64a39",
+    "dist/engine.zip": "01001a215a6f817be7c11e8800c24dc1d10c9e927a6e39e36cfaec8a7fb977c9"
+  },
+  "public_release_id": "bemarkdown-managed-screening-20261016-v1",
+  "distribution_scope": "PUBLIC"
 }

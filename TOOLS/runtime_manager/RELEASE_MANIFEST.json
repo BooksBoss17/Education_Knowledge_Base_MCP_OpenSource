@@ -1,0 +1,40 @@
+{
+  "schema": "ekb-run-manager-release-v1",
+  "files": {
+    "bootstrap.py": "fdb1d97025000fe51a72c6b0508f6225329f61ebba5ea5aab2e51466d0d7431c",
+    "native_gateway.py": "e5baf2211365eb03622adb81382f87c493105761cc85e1785cba03c77fec35cb",
+    "native_worker.py": "9a1fecc684c7acdfff53643d94e3ea1da32d4a13960dbcfbcdc5593cd017ac4f",
+    "package_binding.py": "2e04c09956cdcd01f949756b023a0eaa29bfa1d3d242dc892792b600b34785cf",
+    "README.md": "42aaa1d3e2b2a7e6895317a93f45799fa267d1a93ca6d844065da1f9eaedd7ca",
+    "src/ekb_model_runtime/cli.py": "488836318a6829087c40c0599cbb887c6c4dbe9e4ffac8a2bee6610cfde301f4",
+    "src/ekb_model_runtime/doctor.py": "6fab42836acf8a16614675a068a3ceb5e9023c87e082927c992c4e0bd9f5eb91",
+    "src/ekb_model_runtime/environment.py": "a8aee8d53a15e474f09f17d2f56dc0b2c59d2f407eb1f3a6ab550650e4ecdd3c",
+    "src/ekb_model_runtime/errors.py": "44cc37f61ea7bdc30440c0cbd4ad5eb6aa67dea25ddc4fc7a70704dfc6e1d335",
+    "src/ekb_model_runtime/launcher.py": "ece058d90a93b6fd0e28e0a3138f9c6980c5c612986cd9f024cbad49d7066a22",
+    "src/ekb_model_runtime/lifecycle.py": "b8aac0184cfadf024d6ef04bce86e4ef049193994af6e6d3c59b8caa7a278874",
+    "src/ekb_model_runtime/lossless_ocr_efficiency.py": "b266b70e99f7ac3b5a65f1b0532bef0a45dc3d96e770c794e6e516047b29681f",
+    "src/ekb_model_runtime/model_registry.py": "d497cbb2de69f6b6109ae7052271e2cfebc4641542f5ca1f3c67f11e8e5f33fd",
+    "src/ekb_model_runtime/path_security.py": "7b63648d7b5786290bf9be10f0da63b122f368af9f4bbc08b8beda4f1769fc09",
+    "src/ekb_model_runtime/resolver.py": "c65696493a5aa4c18bed23cabaea1fb185e5ee3aa1b393ab4e2ae27bea891a94",
+    "src/ekb_model_runtime/runtime_registry.py": "72bddf4bdbb05b06c30405d637e34a9321029fd42c1c8f2bbf6af19eb02a5f07",
+    "src/ekb_model_runtime/worker_contract.py": "5947ce9655f4f7fa475ad5fdf8c85b5f421d9b707dd8fbec514132ea2dbcc1ed",
+    "src/ekb_model_runtime/__init__.py": "7781cf9f2de95508a43efcecccf697fd40960e6971045bed533faf878e739f61",
+    "src/ekb_model_runtime/run_manager/client.py": "c4359d93bfcb604dd52280ab7f6b4621de76854116d8442d8b047a4fa8dc4496",
+    "src/ekb_model_runtime/run_manager/common.py": "1dada5b76f752661a01e3137c7c93062cb221b9e73edd048e4ee16248c6d2f57",
+    "src/ekb_model_runtime/run_manager/daemon.py": "e6a7d198e0d3f764418bb56109bd4f93394468a544af0ff6960bca0ff0e5c7af",
+    "src/ekb_model_runtime/run_manager/ipc.py": "dc40cde930c4f89bac3f22f2a5dfe2e894328e4c4b4e4d906b7e99a797f79945",
+    "src/ekb_model_runtime/run_manager/process.py": "60be514185b3d17d1f9f2934d3e2350aa72c6c5631dc0250fc41e444ac468ed9",
+    "src/ekb_model_runtime/run_manager/README.md": "9c73f383be1658d3abd1c6e424abe03d12e6460aa684a37dee6aa1233b411904",
+    "src/ekb_model_runtime/run_manager/registry.py": "34bc25230528987b0dbf2397d21d9a42cfe3d2e8f4a0687c1c37a773decc02fc",
+    "src/ekb_model_runtime/run_manager/storage.py": "eebb452f8109ed1bf3b835d039901cb7df52b13344c74183e74e6134f0a6f001",
+    "src/ekb_model_runtime/run_manager/__init__.py": "fef446a566aa67fe3afe1517afaa41897fd2f16ea5f9a10bb98ecbb43bcf0065"
+  },
+  "image_screening_validation": {
+    "status": "REAL_MCP_IMAGE_PDF_VALIDATED",
+    "receipt_sha256": "8921b04e699d8f17e3542e2112317847ab547738fe294f00dba4a7fe9fc7f835",
+    "scope": "INTEGRATION_ONLY_NOT_FULL_ACCURACY",
+    "classifier_guard": "EXISTING_FROZEN_SEMANTIC_SUPERVISOR_AFTER_OCR_EXIT"
+  },
+  "public_release_id": "bemarkdown-managed-screening-20261016-v1",
+  "distribution_scope": "PUBLIC"
+}

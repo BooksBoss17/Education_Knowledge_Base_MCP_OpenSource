@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import runpy
 import subprocess
@@ -14,6 +15,7 @@ SIM=runpy.run_path(str(HERE/'screening_similarity.py'))
 FEATURES=runpy.run_path(str(HERE/'asset_screening.py'))
 RESOURCES_PATH=HERE/'screening_resources.py'
 RESOURCES=runpy.run_path(str(RESOURCES_PATH))
+MANAGED=runpy.run_path(str(HERE/'managed_bridge.py'))
 PIXELS_PATH=HERE/'screening_pixels.py'
 PIXELS=runpy.run_path(str(PIXELS_PATH))
 
@@ -30,6 +32,10 @@ def compute(service,run_id,run_root,manifest,model_path,conversion_lock,profile=
     state_path=run_root/'state.json'
     gpu=dict(profile=profile,limit_mib=RESOURCES['LIMITS'][profile],peak_mib=0,
              samples=0,measurement_errors=0,budget_exceeded=False,scope='WHOLE_DEVICE_SAMPLED')
+    managed_policy=json.loads(os.environ.get('BEMARKDOWN_HOST_MEMORY_POLICY_JSON','{}'))
+    if managed_policy:
+        gpu['limit_mib']=managed_policy['gpu_whole_card_cap_bytes']/2**20
+        gpu['policy_fingerprint']=managed_policy['policy_fingerprint']
     try:
         with conversion_lock(service.jobs.parent/'gpu.lock',service.closing):
             if service.closing.is_set():raise RuntimeError('Service closing')
@@ -74,7 +80,7 @@ def compute(service,run_id,run_root,manifest,model_path,conversion_lock,profile=
 def reusable_pixel_run(service, identity, package, template_sha):
     """Find a sealed or live same-package pixel superset, never old decisions."""
     required={tuple(row) for row in identity['assets']}
-    compatible=('source_sha256','resource_profile','resource_policy_sha256',
+    compatible=('source_sha256','resource_profile','resource_policy_sha256','loading_adapter_sha256',
                 'preprocessing','pixel_policy_sha256','worker_sha256')
     candidates=[]
     for root in sorted((service.jobs.parent/'as').glob('*')):
@@ -121,7 +127,7 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
     template_path=HERE/'screening_templates.json'
     templates=json.loads(template_path.read_text('utf-8'))
     if templates.get('status') == 'NOT_CONFIGURED_PUBLIC':
-        return dict(status='NOT_CONFIGURED', screening_model='wemm', actual_exclusions=0, reason='Provide licensed positive/protected retrieval templates; private templates are not distributed')
+        return dict(status='NOT_CONFIGURED', actual_exclusions=0, message='Register source-bound screening templates before this optional route.')
     if templates.get('preprocessing')!=PIXELS['PREPROCESSING']:
         raise ValueError('Screening template preprocessing mismatch; rebuild or verify templates first')
     manager=getattr(service,'workspace_manager',None)
@@ -134,6 +140,7 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
         resource_profile=profile,resource_policy_sha256=SIM['sha'](RESOURCES_PATH),
         preprocessing=PIXELS['PREPROCESSING'],pixel_policy_sha256=SIM['sha'](PIXELS_PATH),
         worker_sha256=SIM['sha'](HERE/'screening_model_worker.py'),
+        loading_adapter_sha256=SIM['sha'](HERE/'wemm_readonly_safetensors.py'),
         assets=[list(row) for row in sorted({(r['asset_name'],r['sha256']) for r in found})])
     cache_id=hashlib.sha256(json.dumps(identity,sort_keys=True).encode()).hexdigest()
     reuse=reusable_pixel_run(service,identity,package,SIM['sha'](template_path))
@@ -164,7 +171,9 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
             extraction_load_seconds=result['load_seconds'],extraction_wall_seconds=result['wall_seconds'])
         return output
     if previous and previous['status']=='FAILED':return dict(**previous,cache_id=cache_id)
-    if previous and run_id not in service.futures:
+    if previous and not (run_root/'manager.json').is_file():
+        MANAGED['screen_status'](service,run_root,run_id)
+    if previous and run_id not in service.futures and not (run_root/'manager.json').is_file():
         return dict(status='INTERRUPTED',cache_id=cache_id,reason='Prior worker is no longer owned by this service; preserved for review')
     if not previous:
         run_root.mkdir(parents=True,exist_ok=False)
@@ -172,8 +181,13 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
         write(manifest,dict(rows=[dict(sample_id=s,path=str(package/r['asset_name']),sha256=s) for s,r in unique.items()]))
         write(run_root/'identity.json',identity)
         write(state_path,dict(status='QUEUED',created=time.time()))
-        service.futures[run_id]=service.pool.submit(compute,service,run_id,run_root,manifest,model_path,conversion_lock,profile)
+        MANAGED['submit_screen'](service,run_id,run_root,manifest,model_path,profile)
         previous=dict(status='QUEUED')
+    managed=MANAGED['screen_status'](service,run_root)
+    if managed:
+        if managed['state'] in {'FAILED','INTERRUPTED','CANCELLED','CAPACITY_INSUFFICIENT','WAIT_EXPIRED','WAIT_TIMEOUT'}:
+            return dict(status=managed['state'],cache_id=cache_id,runtime_manager=managed)
+        previous['runtime_manager']=managed
     progress=run_root/'extraction/checkpoint.json'
     return dict(**previous,cache_id=cache_id,base_sha256=base_sha,
         vector_cache_asset_count=len({row[1] for row in identity['assets']}),

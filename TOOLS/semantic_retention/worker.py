@@ -67,11 +67,17 @@ def main():
     flow=read(classification/'pipeline-result.json');predictions=Path(flow['final_predictions'])
     assert sha(predictions)==flow['final_predictions_sha256']
     mapping={x['sample_id']:x for x in read(R/'asset-map.json')};counts={'K':0,'D':0,'U':0};results=R/'results.jsonl'
+    purposes={}
+    if os.environ.get('BEMARKDOWN_ASSESS_IMAGE_PURPOSE')=='1':
+        from image_purpose import assess
+        chosen=[mapping[row['sample_id']] for row in rows(predictions)]
+        purposes=assess(chosen,out/'image-purpose')
     with results.open('x',encoding='utf-8',newline='\n') as stream:
         for row in rows(predictions):
             decision=row['final_decision'];counts[decision]+=1;asset=mapping[row['sample_id']]
             stream.write(json.dumps({**asset,'decision':decision,'action':{'K':'KEEP','D':'EXCLUDE_CANDIDATE','U':'REVIEW_KEEP'}[decision],
-                'source_modified':False,'decision_fingerprint':row['input_fingerprint']},ensure_ascii=False)+'\n')
+                'source_modified':False,'decision_fingerprint':row['input_fingerprint'],
+                **({'purpose':purposes[row['sample_id']]} if purposes else {})},ensure_ascii=False)+'\n')
     summary={'status':'COMPLETE','assets':count,'counts':counts,'elapsed_seconds':time.monotonic()-started,
         'results_path':str(results),'results_sha256':sha(results),'predictions_sha256':sha(predictions),
         'scheme_sha256':request['scheme_sha256'],'source_preparation':prepared,'run_dir':str(out),

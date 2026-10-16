@@ -5,7 +5,7 @@
   "tool_version": "0.2.0",
   "tool_wheel": {
     "path": "dist/bemarkdown-0.2.0-py3-none-any.whl",
-    "sha256": "aa9c4ec01a31daa44f93c6793189ffcb35af98b99fd09a018b8bb9fc5d3d5c4c"
+    "sha256": "24c71c9f5c54ed19013c0aef874b467ce95676083eef08b1fff00a9f8bf46175"
   },
   "profile": "profiles/win-x64-py311-cuda126.json",
   "platform": "Windows x64",
@@ -131,13 +131,13 @@
     "legacy_paddle": {
       "path": "model_suite.json",
       "suite_id": "bemarkdown-paddle-document-suite-v1",
-      "suite_fingerprint": "3fa40b07667d08d53a2fb2c720b6977eb26e1c94d396999b69c52c6c4511ec56",
+      "suite_fingerprint": "a1b5bcb551798268cbf91824f683046d0809efd70a9bdb9586be3d574a2cb235",
       "model_count": 9
     },
     "pdf_production": {
       "path": "pdf_production_suite.json",
       "suite_id": "bemarkdown-pdf-production-suite-v1",
-      "suite_fingerprint": "11a58c0127ce52ce892996dc75c6e62cbaf0bab9e09c15696028da3460996565",
+      "suite_fingerprint": "8c6fa5273ea76f20c1b833ba084c5f31f26957e42b2e67c5a13e3417f6e7b1ac",
       "model_count": 11
     }
   },
@@ -177,9 +177,11 @@
     "shared_paddle_runtime_unchanged": true
   },
   "wheel_reproducibility": {
-    "status": "PUBLIC_TEXT_NORMALIZATION_NOT_COLD_REBUILD",
-    "byte_identical": false,
-    "content_sha256": "7fb75646965662fdb486645250f9fd678b2621b7d9f47f04224469be947e5281"
+    "byte_identical": true,
+    "first_sha256": "541891bca080742f5ae9c028684344896b3ff98bd6be04ac479305efb09f5836",
+    "second_sha256": "541891bca080742f5ae9c028684344896b3ff98bd6be04ac479305efb09f5836",
+    "content_identical": true,
+    "content_sha256": "a1254955027af346e75d80173def0ce6e9f27fafc41a84a283fda73974b6214f"
   },
   "wheel_runtime_import_closure": {
     "schema": "bemarkdown-wheel-runtime-import-closure-v1",

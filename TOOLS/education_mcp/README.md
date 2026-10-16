@@ -35,7 +35,7 @@ references and only visually confirmed decorations are removed.
 The developer converter removes exactly single-color and fully transparent
 ordinary raster images before publishing asset identities. It preserves faint
 pixels, alpha-only shapes, and unresolved formula/table/text fallback evidence.
-See `SEMANTIC_IMAGE_REVIEW_20260913.md` for the current validation and release state.
+See 开发区历史验收记录 for the current validation and release state.
 
 ## Textbook import (0.3.0)
 
@@ -71,7 +71,7 @@ The organizer uses the existing Python runtime and CPU image thumbnails. It
 loads no new model. The skill is deployed at `SKILLS/textbook-import/SKILL.md`
 beside the MCP's tools. Current development and behavioral evidence is maintained
 in the Developer `projects/textbook_skill` project. Actual Harness results and
-acceptance limits are recorded in `TEXTBOOK_IMPORT_RESULTS_20260913.md`.
+acceptance limits are recorded in 开发区历史验收记录.
 
 ## Workspace deployment and inspection (0.2.0)
 
@@ -110,7 +110,7 @@ without a clear speed gain and is not enabled in the current profile.
 Models, precision, generation limits, source resolution and recognition scope are unchanged.
 The allocator budget covers GOT's PyTorch allocator, not all process/device memory.
 Real complete-file GPU monitoring and paired output/speed results must pass before release.
-Recorded comparison and verification scope: [initialization and scheduling report](WORKSPACE_INIT_10GB_RESULTS_20260912.md).
+Recorded comparison and verification scope: 开发区保存的历史验收记录.
 
 The MCP samples whole-device usage during conversion and terminates only its own conversion
 process tree when the selected hard threshold is observed (8192 MiB for the legacy 6gb
@@ -140,7 +140,7 @@ kept its bounded text/inline-math requests outside them. Conversion alone took
 recognized as `8` in one independent formula; independent formula review markers
 are not yet separately dispatched in the compact handoff. A page-sized fallback
 image also repeats recognized body text. These limitations are preserved in
-`AGENT_EVALUATION_RESULTS_20260912.md`; older results below are historical.
+开发区历史验收记录; older results below are historical.
 
 This stdio MCP service exposes the independently installed BeMarkdown DOCX/PDF workflow to any MCP-compatible local Harness. It has no DeepSeek, Codex, OpenAI, account, or API-key dependency. The caller chooses its model.
 
@@ -204,7 +204,7 @@ additional incorrect labels. None met both the whole-document 98% quality
 gate and 15 seconds/page. Residual candidates have verified false positives
 and false negatives, including an incorrect two-model consensus.
 
-See [the final evaluation report](AGENT_EVALUATION_RESULTS_20260909.md) for
+See 开发区保存的历史验收记录 for
 scope, independent references, component scores, timing and evidence paths.
 This completes the requested test; it is not a quality or speed certification.
 Documentation release V6 retains the exact V5 adapter code, models and runtime.

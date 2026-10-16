@@ -1,5 +1,7 @@
 """Explicit GPU budgets for WeMM; offload weights without changing precision."""
 from __future__ import annotations
+import json
+import os
 
 POLICY = 'wemm-bf16-weight-offload-v1'
 LIMITS = {'6gb': 6144, '10gb': 10240}
@@ -11,6 +13,9 @@ def plan_budget(profile, total_mib, used_mib):
     if total_mib <= 0 or used_mib < 0 or used_mib > total_mib:
         raise ValueError('Invalid GPU memory measurement')
     ceiling = min(LIMITS[profile], int(total_mib))
+    snapshot = json.loads(os.environ.get('BEMARKDOWN_HOST_MEMORY_POLICY_JSON', '{}'))
+    if snapshot:
+        ceiling = min(ceiling, snapshot['gpu_whole_card_cap_bytes'] / 2**20)
     # Account for the display, other apps and our CUDA context before loading.
     # Reserve 256 MiB beyond the allocator plus 1024 MiB for activations/hooks.
     allocator = int(ceiling-used_mib-256)

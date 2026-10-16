@@ -5,6 +5,7 @@ Does not score truth, train templates, edit source images, or download models.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import os
@@ -20,6 +21,31 @@ def sha(path):
 
 def write(path, obj):
     path.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+
+def reclaim_loaded_file_pages():
+    """Trim only this worker's pageable residency after GPU copies finish."""
+    import gc
+    import psutil
+    process=psutil.Process()
+    gc.collect()
+    before=process.memory_info()
+    result=dict(scope='CURRENT_WORKER_ONLY',before_working_bytes=before.rss,
+                before_private_bytes=getattr(before,'private',before.vms),success=False)
+    if os.name=='nt':
+        import ctypes
+        from ctypes import wintypes
+        kernel=ctypes.WinDLL('kernel32',use_last_error=True)
+        kernel.GetCurrentProcess.restype=wintypes.HANDLE
+        psapi=ctypes.WinDLL('psapi',use_last_error=True)
+        psapi.EmptyWorkingSet.argtypes=[wintypes.HANDLE]
+        psapi.EmptyWorkingSet.restype=wintypes.BOOL
+        result['success']=bool(psapi.EmptyWorkingSet(kernel.GetCurrentProcess()))
+        if not result['success']:
+            result['winerror']=ctypes.get_last_error()
+    after=process.memory_info()
+    result.update(after_working_bytes=after.rss,after_private_bytes=getattr(after,'private',after.vms))
+    return result
 
 
 def main():
@@ -77,15 +103,24 @@ def main():
         cpu_mib=min(49152,int(psutil.virtual_memory().available/2**20)-4096)
         if cpu_mib<2048:
             raise RuntimeError('WeMM host-memory budget unavailable for explicit weight offload')
-        model=AutoModel.from_pretrained(str(model_path),trust_remote_code=args.kind=='wemm',local_files_only=True,
-            dtype=torch.bfloat16 if args.kind=='wemm' else torch.float32,
-            device_map='auto',max_memory={0:budget['gpu_weight_budget_mib']*2**20,'cpu':cpu_mib*2**20},
-            offload_buffers=True,offload_folder=str(args.output/'offload')).eval()
+        import transformers.modeling_utils as modeling
+        adapter=runpy.run_path(str(Path(__file__).with_name('wemm_readonly_safetensors.py')))
+        scope=adapter['readonly_safe_open_scope'](modeling) if args.kind=='wemm' else contextlib.nullcontext(None)
+        with scope as adapter_receipt:
+            if adapter_receipt:
+                write(args.output/'loading-adapter.json',adapter_receipt)
+            model=AutoModel.from_pretrained(str(model_path),trust_remote_code=args.kind=='wemm',local_files_only=True,
+                dtype=torch.bfloat16 if args.kind=='wemm' else torch.float32,
+                device_map='auto',max_memory={0:budget['gpu_weight_budget_mib']*2**20,'cpu':cpu_mib*2**20},
+                offload_buffers=True,offload_folder=str(args.output/'offload')).eval()
         device_map={k:str(v) for k,v in getattr(model,'hf_device_map',{}).items()}
         if not device_map or any(v=='disk' for v in device_map.values()):
             raise RuntimeError('WeMM placement unavailable within GPU/host-memory budget; disk offload not allowed')
         write(args.output/'device-map.json',device_map)
-        torch.cuda.synchronize();load_seconds=time.perf_counter()-loading
+        torch.cuda.synchronize()
+        if args.kind=='wemm':
+            write(args.output/'file-residency-reclaim.json',reclaim_loaded_file_pages())
+        load_seconds=time.perf_counter()-loading
         cache={};records=[]
         event('MODEL_READY',fingerprint=fingerprint,load_seconds=load_seconds,device=torch.cuda.get_device_name(0))
         for row in rows:

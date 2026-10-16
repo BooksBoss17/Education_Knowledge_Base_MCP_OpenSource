@@ -1,9 +1,11 @@
 """Standalone stdio MCP adapter. No model imports or source mutations here."""
-import argparse,contextlib,json,os,re,runpy,subprocess,sys,time,uuid
+import argparse,contextlib,json,os,re,runpy,sys
 from pathlib import Path
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(Path(__file__).resolve().parent))
-from bootstrap import read,write,sha,runtime_config,initialize_job
+from bootstrap import read,sha,runtime_config,initialize_job
+import manager_bridge
+write=manager_bridge.write_json
 
 TOOL=Path(__file__).resolve().parent
 MCP=TOOL.parents[1]
@@ -37,16 +39,6 @@ def validate_request(args):
         raise ValueError('asset_names must contain distinct asset names')
     return {'package_dir':str(package),'source_pdf':str(pdf),'asset_names':selected}
 
-@contextlib.contextmanager
-def job_lock():
-    import msvcrt
-    HOME.mkdir(parents=True,exist_ok=True)
-    with (HOME/'active.lock').open('a+b') as f:
-        f.seek(0);f.write(b'0');f.flush();f.seek(0)
-        try:msvcrt.locking(f.fileno(),msvcrt.LK_NBLCK,1)
-        except OSError:raise RuntimeError('CLASSIFIER_JOB_ALREADY_RUNNING')
-        try:yield
-        finally:f.seek(0);msvcrt.locking(f.fileno(),msvcrt.LK_UNLCK,1)
 
 def job_path(job_id):
     if not re.fullmatch(r'[0-9a-f]{12}',job_id):raise ValueError('Invalid job_id')
@@ -72,27 +64,26 @@ def doctor(deep=False):
         for item in runtime['lock']['llama_files']:
             assert sha(Path(runtime['llama_home'])/item['file'])==item['sha256']
     return {'status':'READY','release':spec['release_id'],'deep':deep,'model_files_checked':checked,
-        'bemarkdown_auto_integrated':False,'automatic_deletion':False,'runtime':runtime['inference_python']}
+            'bemarkdown_auto_integrated':False,'automatic_deletion':False,'runtime':runtime['inference_python']}
 
 def start(args):
+    args=dict(args);retry_id=args.pop('retry_job_id',None)
     request=validate_request(args)
-    with job_lock():
-        JOBS.mkdir(parents=True,exist_ok=True)
-        jid=uuid.uuid4().hex[:12];job=JOBS/jid;job.mkdir()
-        write(job/'request.json',request);write(job/'state.json',{'status':'QUEUED','job_id':jid})
-        with (job/'driver.log').open('wb') as log:
-            p=subprocess.Popen([sys.executable,'-I',str(TOOL/'server.py'),'--run-job',jid],
-                stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,creationflags=subprocess.CREATE_NO_WINDOW)
-        write(job/'driver.json',{'pid':p.pid,'created_epoch':time.time()})
-    # Driver obtains the cross-server lock after the request is committed.
-    return {'job_id':jid,'status':'QUEUED','status_tool':'semantic_retention_status'}
+    retry_of=None
+    if retry_id is not None:
+        previous=read(job_path(retry_id)/'driver.json')
+        if not previous.get('managed'):raise ValueError('LEGACY_JOB_NOT_MANAGED')
+        retry_of=previous['manager_job_id']
+    return manager_bridge.submit(MCP,TOOL,JOBS,request,retry_of=retry_of)
+
 
 def status(args):
     job=job_path(args['job_id']);state=read(job/'state.json')
-    return {**state,'job_id':args['job_id']}
+    return {**manager_bridge.managed_status(MCP,job,state),'job_id':args['job_id']}
+
 
 def results(args):
-    job=job_path(args['job_id']);state=read(job/'state.json')
+    job=job_path(args['job_id']);state=status(args)
     if state['status']!='COMPLETE':return {'status':state['status'],'job_id':args['job_id'],'results_available':False}
     offset=int(args.get('offset',0));limit=int(args.get('limit',100))
     if offset<0 or not 1<=limit<=200:raise ValueError('Invalid result page')
@@ -105,32 +96,36 @@ def results(args):
         'total':state['assets'],'summary':state['counts'],'source_modified':False}
 
 def run_job(jid):
+    if not manager_bridge.runtime(MCP).trusted_context(MCP):
+        raise RuntimeError('MANAGED_WORKER_CONTEXT_REQUIRED')
     job=job_path(jid)
     try:
-        # Brief bounded retry only for the start handler's handover of the lock.
-        with job_lock():
-            request=validate_request(read(job/'request.json'))
-            write(job/'state.json',{'status':'INITIALIZING','job_id':jid})
-            ctx=initialize_job(TOOL,MCP,job/'work',request)
-            command=[ctx['python'],'-I',ctx['supervisor'],ctx['worker'],
-                '--expected-private-gib','5.9','--expected-working-gib','4.9','--expected-gpu-gib','5.6','--deployment-budget']
-            write(job/'state.json',{'status':'RUNNING','job_id':jid,'automatic_deletion':False})
-            with (job/'supervisor.log').open('w',encoding='utf-8',buffering=1) as log:
-                previous=sys.argv
-                try:
-                    sys.argv=command[2:]
-                    with contextlib.redirect_stdout(log),contextlib.redirect_stderr(log):
-                        try:runpy.run_path(ctx['supervisor'],run_name='__main__');code=0
-                        except SystemExit as exc:code=int(exc.code or 0)
-                finally:sys.argv=previous
-            evidence=list((job/'work/tmp/rt-train/runs').glob('native-model-*/result.json'))
-            receipt=read(evidence[0]) if len(evidence)==1 else {}
-            summary=job/'work/summary.json'
-            if code!=0 or receipt.get('status')!='COMPLETED' or not summary.is_file():
-                raise RuntimeError('SUPERVISED_JOB_FAILED: '+json.dumps({'exit_code':code,'receipt':receipt},ensure_ascii=False))
-            value=read(summary)
-            value.update(job_id=jid,supervision_receipt=str(evidence[0]),supervisor_all_owned_exited=receipt['all_owned_exited'])
-            write(job/'state.json',value)
+        request=validate_request(read(job/'request.json'))
+        write(job/'state.json',{'status':'INITIALIZING','job_id':jid})
+        ctx=initialize_job(TOOL,MCP,job/'work',request)
+        command=[ctx['python'],'-I',ctx['supervisor'],ctx['worker'],
+            '--expected-private-gib','5.9','--expected-working-gib','4.9','--expected-gpu-gib','5.6','--deployment-budget']
+        if os.environ.get('BEMARKDOWN_ASSESS_IMAGE_PURPOSE')=='1':
+            # Combined native + classifier runs also incur driver/physical
+            # overhead not represented by process working sets alone.
+            command[command.index('--expected-working-gib')+1]='6.0'
+        write(job/'state.json',{'status':'RUNNING','job_id':jid,'automatic_deletion':False})
+        with (job/'supervisor.log').open('w',encoding='utf-8',buffering=1) as log:
+            previous=sys.argv
+            try:
+                sys.argv=command[2:]
+                with contextlib.redirect_stdout(log),contextlib.redirect_stderr(log):
+                    try:runpy.run_path(ctx['supervisor'],run_name='__main__');code=0
+                    except SystemExit as exc:code=int(exc.code or 0)
+            finally:sys.argv=previous
+        evidence=list((job/'work/tmp/rt-train/runs').glob('native-model-*/result.json'))
+        receipt=read(evidence[0]) if len(evidence)==1 else {}
+        summary=job/'work/summary.json'
+        if code!=0 or receipt.get('status')!='COMPLETED' or not summary.is_file():
+            raise RuntimeError('SUPERVISED_JOB_FAILED: '+json.dumps({'exit_code':code,'receipt':receipt},ensure_ascii=False))
+        value=read(summary)
+        value.update(job_id=jid,supervision_receipt=str(evidence[0]),supervisor_all_owned_exited=receipt['all_owned_exited'])
+        write(job/'state.json',value)
     except Exception as exc:
         write(job/'state.json',{'status':'FAILED','job_id':jid,'error':str(exc),'source_modified':False})
         raise
@@ -141,19 +136,23 @@ TOOLS=[
  {'name':'semantic_retention_doctor','description':'Check frozen classifier installation, optionally hash all model/runtime files.',
   'inputSchema':schema({'deep':{'type':'boolean'}})},
  {'name':'semantic_retention_start','description':'Start one read-only source-bound image classification job. Returns a job ID; poll status. Never deletes source images.',
-  'inputSchema':schema({'package_dir':STRING,'source_pdf':STRING,'asset_names':{'type':'array','items':STRING}},('package_dir',))},
+  'inputSchema':schema({'package_dir':STRING,'source_pdf':STRING,'retry_job_id':STRING,'asset_names':{'type':'array','items':STRING}},('package_dir',))},
  {'name':'semantic_retention_status','description':'Read job status without starting or repeating inference.',
   'inputSchema':schema({'job_id':STRING},('job_id',))},
  {'name':'semantic_retention_results','description':'Read paginated KEEP, EXCLUDE_CANDIDATE or REVIEW_KEEP decisions from a completed job.',
   'inputSchema':schema({'job_id':STRING,'offset':{'type':'integer','minimum':0},'limit':{'type':'integer','minimum':1,'maximum':200}},('job_id',))}]
 
+TOOLS.append({'name':'semantic_retention_cancel','description':'Cancel one managed queued or running classification job; never deletes source images.',
+              'inputSchema':schema({'job_id':STRING},('job_id',))})
+
 def dispatch(method,params):
-    if method=='initialize':return {'protocolVersion':'2024-11-05','capabilities':{'tools':{}},'serverInfo':{'name':'semantic-retention','version':'20261008.1'}}
+    if method=='initialize':return {'protocolVersion':'2024-11-05','capabilities':{'tools':{}},'serverInfo':{'name':'semantic-retention','version':'20261015.1'}}
     if method=='ping':return {}
     if method=='tools/list':return {'tools':TOOLS}
     if method=='tools/call':
         functions={'semantic_retention_doctor':lambda a:doctor(a.get('deep',False)),
-                   'semantic_retention_start':start,'semantic_retention_status':status,'semantic_retention_results':results}
+                   'semantic_retention_start':start,'semantic_retention_status':status,'semantic_retention_results':results,
+                   'semantic_retention_cancel':lambda a:manager_bridge.cancel(MCP,job_path(a['job_id']))}
         try:
             value=functions[params['name']](params.get('arguments',{}))
             return {'content':[{'type':'text','text':json.dumps(value,ensure_ascii=False)}],'isError':False}

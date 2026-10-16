@@ -1,0 +1,243 @@
+{
+  "policy": "6GiB/6144MiB/8GiB/9GiB",
+  "stages": {
+    "pp-ocrv6": {
+      "increment": {
+        "private_gib": 2.9758338928222656,
+        "working_gib": 1.7011184692382812,
+        "gpu_mib": 850.67578125
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "IDENTITY_BOUND_PP_WORKER_WINDOW_NET_CHANGE",
+      "certified_exact_increment": false,
+      "continuous_job_and_gpu_supervision_required": true,
+      "evidence_sha256": [
+        "eed7c71f6f7bab8d2c2f86089e1bc5a64a729b0641f38ea8c19325f9705b86f8"
+      ]
+    },
+    "retention-gguf-classify": {
+      "increment": {
+        "private_gib": 4.911579132080078,
+        "working_gib": 3.182819366455078,
+        "gpu_mib": 3879.48828125
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "RETENTION_SERVER_WINDOW_NO_SUBSTAGE_ATTRIBUTION",
+      "certified_exact_increment": false,
+      "continuous_job_and_gpu_supervision_required": true,
+      "evidence_sha256": [
+        "eed7c71f6f7bab8d2c2f86089e1bc5a64a729b0641f38ea8c19325f9705b86f8"
+      ]
+    },
+    "retention-gguf-review": {
+      "increment": {
+        "private_gib": 4.911579132080078,
+        "working_gib": 3.182819366455078,
+        "gpu_mib": 3879.48828125
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "RETENTION_SERVER_WINDOW_NO_SUBSTAGE_ATTRIBUTION",
+      "certified_exact_increment": false,
+      "continuous_job_and_gpu_supervision_required": true,
+      "evidence_sha256": [
+        "eed7c71f6f7bab8d2c2f86089e1bc5a64a729b0641f38ea8c19325f9705b86f8"
+      ]
+    },
+    "ovis-ocr2": {
+      "increment": {
+        "private_gib": 4.5477752685546875,
+        "working_gib": 1.9036026000976562,
+        "gpu_mib": 3413.64453125
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Current isolated actor absolute memory peak and contemporaneous absolute whole-card peak; no spent-credit subtraction. Batch1 bounded input runtime remains enforced.",
+      "certified_exact_increment": false,
+      "continuous_job_and_gpu_supervision_required": true,
+      "prior_forecast_retained_in_predecessor": true,
+      "evidence_sha256": [
+        "cd8a111ea31013fc4689aeaae374ad4ff683ac23badcf40e14e71a105eb738b3"
+      ]
+    },
+    "xiaomi-ocr-0": {
+      "increment": {
+        "private_gib": 4.562889099121094,
+        "working_gib": 1.9187698364257812,
+        "gpu_mib": 3417.20703125
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Current isolated actor absolute memory peak and contemporaneous absolute whole-card peak; no spent-credit subtraction. Batch1 bounded input runtime remains enforced.",
+      "certified_exact_increment": false,
+      "continuous_job_and_gpu_supervision_required": true,
+      "prior_forecast_retained_in_predecessor": true,
+      "evidence_sha256": [
+        "cd8a111ea31013fc4689aeaae374ad4ff683ac23badcf40e14e71a105eb738b3"
+      ]
+    },
+    "pp-doclayout": {
+      "increment": {
+        "private_gib": 3.249481201171875,
+        "working_gib": 2.103626251220703,
+        "gpu_mib": 2319.76171875
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Historical whole-family and whole-card absolute envelopes used conservatively as additional-load planning allowances.",
+      "certified_exact_increment": false,
+      "current_runtime_isolation_measurement_required": true,
+      "current_isolation": {
+        "monitor_path": "<developer-workspace>\\tmp\\bm3\\layout-isolation-monitor-v1\\result.json",
+        "monitor_sha256": "0cd3246090813b254405bf95e4f17202eeb87c5dce02113b535482b379349a6a",
+        "caller_pid": 32624,
+        "process_exit_unloads_model": true,
+        "largest_Word1_raster_tested": [
+          1030,
+          680
+        ],
+        "whole_document_peak_certified": false,
+        "prior_empirical_allowance_not_lowered": true
+      },
+      "evidence_sha256": [
+        "1cd93b956a1ac5bec5158488e8f0e54e0982994b29714a5d148f2af178a1d904"
+      ]
+    },
+    "pp-formulanet": {
+      "increment": {
+        "private_gib": 4.714450836181641,
+        "working_gib": 2.4147071838378906,
+        "gpu_mib": 3255.53125
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Historical identity-bound formula windows, absolute family/card envelopes conservatively used as additional-load allowance.",
+      "certified_exact_increment": false,
+      "current_runtime_isolation_measurement_required": false,
+      "evidence_sha256": [
+        "1cd93b956a1ac5bec5158488e8f0e54e0982994b29714a5d148f2af178a1d904",
+        "0d9d7d15f0c654b2c69f1fb213ffca2a10922191e4af61f23cf607e73d0fb129"
+      ]
+    },
+    "table:pp-lcnet-x1-0-table-cls": {
+      "increment": {
+        "private_gib": 4.468402862548828,
+        "working_gib": 2.339508056640625,
+        "gpu_mib": 3240.21875
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Conditional standalone-process qualification: entire historical table actor peak conservatively used for each single-model process; no spent credit.",
+      "certified_exact_increment": false,
+      "evidence_sha256": [
+        "1cd93b956a1ac5bec5158488e8f0e54e0982994b29714a5d148f2af178a1d904",
+        "91c5d1742ab3f64a68dfada06df2dd320983f4704ec3a90cb868904a494016cb",
+        "81bfd3bd71e23bd263cacae7b8c9efbea9ee8b66a882859cf4530b2548615eda"
+      ]
+    },
+    "table:slanext-wired": {
+      "increment": {
+        "private_gib": 4.468402862548828,
+        "working_gib": 2.339508056640625,
+        "gpu_mib": 3240.21875
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Conditional standalone-process qualification: entire historical table actor peak conservatively used for each single-model process; no spent credit.",
+      "certified_exact_increment": false,
+      "evidence_sha256": [
+        "1cd93b956a1ac5bec5158488e8f0e54e0982994b29714a5d148f2af178a1d904",
+        "91c5d1742ab3f64a68dfada06df2dd320983f4704ec3a90cb868904a494016cb",
+        "81bfd3bd71e23bd263cacae7b8c9efbea9ee8b66a882859cf4530b2548615eda"
+      ]
+    },
+    "table:slanext-wireless": {
+      "increment": {
+        "private_gib": 4.468402862548828,
+        "working_gib": 2.339508056640625,
+        "gpu_mib": 3240.21875
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Conditional standalone-process qualification: entire historical table actor peak conservatively used for each single-model process; no spent credit.",
+      "certified_exact_increment": false,
+      "evidence_sha256": [
+        "1cd93b956a1ac5bec5158488e8f0e54e0982994b29714a5d148f2af178a1d904",
+        "91c5d1742ab3f64a68dfada06df2dd320983f4704ec3a90cb868904a494016cb",
+        "81bfd3bd71e23bd263cacae7b8c9efbea9ee8b66a882859cf4530b2548615eda"
+      ]
+    },
+    "table:rt-detr-l-wired-table-cell-det": {
+      "increment": {
+        "private_gib": 4.468402862548828,
+        "working_gib": 2.339508056640625,
+        "gpu_mib": 3240.21875
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Conditional standalone-process qualification: entire historical table actor peak conservatively used for each single-model process; no spent credit.",
+      "certified_exact_increment": false,
+      "evidence_sha256": [
+        "1cd93b956a1ac5bec5158488e8f0e54e0982994b29714a5d148f2af178a1d904",
+        "91c5d1742ab3f64a68dfada06df2dd320983f4704ec3a90cb868904a494016cb",
+        "81bfd3bd71e23bd263cacae7b8c9efbea9ee8b66a882859cf4530b2548615eda"
+      ]
+    },
+    "table:rt-detr-l-wireless-table-cell-det": {
+      "increment": {
+        "private_gib": 4.468402862548828,
+        "working_gib": 2.339508056640625,
+        "gpu_mib": 3240.21875
+      },
+      "margin": {
+        "private_gib": 0.5,
+        "working_gib": 0.5,
+        "gpu_mib": 512.0
+      },
+      "meaning": "Conditional standalone-process qualification: entire historical table actor peak conservatively used for each single-model process; no spent credit.",
+      "certified_exact_increment": false,
+      "evidence_sha256": [
+        "1cd93b956a1ac5bec5158488e8f0e54e0982994b29714a5d148f2af178a1d904",
+        "91c5d1742ab3f64a68dfada06df2dd320983f4704ec3a90cb868904a494016cb",
+        "81bfd3bd71e23bd263cacae7b8c9efbea9ee8b66a882859cf4530b2548615eda"
+      ]
+    }
+  },
+  "source_manifest_sha256": "d47273055d2949cf1389865dcad69281c17c0b53466a8ddb78c5db1beeb5a8b9",
+  "qualification": "Observed increments and margins are admission forecasts; continuous family and whole-card supervision remain mandatory."
+}

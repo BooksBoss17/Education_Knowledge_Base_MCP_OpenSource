@@ -36,8 +36,8 @@ class InstallContract(unittest.TestCase):
         with zipfile.ZipFile(tool/'dist/engine.zip') as z:
             for name in z.namelist():self.assertEqual(z.read(name),(ROOT/'SOURCE/semantic_retention_engine'/name).read_bytes())
 
-    def test_core_adapter_is_not_auto_connected(self):
-        self.assertFalse(json.loads((ROOT/'TOOLS/semantic_retention/SCHEME.json').read_text(encoding='utf-8'))['bemarkdown_auto_integrated'])
+    def test_core_adapter_is_auto_connected_with_opt_in_runtime_install(self):
+        self.assertTrue(json.loads((ROOT/'TOOLS/semantic_retention/SCHEME.json').read_text(encoding='utf-8'))['bemarkdown_auto_integrated'])
         text=(ROOT/'scripts/setup.py').read_text(encoding='utf-8')
         self.assertIn("model.get('distribution') == 'standalone-semantic'",text)
 

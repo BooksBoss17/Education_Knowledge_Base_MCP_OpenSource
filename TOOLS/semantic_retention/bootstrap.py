@@ -31,7 +31,7 @@ def initialize_job(tool,mcp_root,job,request):
             data=archive.read(name);assert hashlib.sha256(data).hexdigest()==manifest['files'][name]
             target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
     project=job/'projects/bemarkdown-retention-training';tools=project/'tools'
-    for name in ('source_prepare.py','worker.py'):
+    for name in ('source_prepare.py','worker.py','image_purpose.py'):
         target=tools/('portable_job.py' if name=='worker.py' else name);shutil.copy2(tool/name,target)
     # Tiny venv shim: all third-party packages come from the verified host installation.
     env=job/'tmp/rt-train/venvs/q35-native';scripts=env/'Scripts';site=env/'Lib/site-packages'
@@ -41,6 +41,7 @@ def initialize_job(tool,mcp_root,job,request):
     (env/'pyvenv.cfg').write_bytes(('home = '+str(home)+'\ninclude-system-site-packages = false\nversion = 3.12.10\n').encode('utf-8'))
     host_site=Path(runtime['inference_python']).parents[1]/'Lib/site-packages'
     (site/'verified_host.pth').write_bytes(('import site; site.addsitedir('+repr(str(host_site))+')\n').encode('utf-8'))
+    # Frozen engine paths are an isolated-job contract, not Developer paths.
     native=job/'tmp/llama-retention';native.mkdir(parents=True)
     for item in runtime['lock']['llama_files']:
         source=Path(runtime['llama_home'])/item['file'];assert sha(source)==item['sha256']
@@ -48,8 +49,9 @@ def initialize_job(tool,mcp_root,job,request):
         try:os.link(source,target)
         except OSError:shutil.copy2(source,target)
     models={}
+    model_base=(mcp_root/'MODELS').resolve(strict=True)
     for role,definition in spec['models'].items():
-        root=(mcp_root/'MODELS'/definition['directory']).resolve();assert root.is_relative_to(mcp_root/'MODELS')
+        root=(model_base/definition['directory']).resolve(strict=True);assert root.is_relative_to(model_base)
         declared=read(root/'MODEL_MANIFEST.json')
         assert declared['model_fingerprint']==definition['model_fingerprint']
         files={x['path']:x for x in declared['files']}
