@@ -36,12 +36,12 @@
     "workspace_manager.py": "969bed90ce7f8d9fcbb58cd4a7bcc95197a9ebaf8e3c8f740923b608c93681e9",
     "workspace_template.json": "2464cf0309222c52f5940ceb21ef3aa0cbc010b8e02b7f6784510a096f125096"
   },
-  "bemarkdown_wheel_sha256": "df48c3e7daf75a7e831974382f01117535e71706aeea697ede2ffbab8819bec8",
+  "bemarkdown_wheel_sha256": "4b969b5ad35fa3d1c82f40ec0174c818ed4bd436e0c9b5a70a5453911e526ea9",
   "quality_status": "CANDIDATES_AND_REVIEW_REUSE_NOT_GENERAL_AUTO_DELETION",
   "optimized_ocr_route": {
     "tool": "TOOLS/bemarkdown",
     "release_id": "bemarkdown-unified-20261104-v1",
-    "route_manifest_sha256": "1d8cf725252ecc5beac51dcbd94ea3d0de0693c287eb9e56f918ce1f6b2968a1",
+    "route_manifest_sha256": "8d120e9157a52b6990140f6aaffd4a4f7dd7179df9a19589dc9308a24d2ab903",
     "status": "UNIFIED_SINGLE_WHEEL"
   },
   "runtime_manager_integration": "managed-adaptive-20261015-rm8",

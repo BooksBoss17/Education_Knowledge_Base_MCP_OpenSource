@@ -61,19 +61,19 @@
   "validated_platform": "Windows x64",
   "wheel": {
     "path": "dist/bemarkdown-0.3.0-py3-none-any.whl",
-    "sha256": "df48c3e7daf75a7e831974382f01117535e71706aeea697ede2ffbab8819bec8",
-    "bytes": 1562853,
+    "sha256": "4b969b5ad35fa3d1c82f40ec0174c818ed4bd436e0c9b5a70a5453911e526ea9",
+    "bytes": 1574389,
     "content_inventory": {
       "files": [
         {
           "path": "bemarkdown-0.3.0.dist-info/METADATA",
-          "bytes": 905,
-          "sha256": "840b32e1c7a907660b6fe1d513581cdc870eaa7c0202887ea22f3e7dacbbaee5"
+          "bytes": 1052,
+          "sha256": "f166522f5f944769bd68b7860933b863091bd62b154e27f6846d5b5d0216d0f6"
         },
         {
           "path": "bemarkdown-0.3.0.dist-info/RECORD",
-          "bytes": 25914,
-          "sha256": "7c30914cb657b88b414dfa195e412845b97aebf19eeba0cff6f8a267eb1be3fe"
+          "bytes": 26016,
+          "sha256": "30b7b5b3691abc5ba4cc5588a7500f0d95b052c770b47d2d980ff9037c9214ca"
         },
         {
           "path": "bemarkdown-0.3.0.dist-info/WHEEL",
@@ -84,6 +84,11 @@
           "path": "bemarkdown-0.3.0.dist-info/entry_points.txt",
           "bytes": 95,
           "sha256": "9f909431989a6f1a3189e94fc3ec3b85ebe1a8f2bc8dd043c6ecec4cec4f5f88"
+        },
+        {
+          "path": "bemarkdown-0.3.0.dist-info/licenses/LICENSE",
+          "bytes": 34020,
+          "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
         },
         {
           "path": "bemarkdown-0.3.0.dist-info/top_level.txt",
@@ -1441,9 +1446,9 @@
           "sha256": "1c0f366fb4f00ce2b67df8b8daf1faed6d001b93a8a39eff7fb65178b6d078ce"
         }
       ],
-      "file_count": 275,
-      "total_uncompressed_bytes": 5057037,
-      "content_sha256": "96add6efceedbe92f782084659a3222811e4fc37869b0119f8fe96f73c1b94ed"
+      "file_count": 276,
+      "total_uncompressed_bytes": 5091306,
+      "content_sha256": "37909b027c69da39f049a6d6d436777df3f6d5b656520d7d59cf9143d65a246c"
     }
   },
   "runtime": {

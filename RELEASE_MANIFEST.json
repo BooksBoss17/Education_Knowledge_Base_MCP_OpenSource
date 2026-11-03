@@ -160,14 +160,19 @@
       "sha256": "db4bfe1f75965edea9ab1fc7d0a1889ec80072b7bf0f3b3c1df4d903a17a4f61"
     },
     {
+      "path": "SOURCE/bemarkdown/LICENSE",
+      "bytes": 34020,
+      "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
+    },
+    {
       "path": "SOURCE/bemarkdown/README.md",
       "bytes": 187,
       "sha256": "8cc5f39fbaa76314056b124c55ed83aca9f237cbd202db5009c71da4000ce34a"
     },
     {
       "path": "SOURCE/bemarkdown/pyproject.toml",
-      "bytes": 1121,
-      "sha256": "648b9c222c7e044a9efc64fc8fd4c15df04b8f84a2ab81108622cea454be5d7f"
+      "bytes": 1275,
+      "sha256": "82de204cd8f7a7e4da729f458a04e3522c5ba9eb4c20a99be5a2ba19d2fae7f9"
     },
     {
       "path": "SOURCE/bemarkdown/src/bemarkdown/__init__.py",
@@ -1837,17 +1842,17 @@
     {
       "path": "TOOLS/bemarkdown/RELEASE_MANIFEST.json",
       "bytes": 1275,
-      "sha256": "db999c3fd210830fb731ef74fd85d5bba0cac002596a715b99f742d28c8233c7"
+      "sha256": "0111780e7d8f4a32ea9484a0e7ffaf7cf39f6c513b18ad097fdf441a7eda4657"
     },
     {
       "path": "TOOLS/bemarkdown/ROUTE_MANIFEST.json",
       "bytes": 6155,
-      "sha256": "1d8cf725252ecc5beac51dcbd94ea3d0de0693c287eb9e56f918ce1f6b2968a1"
+      "sha256": "8d120e9157a52b6990140f6aaffd4a4f7dd7179df9a19589dc9308a24d2ab903"
     },
     {
       "path": "TOOLS/bemarkdown/TOOL_MANIFEST.json",
-      "bytes": 63237,
-      "sha256": "529c6ec299a2cca3de6975a876200eb47ea60d04e18427a98268cab83ea42b11"
+      "bytes": 63442,
+      "sha256": "aaadb63873b26570fcae6fca8989bb3364662863efd2355c09a0d61a6a58f5cf"
     },
     {
       "path": "TOOLS/bemarkdown/bemarkdown.toml",
@@ -1866,8 +1871,8 @@
     },
     {
       "path": "TOOLS/bemarkdown/dist/bemarkdown-0.3.0-py3-none-any.whl",
-      "bytes": 1562853,
-      "sha256": "df48c3e7daf75a7e831974382f01117535e71706aeea697ede2ffbab8819bec8"
+      "bytes": 1574389,
+      "sha256": "4b969b5ad35fa3d1c82f40ec0174c818ed4bd436e0c9b5a70a5453911e526ea9"
     },
     {
       "path": "TOOLS/bemarkdown/docs/ADAPTIVE_OCR.md",
@@ -2052,7 +2057,7 @@
     {
       "path": "TOOLS/education_mcp/RELEASE_MANIFEST.json",
       "bytes": 4134,
-      "sha256": "1d8d14ad5b53a73ced242e067fccc5fecc335561d50c8e7562c0810b461b4a66"
+      "sha256": "f220d2bdc2d507f5e6e32e7826951587b8b2859d9272a576b6056e6f47fd9887"
     },
     {
       "path": "TOOLS/education_mcp/asset_screening.py",
@@ -2587,7 +2592,7 @@
     {
       "path": "tests/test_mcp_sdk_session.py",
       "bytes": 6037,
-      "sha256": "95da2fcd34dd05e065743908bde63196592d1eaf46e48d8ba77cc47d0dc3556b"
+      "sha256": "ef804679a976ab90bc547b301f7affe03212174846370470529012f023662024"
     },
     {
       "path": "tests/test_prose_edge_crop.py",
@@ -2622,7 +2627,7 @@
     "fresh_cold_dependency_install": false
   },
   "source_identity": "Accepted installed baseline plus explicit single-wheel integration; current payload is bound by files, not the historical baseline commit",
-  "file_count": 521,
-  "total_bytes": 8303337,
+  "file_count": 522,
+  "total_bytes": 8349252,
   "source_baseline_formal_commit": "e6d983d59f1c01a04d74e4efdfe1c595bbe87e2f"
 }
