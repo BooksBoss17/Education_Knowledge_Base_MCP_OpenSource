@@ -1,6 +1,7 @@
 """Single-frame raster input with explicit source identity and PDF geometry."""
 from __future__ import annotations
 
+from contextlib import contextmanager
 import hashlib
 import io
 import json
@@ -58,12 +59,10 @@ def inspect_raster_image(source: Path) -> dict:
     return details
 
 
-def convert_raster_image(source: Path, output_dir: Path, *, pdf_runtime,
-                         expected_source_sha256: str, debug: bool = False):
-    """Reuse OCR/math/table/layout without pretending the input was a PDF."""
+@contextmanager
+def prepared_raster_pdf(source: Path, *, expected_source_sha256: str):
+    """Yield the unchanged lossless pagination used by normal conversion."""
     import fitz
-    from .production import build_document_id
-
     started = time.perf_counter()
     image, render = _decode(source)
     if render['source_sha256'] != expected_source_sha256:
@@ -85,6 +84,17 @@ def convert_raster_image(source: Path, output_dir: Path, *, pdf_runtime,
             pdf.save(derived, no_new_id=True)
         render['pdf_sha256'] = hashlib.sha256(derived.read_bytes()).hexdigest()
         render['preparation_seconds'] = time.perf_counter() - started
+        yield derived, render
+
+
+def convert_raster_image(source: Path, output_dir: Path, *, pdf_runtime,
+                         expected_source_sha256: str, debug: bool = False):
+    """Reuse OCR/math/table/layout without pretending the input was a PDF."""
+    import fitz
+    from .production import build_document_id
+    started = time.perf_counter()
+
+    with prepared_raster_pdf(source, expected_source_sha256=expected_source_sha256) as (derived, render):
         result = pdf_runtime.convert(derived, output_dir,
                                      document_id=build_document_id(derived), debug=debug)
         if debug:
@@ -93,6 +103,17 @@ def convert_raster_image(source: Path, output_dir: Path, *, pdf_runtime,
             shutil.copyfile(derived, retained)
             render['debug_pagination_ref'] = 'debug/source-pagination.pdf'
         report = result.report
+        review_path=output_dir/'review_plan.json'
+        if review_path.is_file():
+            from .selective_review import bind_original_image, reuse_review_plan
+            review_plan=bind_original_image(json.loads(review_path.read_text(encoding='utf-8')),source,render)
+            ledger=getattr(pdf_runtime,'review_ledger',None)
+            if ledger is not None:
+                review_plan=reuse_review_plan(review_plan,ledger,root=output_dir)
+            review_path.write_text(json.dumps(review_plan,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+            report['selective_review']={'schema':review_plan['schema'],'path':'review_plan.json',
+                                        'sha256':hashlib.sha256(review_path.read_bytes()).hexdigest(),
+                                        'summary':review_plan['summary']}
         intermediate = dict(report['source'])
         report['source'] = {'type': 'IMAGE', 'path': str(source), 'file_name': source.name,
                             'size_bytes': source.stat().st_size, 'sha256': expected_source_sha256}

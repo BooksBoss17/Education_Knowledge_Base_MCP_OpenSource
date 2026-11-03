@@ -1,3 +1,5 @@
+当前版本：BeMarkdown 0.3.0，单一 wheel 与受管入口；原 optimized 目录已合入 TOOLS/bemarkdown。见 [统一说明](UNIFIED_BEMARKDOWN.md)。以下历史说明以本段和统一说明为准。
+
 # 受管转换与内置图片筛选
 
 本版将已在本地安装验收的 BeMarkdown 转换、资源管理、提速选项和图片分类整合到公开包。公开安装适配继续使用 `.local/runtime-selection.json` 与独立的语义模型运行时登记，不包含开发机器路径、模型权重、教材样本、私有模板或开发验收日志。
@@ -31,7 +33,7 @@
 
 ## 原生参数
 
-`TOOLS/bemarkdown_optimized/convert.py` 支持 `--layout-batch-size 1..4`、`--batch-source`、`--repetition-guard`、`--no-image-screening`、`--screen-existing <已完成OCR包>`。后者必须保持源文件 SHA 与完整包指纹一致，输出使用新目录。详细说明：[提速与批处理](../TOOLS/bemarkdown_optimized/PERFORMANCE.md)、[图片筛选](../TOOLS/bemarkdown_optimized/IMAGE_SCREENING.md)、[运行管理](../TOOLS/runtime_manager/README.md)。
+`TOOLS/bemarkdown/convert.py` 支持 `--layout-batch-size 1..4`、`--batch-source`、`--repetition-guard`、`--no-image-screening`、`--screen-existing <已完成OCR包>`。后者必须保持源文件 SHA 与完整包指纹一致，输出使用新目录。详细说明：[提速与批处理](../TOOLS/bemarkdown/PERFORMANCE.md)、[图片筛选](../TOOLS/bemarkdown/IMAGE_SCREENING.md)、[运行管理](../TOOLS/runtime_manager/README.md)。
 
 早停仅将异常重复标为未决，不把截断输出当成正确转录。小批窗口只复用约定阶段；新配置需单独记录执行指纹与评测范围。
 

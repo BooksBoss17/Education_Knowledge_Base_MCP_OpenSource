@@ -28,9 +28,10 @@ def main():
     for item in payload.get('additional_sources', []):
         if helpers['sha'](item['source']) != item['source_sha256']:
             raise ValueError('Native batch input changed after submission')
-    command = [sys.executable, '-I', '-X', 'utf8', str(root/'TOOLS/bemarkdown_optimized/convert.py'),
+    command = [sys.executable, '-I', '-X', 'utf8', str(root/'TOOLS/bemarkdown/convert.py'),
                '--source', payload['source'], '--output-root', payload['output_root'],
                '--mcp-root', str(root), '--caller-pid', str(os.getpid()), '--json']
+    command.extend(['--core-options',json.dumps(payload.get('core_options',{}))])
     for item in payload.get('additional_sources', []):
         command.extend(['--batch-source', item['source']])
     if payload.get('additional_sources'):

@@ -49,7 +49,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $runtime -m pip install -r "TOOLS\bemarkdown\runtime\requirements-core.lock"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & $runtime -m pip install --no-deps "TOOLS\bemarkdown\dist\bemarkdown-0.2.0-py3-none-any.whl"
+          & $runtime -m pip install --no-deps "TOOLS\bemarkdown\dist\bemarkdown-0.3.0-py3-none-any.whl"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & $runtime -m pip install "pytest>=8,<9"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

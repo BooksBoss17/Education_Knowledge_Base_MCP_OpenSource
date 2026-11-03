@@ -20,6 +20,8 @@ from pathlib import Path
 from types import TracebackType
 from typing import Any, Self
 
+from .file_handoff import atomic_write_bytes, atomic_write_text
+
 PERFORMANCE_TRACE_SCHEMA = "bemarkdown-performance-trace-v0"
 PERFORMANCE_TRACE_REQUIRED_SPANS = (
     "document open",
@@ -110,31 +112,11 @@ def semantic_sha256(value: Any, *, exclude_keys: set[str] | None = None) -> str:
 
 
 def _atomic_write_text(path: Path, value: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
-    temporary.write_text(value, encoding="utf-8", newline="\n")
-    for attempt in range(3):
-        try:
-            os.replace(temporary, path)
-            break
-        except PermissionError:
-            if attempt == 2:
-                raise
-            time.sleep(0.05)
+    atomic_write_text(path, value)
 
 
 def _atomic_write_bytes(path: Path, value: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
-    temporary.write_bytes(value)
-    for attempt in range(3):
-        try:
-            os.replace(temporary, path)
-            break
-        except PermissionError:
-            if attempt == 2:
-                raise
-            time.sleep(0.05)
+    atomic_write_bytes(path, value)
 
 
 @dataclass

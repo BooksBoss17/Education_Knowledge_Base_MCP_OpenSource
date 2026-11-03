@@ -1,3 +1,5 @@
+当前版本：BeMarkdown 0.3.0，单一 wheel 与受管入口；原 optimized 目录已合入 TOOLS/bemarkdown。见 [统一说明](docs/UNIFIED_BEMARKDOWN.md)。以下历史说明以本段和统一说明为准。
+
 # Education Knowledge Base MCP · 基底版本
 
 面向教学知识库的本地 MCP。当前主要工具 **BeMarkdown** 将 DOCX、PDF 转成保留来源信息的中间 Markdown，供 agent 继续复核和整理。

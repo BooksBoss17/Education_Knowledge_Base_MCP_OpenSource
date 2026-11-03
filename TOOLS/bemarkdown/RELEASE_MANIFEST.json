@@ -1,9 +1,21 @@
 {
   "schema": "education-public-tool-release-v1",
-  "release_id": "bemarkdown-managed-screening-20261016-v1",
-  "status": "PUBLIC_SOURCE_EXPORT",
+  "release_id": "bemarkdown-unified-20261104-v1",
+  "status": "VALIDATED_UNIFIED_PACKAGING",
   "source": "../../SOURCE/bemarkdown",
-  "wheel_sha256": "1cbb838958dfb283be02d5693a00d89213880a51478f4cdfc88f639b1aeb3e6d",
+  "wheel_sha256": "df48c3e7daf75a7e831974382f01117535e71706aeea697ede2ffbab8819bec8",
   "internal_wheel_sha256": "e6f39ef0d490c49d029b86794fd09f28158677684a647f78eb33bac971bec86b",
-  "byte_normalization": "LF normalization and public metadata; source mirror matches wheel"
+  "byte_normalization": "LF normalization and public metadata; source mirror matches wheel",
+  "tool_version": "0.3.0",
+  "tool_manifest_sha256": "529c6ec299a2cca3de6975a876200eb47ea60d04e18427a98268cab83ea42b11",
+  "tool_wheel_sha256": "df48c3e7daf75a7e831974382f01117535e71706aeea697ede2ffbab8819bec8",
+  "publication_timestamp": "2026-11-04T01:01:59.116318+08:00",
+  "source_baseline": {
+    "release_id": "bemarkdown-managed-screening-20261016-v1",
+    "tool_build_commit": null,
+    "publisher_source_commit": null,
+    "publication_timestamp": null
+  },
+  "source_identity": "Accepted core plus explicit unification changes; wheel content inventory is authoritative",
+  "validation_scope": "Conversion/entry/installation migration. Classification implementation unchanged; live resource deferral and frozen classification replay verified. No new full-corpus accuracy certification."
 }

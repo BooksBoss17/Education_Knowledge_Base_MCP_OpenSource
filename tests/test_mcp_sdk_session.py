@@ -31,7 +31,7 @@ EXPECTED_TOOLS = {
 }
 EXPECTED_PROTOCOL = "2025-11-25"
 EXPECTED_SERVER = ("education-knowledge-base", "0.5.4")
-EXPECTED_WHEEL_SHA256 = "1cbb838958dfb283be02d5693a00d89213880a51478f4cdfc88f639b1aeb3e6d"
+EXPECTED_WHEEL_SHA256 = "df48c3e7daf75a7e831974382f01117535e71706aeea697ede2ffbab8819bec8"
 BLOCKED_CALLS = {
     "bemarkdown_convert": {"source": "not-used-before-vision-gate.pdf"},
     "bemarkdown_status": {"job_id": "0" * 32},

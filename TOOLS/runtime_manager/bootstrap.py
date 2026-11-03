@@ -31,8 +31,14 @@ def runtime(mcp_root):
 
 def registry(mcp_root, python):
     root, installed, *_ = runtime(mcp_root)
-    policy = root / 'TOOLS/bemarkdown_optimized/core/bemarkdown/host_memory_policy.py'
-    configuration = root / 'TOOLS/bemarkdown_optimized/HOST_MEMORY_POLICY.json'
+    import runpy, subprocess
+    bridge=runpy.run_path(str(root/'TOOLS/bemarkdown/engine.py'))
+    conversion_python=bridge['selected_python'](root/'TOOLS/bemarkdown')
+    probe=subprocess.run([str(conversion_python),'-I','-X','utf8','-c',
+        "import importlib.util,json;print(json.dumps(importlib.util.find_spec('bemarkdown').origin))"],capture_output=True,text=True,check=True)
+    engine_root=Path(json.loads(probe.stdout)).resolve().parent
+    policy = engine_root / 'host_memory_policy.py'
+    configuration = root / 'TOOLS/bemarkdown/HOST_MEMORY_POLICY.json'
     mode = json.loads(configuration.read_text(encoding='utf-8')).get('mode', 'auto')
     local = Path(os.environ.get('LOCALAPPDATA', Path.home()))
     manifest = json.loads((root/'TOOLS/bemarkdown/TOOL_MANIFEST.json').read_text(encoding='utf-8'))
@@ -131,6 +137,6 @@ def trusted_context(mcp_root):
 def installation_fingerprint(mcp_root):
     root = Path(mcp_root)
     files = sorted((root / 'TOOLS/education_mcp').glob('*.py'))
-    files += [root / 'TOOLS/bemarkdown_optimized/ROUTE_MANIFEST.json']
+    files += [root / 'TOOLS/bemarkdown/ROUTE_MANIFEST.json']
     return hashlib.sha256(json.dumps([(p.name, sha(p)) for p in files],
                                     separators=(',', ':')).encode()).hexdigest()

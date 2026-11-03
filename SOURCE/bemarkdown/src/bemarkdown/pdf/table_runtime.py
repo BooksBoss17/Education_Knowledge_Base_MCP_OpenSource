@@ -201,6 +201,8 @@ class RegistryBackedTableEvidenceProvider:
         }
 
     def _load_model(self, model_id):
+        from ..stage_admission import require_stage_admission
+        require_stage_admission('table:' + model_id)
         from ..model_registry import PADDLE_MODEL_CATALOG, ModelRegistry
         from ..model_runtime import paddle_compatible_model_dir
         from ..paddlex_runtime import import_paddlex_for_paddle_provider

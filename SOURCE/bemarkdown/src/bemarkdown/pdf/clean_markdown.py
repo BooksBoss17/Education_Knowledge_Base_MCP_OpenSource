@@ -6,6 +6,32 @@ import hashlib
 import re
 
 
+# Source-bound TOC cases establish these two code points as extraction noise.
+# Other controls, mathematical payloads, tables and asset paths are untouched.
+_PROSE_NOISE = frozenset(('\x18', '\ufeff'))
+_PROSE_KINDS = frozenset(('TEXT', 'CAPTION', 'TITLE', 'HEADER_FOOTER', 'PAGE_NUMBER', 'OTHER'))
+_TEXT_NORMALIZATION_POLICY = 'source-prose-noise-v1'
+
+
+def _consumer_text_block(block):
+    """Make an auditable consumer projection without changing source IR."""
+    content = block.get('content', {})
+    original = content.get('text')
+    if (block.get('kind') not in _PROSE_KINDS or not isinstance(original, str)
+            or not any(character in original for character in _PROSE_NOISE)):
+        return block, None
+    removed = [{'index': index, 'codepoint': f'U+{ord(character):04X}'}
+               for index, character in enumerate(original) if character in _PROSE_NOISE]
+    normalized = ''.join(character for character in original if character not in _PROSE_NOISE)
+    projected = dict(block, content=dict(content, text=normalized))
+    audit = {'node_id': block['node_id'], 'policy': _TEXT_NORMALIZATION_POLICY,
+             'offset_unit': 'UNICODE_CODEPOINTS', 'original_text': original,
+             'original_sha256': hashlib.sha256(original.encode('utf-8')).hexdigest(),
+             'normalized_sha256': hashlib.sha256(normalized.encode('utf-8')).hexdigest(),
+             'removed': removed}
+    return projected, audit
+
+
 def _native_line_ids(block):
     provenance = block.get('provenance', {})
     grouping = provenance.get('ordering_atom_grouping', {})
@@ -34,6 +60,7 @@ def render_clean_document(document, asset_ref_map, render_block, *, renderer_ver
     blocks = document.get('blocks', [])
     unresolved_assets = dict(unresolved_assets or {})
     chunks, mappings, required_assets, auxiliary = [], [], [], []
+    text_normalizations = []
     position = 0
 
     def append(text):
@@ -48,7 +75,10 @@ def render_clean_document(document, asset_ref_map, render_block, *, renderer_ver
         following = blocks[index + 1] if index + 1 < len(blocks) else None
         inline = block.get('kind') == 'FORMULA' and (
             _joinable(previous, block) or _joinable(block, following))
-        body, used_asset = render_block(block, asset_ref_map, inline=inline)
+        consumer_block, normalization = _consumer_text_block(block)
+        body, used_asset = render_block(consumer_block, asset_ref_map, inline=inline)
+        if normalization is not None:
+            text_normalizations.append(normalization)
         body = body.strip() or '[Unresolved source content]'
         uid = block.get('content', {}).get('asset_uid')
         if uid in unresolved_assets:
@@ -97,6 +127,8 @@ def render_clean_document(document, asset_ref_map, render_block, *, renderer_ver
               'required_asset_uids': required_assets, 'node_spans': mappings,
               'offset_unit': 'UTF8_BYTES', 'auxiliary_asset_spans': auxiliary,
               'determinism_sha256': hashlib.sha256(markdown.encode('utf-8')).hexdigest()}
+    if text_normalizations:
+        result['text_normalizations'] = text_normalizations
     errors = validate_clean_render(markdown, result, expected_node_ids=[b['node_id'] for b in blocks])
     if errors:
         raise RuntimeError('CLEAN_MARKDOWN_SOURCE_MAPPING_FAILED:' + ';'.join(errors))
@@ -139,4 +171,25 @@ def validate_clean_render(markdown, rendering, *, expected_node_ids=None, expect
         if hashlib.sha256(payload).hexdigest() != span.get('sha256'):
             errors.append('Compact Markdown node content hash mismatch')
         previous_end = end
+    normalizations = rendering.get('text_normalizations', [])
+    if not isinstance(normalizations, list):
+        errors.append('Invalid consumer text normalization records')
+    else:
+        seen = set()
+        by_id = {span['node_id']: span for span in spans if isinstance(span.get('node_id'), str)}
+        for audit in normalizations:
+            if not isinstance(audit, dict):
+                errors.append('Invalid consumer text normalization record')
+                continue
+            node_id = audit.get('node_id')
+            original = audit.get('original_text')
+            if (not isinstance(node_id, str) or node_id in seen or node_id not in by_id
+                    or by_id[node_id].get('kind') not in _PROSE_KINDS or not isinstance(original, str)):
+                errors.append('Invalid consumer text normalization identity')
+                continue
+            seen.add(node_id)
+            _, expected = _consumer_text_block({'node_id': node_id, 'kind': by_id[node_id]['kind'],
+                                               'content': {'text': original}})
+            if expected is None or audit != expected:
+                errors.append('Consumer text normalization evidence mismatch')
     return errors

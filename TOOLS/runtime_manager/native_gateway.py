@@ -22,6 +22,9 @@ def _gateway(tool, argv=None):
     helpers = runpy.run_path(str(root / 'TOOLS/runtime_manager/bootstrap.py'))
     if helpers['trusted_context'](root):
         return module['main'](argv)
+    core_options=json.loads(args.core_options)
+    allowed={'formula_ocr','mtef_cache','mtef_cache_dir','replace','config_path','models_root','continue_on_error','reuse_formula_model'}
+    if not isinstance(core_options,dict) or set(core_options)-allowed:raise ValueError('UNKNOWN_CORE_OPTIONS')
     source = Path(args.source).resolve(strict=True)
     extra_sources = [Path(value).resolve(strict=True) for value in getattr(args, 'batch_source', [])]
     if len(extra_sources) > 31 or len({source, *extra_sources}) != len(extra_sources) + 1:
@@ -38,7 +41,7 @@ def _gateway(tool, argv=None):
     client = helpers['client'](root, sys.executable, workspace, roots)
     result = client.submit('native-convert', workspace,
         dict(source=str(source), source_sha256=helpers['sha'](source), output_root=str(output),
-             debug=args.debug, legacy_completion=args.legacy_completion,
+             debug=args.debug, legacy_completion=args.legacy_completion, core_options=core_options,
              additional_sources=additional, layout_batch_size=getattr(args, 'layout_batch_size', 1),
              repetition_guard=bool(getattr(args, 'repetition_guard', False)),
              image_screening=not bool(getattr(args, 'no_image_screening', False)),

@@ -1,6 +1,7 @@
 """Inference scheduling profiles; models and output contracts stay fixed."""
 from dataclasses import asdict, dataclass
 import os
+from .host_memory_policy import current_memory_policy
 
 
 @dataclass(frozen=True)
@@ -14,7 +15,13 @@ class ResourceProfile:
     overlap_got_dependencies: bool
 
     def to_dict(self):
-        return asdict(self)
+        return {**asdict(self),
+                'native_process_isolation':self.name=='6gb',
+                'serial_heavy_model_stages':self.name=='6gb',
+                'model_execution_profile':self.name,
+                'device_resource_policy':current_memory_policy() if self.name=='6gb' else None,
+                'process_group_private_commit_cap_mib':int(current_memory_policy()['project_ram_cap_gib']*1024) if self.name=='6gb' else None,
+                'hard_limit_scope':'LEGACY_PROFILE_FIELD_NOT_PROCESS_GROUP_CAP'}
 
 
 PROFILES = {

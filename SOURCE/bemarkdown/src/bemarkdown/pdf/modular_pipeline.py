@@ -395,6 +395,10 @@ class ModularPdfPipeline:
         }
         results = {}
         try:
+            prepare = getattr(self.table_evidence_provider, "prepare_batch", None)
+            if callable(prepare):
+                prepare([({**block, "document_id": document["document_id"]},
+                          assets[str(block["content"]["asset_uid"])]) for block in table_blocks])
             for block in table_blocks:
                 asset_uid = str(block["content"]["asset_uid"])
                 evidence = self.table_evidence_provider(

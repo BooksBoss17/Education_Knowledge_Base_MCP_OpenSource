@@ -72,6 +72,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Package root; defaults through BeMarkdown workspace configuration",
     )
     convert.add_argument("--debug", action="store_true")
+    convert.add_argument('--no-image-screening', action='store_true')
+    convert.add_argument('--screen-existing', type=Path)
+    convert.add_argument('--retry-job-id')
+    convert.add_argument('--repetition-guard', action='store_true')
     convert.add_argument('--resource-profile', choices=('6gb', '10gb'),
                          help='Inference scheduling budget; preserves model, precision and recognition scope')
     convert.add_argument(
@@ -111,6 +115,8 @@ def build_parser() -> argparse.ArgumentParser:
     batch.add_argument("input", type=Path, nargs="+")
     batch.add_argument("--continue-on-error", action="store_true",
                        help="Attempt remaining files after a failure; exit remains nonzero")
+    batch.add_argument('--layout-batch-size', type=int, choices=range(1, 5), default=1,
+                       help='Reuse layout actor across 2-4 raster inputs; single-image inference unchanged')
     batch.add_argument('--no-reuse-formula-model', action='store_true',
                        help='Rebuild PDF/visual-DOCX FormulaNet for each file instead of retaining batch ownership')
 
@@ -161,69 +167,11 @@ def main(argv: list[str] | None = None) -> int:
 
     args = build_parser().parse_args(argv)
     if args.command in {"convert", "convert-batch"}:
-        if args.resource_profile is not None:
-            import os
-            os.environ['BEMARKDOWN_RESOURCE_PROFILE'] = args.resource_profile
-        logging.basicConfig(
-            level=logging.DEBUG if args.debug else logging.INFO,
-            format="%(levelname)s %(name)s: %(message)s",
-            stream=sys.stderr,
-        )
-        options = {
-            'debug': args.debug, 'formula_ocr': args.formula_ocr, 'mtef_cache': args.mtef_cache,
-            'mtef_cache_dir': args.mtef_cache_dir, 'replace': not args.no_replace,
-            'models_root': args.models_root, 'config_path': args.config, 'mcp_root': args.mcp_root,
-        }
-        if args.command == "convert-batch":
-            from .batch import convert_documents
-
-            try:
-                with _conversion_diagnostics_to_stderr():
-                    batch_result = convert_documents(
-                        args.input, args.output_root, continue_on_error=args.continue_on_error,
-                        reuse_formula_model=not args.no_reuse_formula_model, **options)
-            except Exception as exc:  # noqa: BLE001 - includes batch resource cleanup failures
-                return _print_cli_error(exc, EXIT_CONVERSION_FAILURE, args.json)
-            if args.json:
-                print(json.dumps(batch_result, ensure_ascii=False))
-            else:
-                for row in batch_result['documents']:
-                    destination = row.get('result', {}).get('package_path', row.get('error', ''))
-                    print(f"{row['status']} {row['source']}: {destination}")
-            failure = next((row for row in batch_result['documents'] if row['status'] == 'FAILED'), None)
-            if failure is None:
-                return EXIT_SUCCESS
-            return {'INVALID_INPUT': EXIT_INVALID_INPUT, 'ENVIRONMENT': EXIT_ENVIRONMENT,
-                    'PACKAGE_FAILURE': EXIT_PACKAGE_FAILURE,
-                    'CONVERSION_FAILURE': EXIT_CONVERSION_FAILURE}[failure['failure_kind']]
+        from .managed_cli import conversion
         try:
-            with _conversion_diagnostics_to_stderr():
-                result = convert_document(
-                    args.input,
-                    args.output_root,
-                    **options,
-                )
-        except (
-            InvalidDocxError,
-            PdfInspectionError,
-            InvalidRasterImageError,
-            UnsupportedDocumentError,
-            FileNotFoundError,
-        ) as exc:
-            return _print_cli_error(exc, EXIT_INVALID_INPUT, args.json)
-        except OutputRootConfigurationError as exc:
-            return _print_cli_error(exc, EXIT_ENVIRONMENT, args.json)
-        except (ExistingPackageError, PackageValidationError) as exc:
-            return _print_cli_error(exc, EXIT_PACKAGE_FAILURE, args.json)
-        except Exception as exc:  # noqa: BLE001 - stable production CLI boundary
+            return conversion(args)
+        except Exception as exc:
             return _print_cli_error(exc, EXIT_CONVERSION_FAILURE, args.json)
-        if args.json:
-            print(json.dumps(result.to_dict(), ensure_ascii=False))
-        else:
-            print(result.package_path.resolve())
-            print(result.quality_status)
-        return EXIT_SUCCESS
-
     if args.command == "validate":
         result = validate_package(args.package)
         if args.json:

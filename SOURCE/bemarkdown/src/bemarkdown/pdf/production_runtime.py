@@ -60,8 +60,12 @@ class ProductionPdfRuntime:
         page_renderer: ProductionPdfPageRenderer | None = None,
         fusion_strategy: Mapping[str, Any] | None = None,
         page_escalation_strategy: Mapping[str, Any] | None = None,
+        review_ledger: Any = None,
+        native_backend_factory=None,
     ) -> None:
         self.layout_runtime_factory = layout_runtime_factory
+        self.review_ledger = review_ledger
+        self.native_backend_factory = native_backend_factory
         self._prepared_layout_runtime = None
         self.pipeline_factory = pipeline_factory or ModularPdfPipeline
         self.page_renderer = page_renderer or ProductionPdfPageRenderer()
@@ -91,6 +95,23 @@ class ProductionPdfRuntime:
             unload()
 
     def convert(
+        self,
+        source: str | Path,
+        output_dir: str | Path,
+        *,
+        document_id: str,
+        debug: bool = False,
+    ) -> PdfPayloadConversionResult:
+        try:
+            return self._convert(source, output_dir, document_id=document_id, debug=debug)
+        finally:
+            try:
+                self.close_prepared_resources()
+            finally:
+                if self.native_backend_factory is not None:
+                    self.native_backend_factory.close_active()
+
+    def _convert(
         self,
         source: str | Path,
         output_dir: str | Path,
@@ -166,6 +187,7 @@ class ProductionPdfRuntime:
             layout_unload=layout_unload,
             elapsed=time.perf_counter() - started,
             debug=debug,
+            review_ledger=self.review_ledger,
         )
         shutil.rmtree(work_root)
         return PdfPayloadConversionResult(source, output_dir, report)
@@ -186,6 +208,9 @@ class RegistryBackedThreeModelTextResolver:
         fraction_repair: bool = False,
         inline_atomic_superscripts: bool = True,
         independent_source_pages: bool = False,
+        routing_policy=None,
+        serial_model_stages: bool | None = None,
+        native_backend_factory=None,
     ) -> None:
         self.work_root = Path(work_root).resolve()
         self.models_root = models_root
@@ -196,6 +221,15 @@ class RegistryBackedThreeModelTextResolver:
         self.fraction_repair = fraction_repair
         self.inline_atomic_superscripts = inline_atomic_superscripts
         self.independent_source_pages = independent_source_pages
+        self.routing_policy = routing_policy
+        from ..resource_profiles import resource_profile
+        bounded = resource_profile().name == '6gb'
+        self.serial_model_stages = bounded or bool(serial_model_stages)
+        if native_backend_factory is None and bounded:
+            from ..isolated_native_backends import NativeBackendFactory
+            native_backend_factory = NativeBackendFactory(
+                models_root=models_root, config_path=config_path, mcp_root=mcp_root)
+        self.native_backend_factory = native_backend_factory
 
     def _recognize_provider_a(self, runtime, plans, crops_by_route):
         groups = []
@@ -285,7 +319,7 @@ class RegistryBackedThreeModelTextResolver:
 
         for crop in crops_by_route.values():
             Path(str(crop["path"])).resolve().relative_to(self.work_root)
-        provider_a_runtime = PaddleXPdfOcrRuntime(
+        provider_a_runtime = self.native_backend_factory.ocr() if self.native_backend_factory is not None else PaddleXPdfOcrRuntime(
             models_root=self.models_root,
             config_path=self.config_path,
             mcp_root=self.mcp_root,
@@ -358,7 +392,7 @@ class RegistryBackedThreeModelTextResolver:
         from .figure_symbols import select_figure_math_requests
         from .production_three_model_live import _generative_evidence
         formula_factory = (lambda: formula_runtime) if formula_runtime is not None else (
-            lambda: create_production_formulanet_runtime(
+            self.native_backend_factory.formula if self.native_backend_factory is not None else lambda: create_production_formulanet_runtime(
                 models_root=self.models_root, config_path=self.config_path, mcp_root=self.mcp_root))
         from .inline_math_runtime import InlineMathSession
         inline = InlineMathSession(self.work_root, outputs_by_route,
@@ -382,14 +416,17 @@ class RegistryBackedThreeModelTextResolver:
         with ThreadPoolExecutor(max_workers=1, thread_name_prefix='figure-formula') as pool:
             pending = FigureMathPrefetch(requests, formula_factory, pool,
                 select_requests=lambda values: select_figure_math_requests(values, evidence_b),
-                caller_thread_prediction=formula_runtime is not None)
+                caller_thread_prediction=self.serial_model_stages or formula_runtime is not None)
+            if self.serial_model_stages:pending.batch_size=1
             from .adaptive_ocr_live import AdaptiveThreeModelComposition
             staged = AdaptiveThreeModelComposition(
                 provider_a,
                 CurrentRunRecognitionStageProvider("B_OVIS_OCR2", run_b),
-                CurrentRunGenerativeStageProvider("C_XIAOMI_OCR_0", pending.overlap_runner(text_runner)),
+                CurrentRunGenerativeStageProvider("C_XIAOMI_OCR_0", text_runner if self.serial_model_stages else pending.overlap_runner(text_runner)),
+                policy=self.routing_policy,
             ).resolve(plans=resolution_plans, crops_by_route=crops_by_route)
             prefetched = pending.result()
+            staged.metrics['serial_model_stages'] = self.serial_model_stages
             if inline is not None:
                 inline.flush(fraction_runner)
                 inline.apply(staged.provenance_by_route, formula_factory)
@@ -428,12 +465,21 @@ def create_production_pdf_runtime(
     text_runtime_resolver_factory: Callable[[Path], Any] | None = None,
     table_evidence_provider_factory: Callable[[Path], Any] | None = None,
     formula_runtime_factory: Callable[[], Any] | None = None,
+    native_backend_factory=None,
 ) -> ProductionPdfRuntime:
     """Build the formal registry-backed PDF runtime without Developer paths."""
+
+    from ..resource_profiles import resource_profile
+    if native_backend_factory is None and resource_profile().name == '6gb':
+        from ..isolated_native_backends import NativeBackendFactory
+        native_backend_factory = NativeBackendFactory(
+            models_root=models_root, config_path=config_path, mcp_root=mcp_root)
 
     def make_layout_runtime() -> Any:
         if layout_runtime_factory is not None:
             return layout_runtime_factory()
+        if native_backend_factory is not None:
+            return native_backend_factory.layout(capture_floor=CAPTURE_FLOOR)
         return FormalPaddleLayoutRuntime(
             models_root=models_root,
             config_path=config_path,
@@ -449,21 +495,28 @@ def create_production_pdf_runtime(
                 config_path=config_path,
                 mcp_root=mcp_root,
                 independent_source_pages=independent_source_pages,
+                native_backend_factory=native_backend_factory,
             )
         else:
             text_resolver = text_runtime_resolver_factory(work_root)
         if table_evidence_provider_factory is not None:
             table_provider = table_evidence_provider_factory(work_root)
         else:
-            from .table_runtime import RegistryBackedTableEvidenceProvider
-
-            table_provider = RegistryBackedTableEvidenceProvider(
-                work_root, models_root=models_root, config_path=config_path, mcp_root=mcp_root,
-            )
+            if native_backend_factory is not None:
+                from .table_staged_runtime import StagedTableEvidenceProvider
+                table_provider = StagedTableEvidenceProvider(
+                    work_root, models_root=models_root, config_path=config_path, mcp_root=mcp_root,
+                    before_stages=native_backend_factory.close_active)
+            else:
+                from .table_runtime import RegistryBackedTableEvidenceProvider
+                table_provider = RegistryBackedTableEvidenceProvider(
+                    work_root, models_root=models_root, config_path=config_path, mcp_root=mcp_root)
 
         def make_formula_runtime() -> Any:
             if formula_runtime_factory is not None:
                 return formula_runtime_factory()
+            if native_backend_factory is not None:
+                return native_backend_factory.formula(deep_model_validation=True)
             from ..formula_ocr import create_production_formulanet_runtime
 
             return create_production_formulanet_runtime(
@@ -484,6 +537,7 @@ def create_production_pdf_runtime(
     return ProductionPdfRuntime(
         layout_runtime_factory=make_layout_runtime,
         pipeline_factory=make_pipeline,
+        native_backend_factory=native_backend_factory,
     )
 
 
@@ -599,6 +653,7 @@ def _write_pdf_payload(
     layout_unload: Mapping[str, Any],
     elapsed: float,
     debug: bool,
+    review_ledger: Any = None,
 ) -> dict[str, Any]:
     document = copy.deepcopy(pipeline_result.document)
     from ..blank_images import prune_pdf
@@ -640,7 +695,26 @@ def _write_pdf_payload(
         elapsed=elapsed,
     )
     report["markdown_render"] = {key: value for key, value in rendered.items() if key != "markdown"}
+    snapshot = output_dir / '_bemarkdown/review_source.pdf'
+    snapshot.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(source, snapshot)
+    with snapshot.open('rb') as snapshot_stream:
+        if hashlib.file_digest(snapshot_stream, 'sha256').hexdigest() != report['source']['sha256']:
+            raise RuntimeError('SCREENING_REVIEW_SOURCE_CHANGED')
+    from ..selective_review import write_review_plan
+    review_plan = write_review_plan(
+        document, rendered, root=output_dir,
+        asset_ref_map={asset['asset_uid']:document_asset_presentation_ref(asset) for asset in document.get('assets', [])},
+        source_path=source, ledger=review_ledger,
+    )
+    report['selective_review'] = {'schema':review_plan['schema'], 'path':'review_plan.json',
+                                'sha256':hashlib.sha256((output_dir/'review_plan.json').read_bytes()).hexdigest(),
+                                'summary':review_plan['summary']}
     report['blank_images_removed'] = blank_images_removed
+    # Required by the post-OCR screening stage even when verbose debug is off.
+    from ..file_handoff import atomic_write_text
+    atomic_write_text(output_dir / '_bemarkdown/document_ir.json',
+                      json.dumps(pipeline_result.portable_document_ir, ensure_ascii=False, indent=2) + '\n')
     report["assets"]["non_content_source_assets"] = len(document.get("assets", [])) - len(asset_rows)
     (output_dir / "conversion_report.json").write_text(
         json.dumps(report, ensure_ascii=False, indent=2),

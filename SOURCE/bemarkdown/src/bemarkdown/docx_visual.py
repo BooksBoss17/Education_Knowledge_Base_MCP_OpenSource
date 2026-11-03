@@ -129,6 +129,21 @@ def convert_visual_docx(source: Path, output_dir: Path, *, profile: dict[str, An
             shutil.copyfile(pdf, pagination_copy)
             render['debug_pagination_ref'] = 'debug/source-pagination.pdf'
         report = result.report
+        review_path=output_dir/'review_plan.json'
+        if review_path.is_file():
+            from .selective_review import bind_original_image, reuse_review_plan
+            review_source=output_dir/'_bemarkdown/review_source.pdf'
+            review_source.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copyfile(pdf,review_source)
+            reference={'path':'_bemarkdown/review_source.pdf','sha256':hashlib.sha256(review_source.read_bytes()).hexdigest()}
+            review_plan=bind_original_image(json.loads(review_path.read_text(encoding='utf-8')),source,
+                                            {'route':'DOCX_SCREENSHOT_PDF','pdf_sha256':reference['sha256']},
+                                            source_type='DOCX',page_render_reference=reference)
+            ledger=getattr(pdf_runtime,'review_ledger',None)
+            if ledger is not None:review_plan=reuse_review_plan(review_plan,ledger,root=output_dir)
+            review_path.write_text(json.dumps(review_plan,ensure_ascii=False,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+            report['selective_review']={'schema':review_plan['schema'],'path':'review_plan.json',
+                                        'sha256':hashlib.sha256(review_path.read_bytes()).hexdigest(),'summary':review_plan['summary']}
         intermediate = dict(report['source'])
         report['source'] = {'type': 'DOCX', 'path': str(source), 'file_name': source.name,
                             'size_bytes': source.stat().st_size,

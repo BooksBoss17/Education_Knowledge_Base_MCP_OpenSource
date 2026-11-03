@@ -282,6 +282,7 @@ def exclude_native_text(
     regions: Iterable[NonTextOwnershipRegion],
     *,
     coverage_threshold: float = 0.8,
+    preserve_image_owned_line_ids: Iterable[str] = (),
 ) -> NativeTextExclusionResult:
     """Exclude source spans fully owned by materialized non-text content."""
 
@@ -299,6 +300,7 @@ def exclude_native_text(
         )
     )
     source_rows = tuple(copy.deepcopy(row) for row in rows)
+    preserve_image_owned_line_ids = frozenset(preserve_image_owned_line_ids)
     if not ordered_regions:
         return NativeTextExclusionResult(
             rows=source_rows,
@@ -313,6 +315,10 @@ def exclude_native_text(
     excluded = []
     partial = []
     for row in source_rows:
+        # A source-backed canonical paragraph may also need a text consumer.
+        # Only IMAGE ownership is bypassed; formula/table ownership still wins.
+        applicable_regions = (tuple(region for region in ordered_regions if region.kind != 'IMAGE')
+                              if row.get('evidence_id') in preserve_image_owned_line_ids else ordered_regions)
         source_spans = list(row.get("spans") or [])
         has_span_geometry = bool(source_spans)
         spans = source_spans or [
@@ -340,7 +346,7 @@ def exclude_native_text(
                     and isinstance(ink, (list, tuple)) and len(ink) == 4
                     and all(math.isfinite(float(v)) for v in ink)
                     and ink[0] < ink[2] and ink[1] < ink[3]):
-                image_owner = next((region for region in ordered_regions
+                image_owner = next((region for region in applicable_regions
                     if region.kind == "IMAGE"
                     and _intersection(bbox, region.bbox_pdf_pt) is not None
                     and region.bbox_pdf_pt[0] <= ink[0]
@@ -360,7 +366,7 @@ def exclude_native_text(
             direct_owner = next(
                 (
                     region
-                    for region in ordered_regions
+                    for region in applicable_regions
                     if str(span.get("owner_content_id") or "")
                     == region.owner_content_id
                     or str(span.get("owner_route_id") or "") == region.owner_route_id
@@ -404,7 +410,7 @@ def exclude_native_text(
                 trace["owner_cluster_span_count"] = cluster_span_count
                 excluded.append(trace)
                 continue
-            axis_owner = _formula_axis_aware_span_owner(bbox, ordered_regions)
+            axis_owner = _formula_axis_aware_span_owner(bbox, applicable_regions)
             if axis_owner is not None:
                 region, span_coverage, horizontal_coverage = axis_owner
                 trace = _native_overlap_trace(
@@ -421,7 +427,7 @@ def exclude_native_text(
                 excluded.append(trace)
                 continue
             candidates = []
-            for region in ordered_regions:
+            for region in applicable_regions:
                 intersection = _intersection(bbox, region.bbox_pdf_pt)
                 if intersection is None:
                     continue

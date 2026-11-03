@@ -18,6 +18,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .config import resolve_output_root
+from .file_handoff import replace_path
+from .delivery_stage import artifact_delivery_stage
 from .mtef_cache import MtefCacheContext
 from .package import DocxResourceLimits, validate_docx_source
 from .pipeline import convert_docx
@@ -237,6 +239,10 @@ class PackageValidator:
                 "assets_manifest": "assets_manifest.jsonl",
                 "conversion_report": "conversion_report.json",
             }
+            if isinstance(manifest.get('artifacts'), dict) and 'review_plan' in manifest['artifacts']:
+                expected_artifacts['review_plan']='review_plan.json'
+                if 'review_source_pdf' in manifest['artifacts']:
+                    expected_artifacts['review_source_pdf']='_bemarkdown/review_source.pdf'
             if manifest.get("artifacts") != expected_artifacts:
                 errors.append("Package artifact map is not canonical")
             integrity = manifest.get("integrity", {})
@@ -245,10 +251,29 @@ class PackageValidator:
                 "assets_manifest_sha256": "assets_manifest.jsonl",
                 "conversion_report_sha256": "conversion_report.json",
             }
+            if 'review_plan' in expected_artifacts:
+                integrity_keys['review_plan_sha256']='review_plan.json'
+                if not (package_path/'review_plan.json').is_file():
+                    errors.append('Required artifact is missing: review_plan.json')
+            if 'review_source_pdf' in expected_artifacts:
+                integrity_keys['review_source_pdf_sha256']='_bemarkdown/review_source.pdf'
+                if not (package_path/'_bemarkdown/review_source.pdf').is_file():
+                    errors.append('Required artifact is missing: review source PDF')
             for key, name in integrity_keys.items():
                 path = package_path / name
                 if path.is_file() and integrity.get(key) != _sha256_file(path):
                     errors.append(f"{name} SHA-256 does not match package manifest")
+            if 'delivery_stage' in manifest:
+                try:
+                    expected_stage = artifact_delivery_stage(
+                        package_path, integrity_keys.values(),
+                        source_sha256=(manifest.get('source') or {}).get('sha256'),
+                        scope='CONVERTER_ARTIFACTS',
+                    )
+                    if manifest['delivery_stage'] != expected_stage:
+                        errors.append('Delivery stage does not match converter artifact evidence')
+                except (OSError, ValueError, AttributeError):
+                    errors.append('Delivery stage artifacts unavailable')
         return PackageValidationResult(
             package_path,
             not errors,
@@ -351,6 +376,7 @@ def convert_document(
     pdf_runtime_factory=None,
     pdf_formula_runtime_factory=None,
     pdf_formula_runtime_owner=None,
+    completion_adapter=None,
 ) -> PackageConversionResult:
     source = Path(source).resolve()
     if docx_image_route not in {"original", "pagination"}:
@@ -391,6 +417,12 @@ def convert_document(
     staging = staging_job / document_id
     staging.mkdir()
     validator = validator or PackageValidator()
+    from .resource_profiles import resource_profile
+    native_backend_factory = None
+    if resource_profile().name == '6gb':
+        from .isolated_native_backends import NativeBackendFactory
+        native_backend_factory = NativeBackendFactory(
+            models_root=models_root, config_path=config_path, mcp_root=mcp_root)
     if (
         source_type == "DOCX"
         and formula_ocr == "auto"
@@ -402,7 +434,7 @@ def convert_document(
         )
 
         formula_ocr_adapter = FormulaOcrAdapter(
-            runtime_factory=lambda: create_production_formulanet_runtime(
+            runtime_factory=native_backend_factory.formula if native_backend_factory is not None else lambda: create_production_formulanet_runtime(
                 models_root=models_root,
                 config_path=config_path,
                 mcp_root=mcp_root,
@@ -424,7 +456,8 @@ def convert_document(
                 from .docx_image_content import DocxImageContentAdapter
 
                 figure_text_adapter = DocxImageContentAdapter(
-                    models_root=models_root, config_path=config_path, mcp_root=mcp_root)
+                    models_root=models_root, config_path=config_path, mcp_root=mcp_root,
+                    native_backend_factory=native_backend_factory)
             result = convert_docx(
                 source,
                 staging,
@@ -456,7 +489,9 @@ def convert_document(
                 from .pdf.production_runtime import create_production_pdf_runtime
 
                 pdf_options = {'models_root': models_root, 'config_path': config_path, 'mcp_root': mcp_root}
-                if pdf_formula_runtime_factory is None and pdf_formula_runtime_owner is not None:
+                pdf_options['native_backend_factory'] = native_backend_factory
+                if (native_backend_factory is None and pdf_formula_runtime_factory is None
+                        and pdf_formula_runtime_owner is not None):
                     from .formula_ocr import create_production_formulanet_runtime
 
                     pdf_formula_runtime_factory = lambda: create_production_formulanet_runtime(
@@ -485,6 +520,9 @@ def convert_document(
         from .resource_profiles import resource_profile
         result.report.setdefault('runtime', {})['resource_profile'] = resource_profile().to_dict()
         _write_json(staging / 'conversion_report.json', result.report)
+        if completion_adapter is not None:
+            completion_adapter.complete(source, staging, result.report)
+            _write_json(staging / 'conversion_report.json', result.report)
         validator.require_payload_valid(staging)
         manifest = _package_manifest(
             document_id,
@@ -501,9 +539,12 @@ def convert_document(
             staging_job.rmdir()
         except OSError:
             LOGGER.warning("Published package but could not remove empty job dir %s", staging_job)
-    except Exception as exc:
+    except BaseException as exc:
         _record_failure(staging_job, document_id, source, source_sha, exc)
         raise
+    finally:
+        if native_backend_factory is not None:
+            native_backend_factory.close_active()
 
     report = result.report
     review_items = _review_item_count(report)
@@ -550,7 +591,7 @@ def cleanup_staging(
 def _package_manifest(
     document_id, source, source_sha, report, staging, *, source_type="DOCX"
 ):
-    return {
+    manifest = {
         "package_contract": PACKAGE_CONTRACT,
         "document_id": document_id,
         "source": {"type": source_type, "name": source.name, "sha256": source_sha},
@@ -571,7 +612,20 @@ def _package_manifest(
             ),
         },
         "complete": True,
+        "delivery_stage": artifact_delivery_stage(
+            staging, ('document.md', 'assets_manifest.jsonl', 'conversion_report.json'),
+            source_sha256=source_sha, scope='CONVERTER_ARTIFACTS',
+        ),
     }
+    if (staging/'review_plan.json').is_file():
+        manifest['artifacts']['review_plan']='review_plan.json'
+        manifest['integrity']['review_plan_sha256']=_sha256_file(staging/'review_plan.json')
+        if (staging/'_bemarkdown/review_source.pdf').is_file():
+            manifest['artifacts']['review_source_pdf']='_bemarkdown/review_source.pdf'
+            manifest['integrity']['review_source_pdf_sha256']=_sha256_file(staging/'_bemarkdown/review_source.pdf')
+        manifest['delivery_stage']=artifact_delivery_stage(
+            staging, manifest['artifacts'].values(), source_sha256=source_sha, scope='CONVERTER_ARTIFACTS')
+    return manifest
 
 
 def _publish_staged(staging: Path, final_path: Path, *, replace: bool) -> None:
@@ -580,16 +634,16 @@ def _publish_staged(staging: Path, final_path: Path, *, replace: bool) -> None:
         if not replace:
             raise ExistingPackageError(f"Package already exists: {final_path}")
         try:
-            os.replace(final_path, backup)
+            replace_path(final_path, backup)
         except OSError as exc:
             raise PackageValidationError(
                 f"Package publish could not stage the previous package: {exc}"
             ) from exc
         try:
-            os.replace(staging, final_path)
+            replace_path(staging, final_path)
         except OSError as exc:
             try:
-                os.replace(backup, final_path)
+                replace_path(backup, final_path)
             except OSError as rollback_exc:
                 raise PackageValidationError(
                     f"Package publish failed and rollback failed: {exc}; {rollback_exc}"
@@ -606,7 +660,7 @@ def _publish_staged(staging: Path, final_path: Path, *, replace: bool) -> None:
                 )
         return
     try:
-        os.replace(staging, final_path)
+        replace_path(staging, final_path)
     except OSError as exc:
         raise PackageValidationError(f"Package publish failed: {exc}") from exc
 

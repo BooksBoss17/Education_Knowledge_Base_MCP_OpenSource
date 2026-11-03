@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from .formula import FormulaConversion
+from .delivery_stage import artifact_delivery_stage
 from .pdf_document_ir import (
     OutputAuditPatchEngine,
     _render_block,
@@ -978,6 +979,33 @@ class CleanHandoffRenderer:
         return "[Unresolved source content]", None
 
 
+def _handoff_review_evidence(block: dict[str, Any]) -> dict[str, Any]:
+    """Keep uncertainty inspectable without exposing it as textbook prose."""
+    provenance = block.get('provenance', {})
+    route = provenance.get('route_provenance', {})
+    ordering = route.get('ordering_atom_projection', {})
+    return {
+        'schema': 'bemarkdown-handoff-review-evidence-v1',
+        'review_reasons': copy.deepcopy(provenance.get('review_reasons', [])),
+        'warnings': copy.deepcopy(provenance.get('warnings', [])),
+        'payload_sha256': {
+            key: hashlib.sha256(value.encode('utf-8')).hexdigest()
+            for key in ('text', 'latex')
+            if isinstance((value := block.get('content', {}).get(key)), str)
+        },
+        'table_ir_sha256': (
+            semantic_sha256(block['content']['table_ir'])
+            if block.get('content', {}).get('table_ir') is not None else None
+        ),
+        'ordering': {
+            key: copy.deepcopy(ordering[key])
+            for key in ('contract_version', 'atom_id', 'parent_content_id',
+                        'origin_type', 'atomicity_status', 'unresolved_reasons', 'column_order')
+            if key in ordering
+        },
+    }
+
+
 def project_handoff_document_ir(
     document: dict[str, Any], asset_ref_map: dict[str, str]
 ) -> list[dict[str, Any]]:
@@ -1048,6 +1076,7 @@ def project_handoff_document_ir(
                     "source_region_ids": copy.deepcopy(block.get("source_region_ids", [])),
                     "source_unit_ids": copy.deepcopy(block.get("source_unit_ids", [])),
                 },
+                "review_evidence": _handoff_review_evidence(block),
             }
         )
     return rows
@@ -1063,6 +1092,8 @@ class LeanHandoffPackager:
         target: str | Path,
         *,
         audit_status: str,
+        review_ledger: Any = None,
+        source_path: str | Path | None = None,
     ) -> dict[str, Any]:
         validate_document_ir(document)
         source_package = Path(source_package).resolve()
@@ -1118,6 +1149,10 @@ class LeanHandoffPackager:
             block.get("review_state") not in {None, "NONE"}
             for block in document.get("blocks", [])
         )
+        from .selective_review import write_review_plan
+        review_plan = write_review_plan(document, rendered, root=target, asset_ref_map=asset_ref_map,
+                                        source_path=source_path, ledger=review_ledger,
+                                        relative_path='_bemarkdown/review_plan.json')
         manifest = {
             "schema_version": self.schema,
             "document_id": document["document_id"],
@@ -1128,6 +1163,13 @@ class LeanHandoffPackager:
             "unresolved_count": unresolved_count,
             "markdown": "../document.md",
             "document_ir": "document_ir.jsonl",
+            "selective_review": {'path':'review_plan.json', 'summary':review_plan['summary']},
+            "delivery_stage": artifact_delivery_stage(
+                target,
+                ['document.md', '_bemarkdown/document_ir.jsonl', '_bemarkdown/review_plan.json', *asset_ref_map.values()],
+                source_sha256=document['source']['sha256'],
+                scope='HANDOFF_ARTIFACTS',
+            ),
         }
         (metadata_dir / "manifest.json").write_text(
             json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",

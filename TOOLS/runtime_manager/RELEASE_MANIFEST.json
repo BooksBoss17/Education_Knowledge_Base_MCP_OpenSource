@@ -1,10 +1,10 @@
 {
   "schema": "ekb-run-manager-release-v1",
   "files": {
-    "bootstrap.py": "fdb1d97025000fe51a72c6b0508f6225329f61ebba5ea5aab2e51466d0d7431c",
-    "native_gateway.py": "e5baf2211365eb03622adb81382f87c493105761cc85e1785cba03c77fec35cb",
-    "native_worker.py": "9a1fecc684c7acdfff53643d94e3ea1da32d4a13960dbcfbcdc5593cd017ac4f",
-    "package_binding.py": "2e04c09956cdcd01f949756b023a0eaa29bfa1d3d242dc892792b600b34785cf",
+    "bootstrap.py": "588f8cd099d39ba481667f0ae92321dceff560ed4449cca48c77472e21fc7dcb",
+    "native_gateway.py": "c4cbe01e80baa516204e7885e050ce3204d9a89a5a9b77a738e92af6bb803409",
+    "native_worker.py": "d5235752c836a6b59b0d98b5437d3f4cd282ecef61d411d578b03b80a9759a7c",
+    "package_binding.py": "45920c0227e6a3ec97b97db0c819194da779f28711faf4f7bdcf24a9b4c4b3e5",
     "README.md": "42aaa1d3e2b2a7e6895317a93f45799fa267d1a93ca6d844065da1f9eaedd7ca",
     "src/ekb_model_runtime/cli.py": "488836318a6829087c40c0599cbb887c6c4dbe9e4ffac8a2bee6610cfde301f4",
     "src/ekb_model_runtime/doctor.py": "6fab42836acf8a16614675a068a3ceb5e9023c87e082927c992c4e0bd9f5eb91",
@@ -36,5 +36,7 @@
     "classifier_guard": "EXISTING_FROZEN_SEMANTIC_SUPERVISOR_AFTER_OCR_EXIT"
   },
   "public_release_id": "bemarkdown-managed-screening-20261016-v3",
-  "distribution_scope": "PUBLIC"
+  "distribution_scope": "PUBLIC",
+  "unified_release_id": "bemarkdown-unified-20261104-v1",
+  "release_id": "bemarkdown-unified-20261104-v1"
 }

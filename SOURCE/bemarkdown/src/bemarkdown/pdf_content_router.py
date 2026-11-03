@@ -130,6 +130,11 @@ class PdfContentAdapterExecutor:
     def prepare_formula_batch(self, plans: Sequence[dict[str, Any]]) -> None:
         """Recognize independent formula crops in existing safe size buckets."""
         from .production_runtime import FormulaBatchPlanner
+        import os
+
+        visual_limit = os.environ.get('BEMARKDOWN_FORMULA_VISUAL_BATCH_LIMIT')
+        if visual_limit not in (None, '1'):
+            raise ValueError('FORMULA_VISUAL_BATCH_LIMIT_MUST_BE_ONE_OR_UNSET')
 
         started = time.perf_counter()
         entries = []
@@ -158,7 +163,7 @@ class PdfContentAdapterExecutor:
         if runtime is not None:
             for group in FormulaBatchPlanner().plan(entries):
                 items = group["items"]
-                batch_size = min(group["batch_size"], len(items))
+                batch_size = 1 if visual_limit == '1' else min(group["batch_size"], len(items))
                 record = {"bucket": group["bucket"], "batch_size": batch_size, "count": len(items)}
                 try:
                     outputs = list(runtime.predict([Path(item["path"]) for item in items], batch_size=batch_size))
@@ -173,6 +178,7 @@ class PdfContentAdapterExecutor:
         elapsed = time.perf_counter()-started
         self.stats["adapter_seconds"]["FORMULA_RECOGNITION"] = self.stats["adapter_seconds"].get("FORMULA_RECOGNITION", 0.0) + elapsed
         self.stats["formula_batch_execution"] = {"prepared": len(entries), "prefetched": len(self._formula_predictions),
+                                                  "visual_batch_limit": 1 if visual_limit == '1' else None,
                                                   "groups": groups, "preparation_errors": preparation_errors}
         release_workspace = getattr(runtime, "release_workspace", None)
         if callable(release_workspace):
@@ -232,7 +238,27 @@ class PdfContentAdapterExecutor:
             ownership.regions,
             coverage_threshold=NATIVE_NON_TEXT_COVERAGE_THRESHOLD,
         )
+        from .pdf.native_prose_consumers import native_prose_candidates
+
+        prose_candidates = native_prose_candidates(plan, source_evidence)
+        image_conflicts = [trace for trace in native_exclusion.excluded_spans
+                           if trace.get('owner_kind') == 'IMAGE'
+                           and trace.get('source_line_id') in prose_candidates]
+        conflicting_ids = {trace['source_line_id'] for trace in image_conflicts}
+        if conflicting_ids:
+            native_exclusion = exclude_native_text(
+                source_evidence.get('native_text', []), ownership.regions,
+                coverage_threshold=NATIVE_NON_TEXT_COVERAGE_THRESHOLD,
+                preserve_image_owned_line_ids=conflicting_ids,
+            )
         effective_source_evidence = copy.deepcopy(source_evidence)
+        # Do not accept caller-injected or stale consumer claims.
+        effective_source_evidence.pop('native_prose_consumer_claims', None)
+        effective_source_evidence.pop('native_prose_image_conflicts', None)
+        if conflicting_ids:
+            effective_source_evidence['native_prose_consumer_claims'] = {
+                identity: prose_candidates[identity] for identity in sorted(conflicting_ids)}
+            effective_source_evidence['native_prose_image_conflicts'] = image_conflicts
         effective_source_evidence["native_text"] = list(native_exclusion.rows)
         retained_line_ids = {row["evidence_id"] for row in native_exclusion.rows}
         effective_source_evidence["fully_excluded_native_lines"] = [
@@ -326,13 +352,18 @@ class PdfContentAdapterExecutor:
         ownership = state["ownership"]
         native_exclusion = state["native_exclusion"]
         effective_source_evidence = state["effective_source_evidence"]
+        native_consumer_evidence = dict(source_evidence)
+        for key in ('native_prose_consumer_claims', 'native_prose_image_conflicts'):
+            native_consumer_evidence.pop(key, None)
+            if key in effective_source_evidence:
+                native_consumer_evidence[key] = effective_source_evidence[key]
         stage_trace = list(state["execution_stage_trace"])
         self._active_ownership_regions = ownership.regions
         prepared_inputs = prepared_inputs or {}
         for route in text_routes:
             rows_by_route[str(route["route_id"])] = self._execute_route(
                 route,
-                source_evidence,
+                native_consumer_evidence if route['adapter'] == 'NATIVE_TEXT_BRIDGE' else source_evidence,
                 prepared_input=prepared_inputs.get(str(route["route_id"])),
             )
         stage_trace.append(
@@ -598,6 +629,7 @@ class PdfContentAdapterExecutor:
             rows,
             ownership_regions,
             coverage_threshold=NATIVE_NON_TEXT_COVERAGE_THRESHOLD,
+            preserve_image_owned_line_ids=source_evidence.get('native_prose_consumer_claims', {}),
         )
         rows = list(exclusion.rows)
         if not rows:
@@ -623,9 +655,11 @@ class PdfContentAdapterExecutor:
             normalized.append(value.replace("\r\n", "\n").replace("\r", "\n"))
         normalizations.append("JOIN_SOURCE_LINES_WITH_LF")
         text = "\n".join(normalized)
+        prose_claims = {row['evidence_id']: source_evidence['native_prose_consumer_claims'][row['evidence_id']]
+                        for row in rows if row['evidence_id'] in source_evidence.get('native_prose_consumer_claims', {})}
         return self._content(
             route,
-            status="SUCCESS" if text else "REVIEW_REQUIRED",
+            status="SUCCESS" if text and not prose_claims else "REVIEW_REQUIRED",
             text=text,
             confidence=None,
             provenance={
@@ -657,11 +691,28 @@ class PdfContentAdapterExecutor:
                 "native_excluded_spans": list(exclusion.excluded_spans),
                 "partial_native_non_text_overlaps": list(exclusion.partial_overlaps),
                 "native_exclusion_threshold": NATIVE_NON_TEXT_COVERAGE_THRESHOLD,
+                **({'native_prose_consumer_claims': prose_claims,
+                    'native_prose_image_conflicts': [trace for trace in source_evidence.get('native_prose_image_conflicts', [])
+                                                    if trace.get('source_line_id') in prose_claims]}
+                   if prose_claims else {}),
             },
-            review_reasons=[] if text else ["NATIVE_TEXT_EMPTY"],
+            review_reasons=(["NATIVE_PROSE_IMAGE_OWNERSHIP_CONFLICT"] if prose_claims else
+                            [] if text else ["NATIVE_TEXT_EMPTY"]),
         )
 
     def _ocr(self, route: dict[str, Any], crop: dict[str, Any]) -> dict[str, Any]:
+        result = self._recognize_ocr(route, crop)
+        retain_local_source = result.get('provenance', {}).get('three_model_text_evidence', {}).get('resolver', {}).get('preserve_source_image') is True
+        if retain_local_source or result.get('status') in {'REVIEW_REQUIRED', 'FAILED_PRESERVE_INPUT', 'DEFERRED'}:
+            # A pending text hypothesis is not permission to discard its pixels.
+            # Keep the exact supplied target crop, including when PP supplied
+            # unverified text which remains useful only as review provenance.
+            if not result.get('binary_artifact_ref'):
+                result['binary_artifact_ref'] = crop['path']
+            result.setdefault('provenance', {})['review_source_image_preserved'] = True
+        return result
+
+    def _recognize_ocr(self, route: dict[str, Any], crop: dict[str, Any]) -> dict[str, Any]:
         runtime = self._ensure_ocr()
         recognize_route = getattr(runtime, "recognize_route", None)
         baseline_lines = (
@@ -1909,6 +1960,8 @@ class PaddleXPdfOcrRuntime:
     def _ensure_loaded(self) -> None:
         if self._det_model is not None:
             return
+        from .stage_admission import require_stage_admission
+        require_stage_admission('pp-ocrv6')
         os.environ["PADDLE_PDX_DISABLE_DEVICE_FALLBACK"] = "True"
         os.environ["HF_HUB_OFFLINE"] = "1"
         os.environ["TRANSFORMERS_OFFLINE"] = "1"
@@ -2267,6 +2320,10 @@ def _candidate_route(
             and profile not in {"IMAGE_ONLY", "IMAGE_WITH_TEXT_LAYER"}
             and bool(candidate.get("source_unit_ids") or native_rows)
         )
+        index_confirmed = safe_native and _native_index_evidence(
+            page_record, source_evidence, native_rows,
+            page_height=float(fusion_page.get('page_geometry', {}).get('height_pt') or 0),
+        )
         return _route_item(
             fusion_page=fusion_page,
             page_record=page_record,
@@ -2274,7 +2331,8 @@ def _candidate_route(
             adapter="NATIVE_TEXT_BRIDGE" if safe_native else "OCR_TEXT_REGION",
             output_kind="TEXT",
             reason_codes=(
-                ["TRUSTED_NATIVE_TEXT_WITH_COMPLETE_MAPPING"]
+                (["TRUSTED_NATIVE_TEXT_WITH_COMPLETE_MAPPING", "NATIVE_INDEX_HEADING_AND_ENTRIES_CONFIRMED"]
+                 if index_confirmed else ["TRUSTED_NATIVE_TEXT_WITH_COMPLETE_MAPPING"])
                 if safe_native
                 else ["NATIVE_TEXT_UNTRUSTED_OR_UNMAPPED", "LOCAL_VISUAL_TEXT_RECOVERY"]
             ),

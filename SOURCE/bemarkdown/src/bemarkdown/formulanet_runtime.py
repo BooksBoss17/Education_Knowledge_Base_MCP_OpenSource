@@ -188,6 +188,8 @@ class PaddleFormulaNetRuntime:
         model_revision: str | None = None,
         verified_model_inventory: dict[str, Any] | None = None,
     ) -> None:
+        from .stage_admission import require_stage_admission
+        require_stage_admission('pp-formulanet')
         os.environ["PADDLE_PDX_DISABLE_DEVICE_FALLBACK"] = "True"
         from .paddlex_runtime import import_paddlex_for_paddle_provider
 

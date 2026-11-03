@@ -233,6 +233,8 @@ class FormalPaddleLayoutRuntime:
         if self._model is not None:
             assert self._identity is not None
             return dict(self._identity)
+        from .stage_admission import require_stage_admission
+        require_stage_admission('pp-doclayout')
         os.environ["PADDLE_PDX_DISABLE_DEVICE_FALLBACK"] = "True"
         os.environ["HF_HUB_OFFLINE"] = "1"
         os.environ["TRANSFORMERS_OFFLINE"] = "1"

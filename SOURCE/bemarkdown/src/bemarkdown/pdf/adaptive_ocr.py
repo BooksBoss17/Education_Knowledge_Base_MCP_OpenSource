@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass
 from difflib import SequenceMatcher
 from typing import Any, Mapping
 
-POLICY_VERSION = 'bemarkdown-pp-ovis-xiaomi-v3'
+POLICY_VERSION = 'bemarkdown-pp-ovis-xiaomi-v5-source-risk'
 _SYMBOLS = {'times':'×','cdot':'·','mu':'μ','Delta':'Δ','lambda':'λ','pi':'π',
             'alpha':'α','beta':'β','gamma':'γ','theta':'θ','rho':'ρ','Omega':'Ω',
             'le':'≤','leq':'≤','ge':'≥','geq':'≥','ne':'≠','neq':'≠','pm':'±',
@@ -26,6 +26,9 @@ def canonical(text: str) -> str:
     boundaries as the former linear slash normalization did.
     """
     text = unicodedata.normalize('NFC', str(text)).translate(_BRACKETS)
+    # Numeric degree notation has identical visible meaning in these renderings.
+    # Keep other scripts, symbolic exponents and ordinary punctuation untouched.
+    text = re.sub(r'(?<=\d)\s*\^\s*(?:\{\s*(?:\\circ\b|°)\s*\}|\\circ\b|°)', '°', text)
     text = re.sub(r'(?m)^\s{0,3}#{1,6}\s+', '', text)
     text = re.sub(r'(?m)^\s*```(?:latex|tex|markdown)?\s*$', '', text)
     text = re.sub(r'\\(?:begin|end)\{doc\}', '', text)
@@ -98,6 +101,8 @@ def anomalies(text: str, status: str = 'OK') -> tuple[str,...]:
     reasons=[]
     if status not in {'OK','PASS'}:reasons.append('NON_OK_OUTPUT')
     if not text.strip():reasons.append('EMPTY_OUTPUT')
+    if re.search(r'<\s*img\b|!\[[^\]\n]*\]\s*\(|\[Unresolved image:',text,re.I):
+        reasons.append('UNREQUESTED_IMAGE_REFERENCE')
     if any(s in text.lower() for s in ['\\begin{tikz','\\begin{document','i cannot','i am unable','无法识别图像']):
         reasons.append('UNREQUESTED_GENERATED_CONTENT')
     if re.search(r'(.{12,80})\1{3,}',text,re.S):reasons.append('REPEATED_OUTPUT')
@@ -180,6 +185,10 @@ class RoutingPolicy:
                     reasons.append('SECONDARY_PP_AGREEMENT_REVIEW')
             else:reasons.append('MODEL_DISAGREEMENT_REVIEW')
         if bad and selected=='OvisOCR2':reasons.extend(bad)
+        compact=canonical(text);plain=_plain(text)
+        if text.strip() and not re.search(r'[\u4e00-\u9fff]',compact) and (
+                len(compact)<=1 or 1<=len(plain)<=2):
+            reasons.append('ISOLATED_SYMBOL_SOURCE_REVIEW')
         review=any(r.endswith('REVIEW') for r in reasons) or (bool(bad) and selected=='OvisOCR2')
         return {'selected_model':selected,'selected_text':text,'review_required':review,
                 'review_reasons':reasons,'policy_fingerprint':self.fingerprint()}

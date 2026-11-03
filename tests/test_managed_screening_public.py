@@ -26,7 +26,7 @@ class PublicManagedContract(unittest.TestCase):
         service.python=Path(sys.executable);service.allowed=[];service.runtime_identity=None
         service.workspace_manager=SimpleNamespace(inspect=lambda:{'complete':True})
         service.vision=SimpleNamespace(status=lambda:{'verified':False})
-        with patch.object(runpy,'run_path',return_value={'configured_policy':callback}):return service.info()
+        with patch.object(runpy,'run_path',return_value={'configured_policy':callback,'engine_root':lambda _:Path(__import__('bemarkdown').__file__).parent}):return service.info()
 
     def test_info_remains_available_without_gpu_driver(self):
         def missing(_):raise OSError('NVML_DEVICE_ZERO_UNAVAILABLE')
@@ -50,15 +50,16 @@ class PublicManagedContract(unittest.TestCase):
             payload={
                 'TOOLS/bemarkdown/TOOL_MANIFEST.json':{'wheel':{'sha256':'a'*64}},
                 '.local/runtime-selection.json':{'status':'READY_FULL','wheel_sha256':'a'*64,'python':str(selected)},
-                'TOOLS/bemarkdown_optimized/HOST_MEMORY_POLICY.json':{'mode':'auto'},
+                'TOOLS/bemarkdown/HOST_MEMORY_POLICY.json':{'mode':'auto'},
             }
             for name,value in payload.items():
                 path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value),encoding='utf-8')
-            for name in ['TOOLS/bemarkdown_optimized/core/bemarkdown/host_memory_policy.py','TOOLS/runtime_manager/native_worker.py']:
+            for name in ['engine/bemarkdown/host_memory_policy.py','TOOLS/runtime_manager/native_worker.py']:
                 path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('# fixture\n',encoding='utf-8')
+            (root/'TOOLS/bemarkdown/engine.py').write_text("from pathlib import Path\ndef selected_python(tool):return Path("+repr(str(selected))+")\n",encoding='utf-8')
             target=root/'TOOLS/education_mcp/runtime_selection.py';target.parent.mkdir(parents=True)
             shutil.copyfile(ROOT/'TOOLS/education_mcp/runtime_selection.py',target)
-            with patch.object(bootstrap,'runtime',return_value=(root,root/'TOOLS/runtime_manager')),patch.dict(os.environ,{'LOCALAPPDATA':str(root/'local')}):
+            with patch.object(bootstrap,'runtime',return_value=(root,root/'TOOLS/runtime_manager')),patch.dict(os.environ,{'LOCALAPPDATA':str(root/'local')}),patch('subprocess.run',return_value=SimpleNamespace(stdout=json.dumps(str(root/'engine/bemarkdown/__init__.py')))):
                 _,programs=bootstrap.registry(root,Path('unused.exe'))
             self.assertEqual(Path(programs['native-convert']['python']),selected.resolve())
             self.assertNotIn('semantic-retention',programs)
@@ -74,11 +75,11 @@ class PublicManagedContract(unittest.TestCase):
                 self.assertEqual(bootstrap.runtime_config(tool),value)
 
     def test_installed_native_inventory_verifies(self):
-        gateway=module('public_native',ROOT/'TOOLS/bemarkdown_optimized/convert.py')
-        self.assertTrue(gateway.verified_payload(ROOT/'TOOLS/bemarkdown_optimized')['image_screening']['default'])
+        gateway=module('public_native',ROOT/'TOOLS/bemarkdown/convert.py')
+        self.assertTrue(gateway.verified_payload(ROOT/'TOOLS/bemarkdown')['image_screening']['default'])
 
     def test_managed_entrypoints_compile_on_python_311(self):
-        for part in ['runtime_manager','education_mcp','bemarkdown_optimized/core']:
+        for part in ['runtime_manager','education_mcp','bemarkdown']:
             for path in (ROOT/'TOOLS'/part).rglob('*.py'):
                 ast.parse(path.read_text(encoding='utf-8'),filename=str(path))
 
@@ -99,7 +100,8 @@ class PublicManagedContract(unittest.TestCase):
                 for child in value.values():check(child)
             elif isinstance(value,list):
                 for child in value:check(child)
-        for path in (ROOT/'TOOLS/bemarkdown_optimized').rglob('RESOURCE_FORECASTS_6GB.json'):
-            check(json.loads(path.read_text(encoding='utf-8')))
+        paths=list((ROOT/'SOURCE/bemarkdown/src').rglob('RESOURCE_FORECASTS_6GB.json'))
+        self.assertEqual(len(paths),1)
+        for path in paths:check(json.loads(path.read_text(encoding='utf-8')))
 
 if __name__=='__main__':unittest.main()

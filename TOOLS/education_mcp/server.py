@@ -183,9 +183,9 @@ class Service:
 
     def info(self):
         manifest = json.loads((self.mcp_root / "TOOLS/bemarkdown/TOOL_MANIFEST.json").read_text(encoding="utf-8"))
-        ram_path=self.mcp_root / "TOOLS/bemarkdown_optimized/core/bemarkdown/host_memory_policy.py"
+        ram_path=runpy.run_path(str(self.mcp_root / "TOOLS/bemarkdown/engine.py"))["engine_root"](self.mcp_root / "TOOLS/bemarkdown") / "host_memory_policy.py"
         try:
-            host_ram_policy=runpy.run_path(str(ram_path))["configured_policy"](ram_path.parents[2]) if ram_path.is_file() else None
+            host_ram_policy=runpy.run_path(str(ram_path))["configured_policy"](self.mcp_root / "TOOLS/bemarkdown") if ram_path.is_file() else None
         except OSError as error:
             # Read-only inspection remains available without NVIDIA drivers.
             # Task execution still uses the unchanged fail-closed admission.
@@ -194,7 +194,7 @@ class Service:
         return dict(host_memory_policy=host_ram_policy, server_version=VERSION, workspace=str(self.workspace), output_root=str(self.output),
                     workspace_check=self.workspace_manager.inspect(),
                     models_root=str(self.mcp_root / "MODELS"), python=str(self.python),
-                    tool_version=manifest.get("tool_version", manifest.get("version")), wheel_sha256=manifest["wheel"]["sha256"],
+                    engine_release=json.loads((self.mcp_root/"TOOLS/bemarkdown/ROUTE_MANIFEST.json").read_text(encoding="utf-8"))["release_id"], tool_version=manifest.get("tool_version", manifest.get("version")), wheel_sha256=manifest["wheel"]["sha256"],
                     input_roots=[str(p) for p in self.allowed],
                     installed_runtime=self.runtime_identity,
                     visual_model_requirement=self.vision.status(),
@@ -257,8 +257,9 @@ class Service:
                 value['conversion_output_root']=str(output_root)
                 command = [str(self.python), "-I", "-X", "utf8", "-m", "bemarkdown", "convert", value["source"],
                            "--json", "--models-root", str(self.mcp_root / "MODELS"), "--output-root", str(output_root)]
-                optimized = self.mcp_root / "TOOLS/bemarkdown_optimized/convert.py"
-                if optimized.is_file() and Path(value["source"]).suffix.lower() in ({".pdf", ".docx", ".doc"} | RASTER_SUFFIXES):
+                optimized = self.mcp_root / "TOOLS/bemarkdown/convert.py"
+                if not optimized.is_file():raise RuntimeError('UNIFIED_CONVERSION_ENTRY_MISSING')
+                if Path(value["source"]).suffix.lower() in ({".pdf", ".docx", ".doc"} | RASTER_SUFFIXES):
                     command = [str(self.python), "-I", "-X", "utf8", str(optimized), "--source", value["source"], "--json", "--mcp-root", str(self.mcp_root), "--output-root", str(output_root), "--caller-pid", str(os.getpid())]
                     value["ocr_route"] = "native-isolated-1455-r6"
                 if Path(value["source"]).suffix.lower() in ({'.pdf'} | RASTER_SUFFIXES):
@@ -327,7 +328,7 @@ class Service:
                                            image_screening_task_count=len(handoff.get('image_screening_tasks',[])))
                 validation_command = [str(self.python), "-I", "-X", "utf8", "-m", "bemarkdown", "validate", str(package), "--json"]
                 if value.get("ocr_route") == "native-isolated-1455-r6":
-                    validation_command = [str(self.python), "-I", "-X", "utf8", str(self.mcp_root / "TOOLS/bemarkdown_optimized/route/native_validate.py"), str(package), "--json"]
+                    validation_command = [str(self.python), "-I", "-X", "utf8", str(self.mcp_root / "TOOLS/bemarkdown/route/native_validate.py"), str(package), "--json"]
                 validate = subprocess.run(validation_command, cwd=self.workspace, env=env, capture_output=True, timeout=120)
                 (directory / "validation.json").write_bytes(validate.stdout)
                 validation = json.loads(validate.stdout)

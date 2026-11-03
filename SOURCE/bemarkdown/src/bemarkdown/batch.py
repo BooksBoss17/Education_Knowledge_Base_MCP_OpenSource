@@ -35,7 +35,7 @@ def _failure_kind(exc: Exception) -> str:
 
 def convert_documents(
     sources: Iterable[str | Path], output_root: str | Path | None = None,
-    *, continue_on_error: bool = False, reuse_formula_model: bool = True, **conversion_options,
+    *, continue_on_error: bool = False, reuse_formula_model: bool = True, layout_batch_size: int = 1, **conversion_options,
 ) -> dict:
     """Convert in input order, retaining ordinary per-file atomic publication.
 
@@ -51,6 +51,20 @@ def convert_documents(
         raise ValueError('At least one source document is required')
     documents = []
     stopped = False
+    from .layout_batch import LayoutBatchPreparer, LayoutBatchCleanupError
+    if layout_batch_size > 1 and len(set(paths)) != len(paths):
+        raise ValueError('Layout batching requires distinct source paths')
+    if layout_batch_size > 1:
+        from .production import build_document_id
+        identities = [build_document_id(path) for path in paths if path.is_file()]
+        if len(set(identities)) != len(identities):
+            raise ValueError('Layout batching requires distinct output package identities')
+    if layout_batch_size > 1 and any(conversion_options.get(key) is not None for key in
+            ('pdf_runtime_factory', 'pdf_formula_runtime_factory', 'pdf_formula_runtime_owner')):
+        raise ValueError('Layout batching cannot override an injected PDF runtime')
+    preparer = LayoutBatchPreparer(layout_batch_size, registry_options={
+        key: conversion_options[key] for key in ('models_root', 'config_path', 'mcp_root')
+        if conversion_options.get(key) is not None})
     with FormulaRuntimeOwner() as owner:
         if (reuse_formula_model and conversion_options.get('pdf_formula_runtime_factory') is None
                 and conversion_options.get('pdf_runtime_factory') is None):
@@ -59,17 +73,40 @@ def convert_documents(
             row = {'index': index, 'source': str(source), 'status': 'NOT_RUN', 'wall_seconds': 0.0}
             documents.append(row)
             if stopped:
+                row['layout_preparation_seconds'] = preparer.timings.get(source, 0.0)
+                row['layout_preparation_status'] = ('PREPARED_NOT_CONVERTED' if source in preparer.items
+                                                    else 'FAILED' if source in preparer.errors else 'NOT_RUN')
+                row['wall_seconds'] = row['layout_preparation_seconds']
                 continue
             LOGGER.info('Batch document %s/%s: %s', index + 1, len(paths), source)
             file_started = time.perf_counter()
+            window_seconds = 0.0
             try:
-                result = convert_document(source, output_root, **conversion_options)
+                if index % layout_batch_size == 0:
+                    if layout_batch_size > 1:
+                        owner.release_idle_model()
+                    preparation_started = time.perf_counter()
+                    try:
+                        preparer.prepare(paths[index:index + layout_batch_size],
+                                         continue_on_error=continue_on_error)
+                    finally:
+                        window_seconds = time.perf_counter() - preparation_started
+                item_options = dict(conversion_options)
+                factory = preparer.pdf_factory(source)
+                if factory is not None:
+                    item_options['pdf_runtime_factory'] = factory
+                result = convert_document(source, output_root, **item_options)
                 row.update(status='PUBLISHED', result=result.to_dict())
             except Exception as exc:  # noqa: BLE001 - preserve per-file failures at the batch boundary
                 row.update(status='FAILED', failure_kind=_failure_kind(exc),
                            error_type=type(exc).__name__, error=str(exc))
-                stopped = not continue_on_error
-            row['wall_seconds'] = time.perf_counter() - file_started
+                stopped = isinstance(exc, LayoutBatchCleanupError) or not continue_on_error
+            row['conversion_seconds'] = max(0.0, time.perf_counter() - file_started - window_seconds)
+            row['layout_preparation_seconds'] = preparer.timings.get(source, 0.0)
+            row['wall_seconds'] = row['conversion_seconds'] + row['layout_preparation_seconds']
+            row['layout_preparation_status'] = ('PREPARED' if source in preparer.items
+                                                else 'FAILED' if source in preparer.errors else 'NOT_USED')
+            row['timing_scope'] = 'OWN_CONVERSION_PLUS_OWN_LAYOUT_PREPARATION_EXCLUDES_WINDOW_UNLOAD_OVERHEAD'
             LOGGER.info('Batch document %s/%s: %s in %.3fs',
                         index + 1, len(paths), row['status'], row['wall_seconds'])
     published = sum(row['status'] == 'PUBLISHED' for row in documents)
@@ -82,5 +119,6 @@ def convert_documents(
         'timing_scope': 'SERIAL_BATCH_API_INCLUDING_ALL_ATTEMPTED_FILES_EXCLUDING_INTERPRETER_STARTUP',
         'recognition_result_cache': False, 'documents': documents,
         'formula_model_lifecycle': owner.metrics(),
+        'layout_batch': preparer.metrics,
         'note': 'Published packages may contain review items; publication is not recognition accuracy.',
     }

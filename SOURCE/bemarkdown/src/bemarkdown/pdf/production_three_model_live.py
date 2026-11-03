@@ -1236,6 +1236,16 @@ def _generative_evidence(
     )
     crop_sha = str(output.get("source_crop_sha256") or request.crop_sha256)
     warnings = tuple(str(value) for value in output.get("warnings", ()))
+    repetition_anomaly = output.get("output_contract_status") == "REPETITION_ANOMALY"
+    provenance = {"current_run_staged_provider": True}
+    if repetition_anomaly:
+        warnings = (*warnings, "UNRESOLVED_REPETITION_ANOMALY")
+        provenance.update(
+            repetition_anomaly=output.get("repetition_anomaly"),
+            raw_text=raw_text,
+            raw_token_ids=output.get("raw_token_ids", []),
+            completed_transcription=False,
+        )
     crop_mismatch = crop_sha != request.crop_sha256
     if crop_mismatch:
         warnings = (*warnings, "SOURCE_CROP_SHA_MISMATCH")
@@ -1247,8 +1257,8 @@ def _generative_evidence(
             output.get("runtime_fingerprint") or "runtime-unfingerprinted"
         ),
         bbox=request.bbox,
-        text=raw_text,
-        normalized_text=str(output.get("normalized_output") or normalize_text(raw_text)),
+        text="" if repetition_anomaly else raw_text,
+        normalized_text="" if repetition_anomaly else str(output.get("normalized_output") or normalize_text(raw_text)),
         confidence=(
             float(output["confidence"])
             if output.get("confidence") is not None
@@ -1273,7 +1283,7 @@ def _generative_evidence(
             else str(output.get("output_contract_status") or "UNKNOWN")
         ),
         warnings=warnings,
-        provenance={"current_run_staged_provider": True},
+        provenance=provenance,
     )
 
 

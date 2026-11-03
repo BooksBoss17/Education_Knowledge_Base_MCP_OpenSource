@@ -192,8 +192,12 @@ def _asset_for_row(
         or (kind == "FORMULA" and not str(row.get("latex") or "").strip())
         or (
             row.get("binary_artifact_ref")
-            and not str(row.get("text") or "").strip()
-            and not str(row.get("latex") or "").strip()
+            and (
+                (not str(row.get("text") or "").strip() and not str(row.get("latex") or "").strip())
+                or row.get('provenance', {}).get('three_model_text_evidence', {}).get('resolver', {}).get('preserve_source_image') is True
+                or (kind in {"TEXT", "TITLE", "CAPTION", "HEADER_FOOTER", "PAGE_NUMBER"}
+                    and row.get("status") in {"REVIEW_REQUIRED", "FAILED_PRESERVE_INPUT", "DEFERRED"})
+            )
         )
     )
     if not needs_asset:
@@ -446,6 +450,30 @@ def _coarse_atom(
 ) -> tuple[dict[str, Any], OrderingAtom]:
     bbox = row.get("bbox_pdf_pt")
     if not _valid_bbox(bbox):
+        provenance = row.get("provenance", {})
+        crop = provenance.get("crop", {})
+        candidate = crop.get("bbox_pdf_pt")
+        full_page = [0.0, 0.0, crop.get("page_width_pt"), crop.get("page_height_pt")]
+        path = Path(str(crop.get("path", "")))
+        if (
+            provenance.get("route_decision", {}).get("adapter") == "PAGE_VISUAL_TEXT_RECOVERY"
+            and crop.get("contract") == "TEXT_EXCLUSION_MASK"
+            and crop.get("page_index") == row.get("page_index")
+            and crop.get("input_coordinate_system") == "pdf-points-top-left-rotation-normalized"
+            and _valid_bbox(candidate) and _valid_bbox(full_page)
+            and all(abs(float(a) - float(b)) < 1e-5 for a, b in zip(candidate, full_page, strict=True))
+            and path.is_file()
+            and hashlib.sha256(path.read_bytes()).hexdigest() == crop.get("content_sha256")
+        ):
+            row = copy.deepcopy(dict(row))
+            bbox = list(candidate)
+            row["bbox_pdf_pt"] = bbox
+            row.setdefault("provenance", {})["ordering_geometry_recovery"] = {
+                "origin": "SAME_CONTENT_VERIFIED_WHOLE_PAGE_CROP",
+                "crop_sha256": crop["content_sha256"], "page_index": row["page_index"],
+                "prior_bbox_pdf_pt": None,
+            }
+    if not _valid_bbox(bbox):
         raise ValueError(f"ORDERING_ATOM_GEOMETRY_INVALID:{row.get('content_id')}")
     parent_content_id = str(row["content_id"])
     kind = _kind(dict(row))
@@ -684,6 +712,11 @@ def _ocr_line_atoms(
     page_width: float,
     page_height: float,
 ) -> tuple[list[dict[str, Any]], list[OrderingAtom], list[str]]:
+    if row.get('binary_artifact_ref') and (row.get('status') in {'REVIEW_REQUIRED', 'FAILED_PRESERVE_INPUT', 'DEFERRED'}
+            or row.get('provenance', {}).get('three_model_text_evidence', {}).get('resolver', {}).get('preserve_source_image') is True):
+        # Do not split a pending parent crop into text-only child atoms and
+        # thereby lose the source image required for its unresolved content.
+        return [], [], ['OCR_PENDING_SOURCE_IMAGE_PRESERVED']
     provenance = row.get("provenance", {})
     architecture = provenance.get("three_model_text_evidence")
     if not isinstance(architecture, Mapping):
@@ -1279,12 +1312,18 @@ def _order_page(
         order["column_first_reorder_applied"] = True
     order["native_paragraph_continuity"] = _preserve_native_paragraph_continuity(blocks)
     order["native_index_columns"] = _order_native_index_columns(blocks)
+    from .pdf.ocr_exercise_order import order_ocr_exercise_columns
+    order['ocr_exercise_columns'] = order_ocr_exercise_columns(blocks, page_width)
+    if order['ocr_exercise_columns']['applied']:
+        order['column_count'] = max(order['column_count'], 2)
+        order['column_first_reorder_applied'] = True
+        order['reading_order_risk'] = 'MEDIUM'
     return order
 
 
 def _order_native_index_columns(blocks):
     """Read a positively identified index by columns and keep term/page pairs."""
-    import statistics
+    from .pdf.native_index_order import baseline_rows, legacy_two_columns, paired_index_columns
 
     groups = {}
     for position, block in enumerate(blocks):
@@ -1292,7 +1331,9 @@ def _order_native_index_columns(blocks):
         reasons = provenance.get("route_decision", {}).get("reason_codes", [])
         atom = provenance.get("ordering_atom_projection", {})
         if (
-            "NATIVE_INDEX_HEADING_AND_ENTRIES_OVERRIDE_LAYOUT_TABLE" in reasons
+            any(reason in reasons for reason in (
+                "NATIVE_INDEX_HEADING_AND_ENTRIES_OVERRIDE_LAYOUT_TABLE",
+                "NATIVE_INDEX_HEADING_AND_ENTRIES_CONFIRMED"))
             and atom.get("origin_type") == "NATIVE_LINE"
             and _valid_bbox(block.get("bbox_pdf_pt"))
         ):
@@ -1303,80 +1344,38 @@ def _order_native_index_columns(blocks):
     for parent, entries in groups.items():
         if len(entries) < 12:
             continue
-        ordered_x = sorted(
-            (block["bbox_pdf_pt"][0], block["bbox_pdf_pt"][2]) for _, block in entries
-        )
-        right = ordered_x[0][1]
-        gaps = []
-        for left, end in ordered_x[1:]:
-            if left > right:
-                gaps.append((left - right, (left + right) / 2))
-            right = max(right, end)
-        if not gaps:
+        members = [block for _, block in entries]
+        lanes = paired_index_columns(members)
+        method = 'PAIRED_SOURCE_TERM_PAGE_ROWS'
+        if lanes is None and any(
+            'NATIVE_INDEX_HEADING_AND_ENTRIES_OVERRIDE_LAYOUT_TABLE' in
+            block.get('provenance', {}).get('route_provenance', {}).get('route_decision', {}).get('reason_codes', [])
+            for block in members
+        ):
+            lanes = legacy_two_columns(members)
+            method = 'LEGACY_TWO_COLUMN_GAPS'
+        if lanes is None:
             continue
-        span = max(pair[1] for pair in ordered_x) - min(pair[0] for pair in ordered_x)
-        columns = None
-        for gap, split in sorted(gaps, reverse=True):
-            if gap < max(18, span * 0.07):
-                break
-            candidate_columns = [
-                [
-                    block
-                    for _, block in entries
-                    if (block["bbox_pdf_pt"][0] < split) == left
-                ]
-                for left in (True, False)
-            ]
-            if min(map(len, candidate_columns)) < 4:
-                continue
-            if any(
-                sum(
-                    bool(str(block.get("content", {}).get("text") or "").strip())
-                    and not str(block.get("content", {}).get("text") or "")
-                    .strip()
-                    .isdigit()
-                    for block in column
-                )
-                < 3
-                for column in candidate_columns
-            ):
-                continue
-            columns = candidate_columns
-            break
-        if columns is None:
-            continue
+        columns = lanes['columns']
         output = []
         for column in columns:
-            heights = [
-                block["bbox_pdf_pt"][3] - block["bbox_pdf_pt"][1] for block in column
-            ]
-            tolerance = statistics.median(heights) * 0.45
-            row = []
-            row_y = None
-            for block in sorted(
-                column,
-                key=lambda item: (item["bbox_pdf_pt"][1] + item["bbox_pdf_pt"][3]) / 2,
-            ):
-                y = (block["bbox_pdf_pt"][1] + block["bbox_pdf_pt"][3]) / 2
-                if row and y - row_y > tolerance:
-                    output.extend(sorted(row, key=lambda item: item["bbox_pdf_pt"][0]))
-                    row = []
-                if not row:
-                    row_y = y
-                row.append(block)
-            output.extend(sorted(row, key=lambda item: item["bbox_pdf_pt"][0]))
+            for row in baseline_rows(column):
+                output.extend(row)
         for (position, _before), after in zip(entries, output, strict=True):
             blocks[position] = after
         diagnostics.append(
             {
                 "parent_content_id": parent,
-                "columns": 2,
-                "split_x_pt": split,
+                "columns": len(columns),
+                "split_x_pt": lanes['splits'][0],
+                "split_x_points": lanes['splits'],
+                "method": method,
+                "source_term_page_pair_counts": lanes['pair_counts'],
                 "native_line_count": len(entries),
                 "payload_conserved": True,
             }
         )
-    return {"policy": "native-index-columns-v1", "groups": diagnostics}
+    return {"policy": "native-index-columns-v2", "groups": diagnostics}
 
 
 def _atom_projection_metadata(block: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -2013,7 +2012,16 @@ def _render_block(
     latex = str(content.get("latex") or "").strip()
     asset_uid = str(content.get("asset_uid") or "")
     asset_ref = (asset_ref_map or {}).get(asset_uid) or content.get("asset_ref")
-    if kind == "TITLE":
+    if (kind in {"TEXT", "TITLE", "CAPTION", "HEADER_FOOTER", "PAGE_NUMBER"}
+            and asset_ref and block.get('review_state') in {'REVIEW_REQUIRED', 'DEFERRED'}):
+        # Keep preliminary OCR in the IR for adjudication, not as certified
+        # visible text. The source remains readable in the exported document.
+        body = f"![文本待确认]({asset_ref})"
+    elif (kind in {"TEXT", "TITLE", "CAPTION", "HEADER_FOOTER", "PAGE_NUMBER"}
+            and asset_ref and block.get('provenance', {}).get('route_provenance', {}).get('three_model_text_evidence', {}).get('resolver', {}).get('preserve_source_image') is True):
+        # Qualified local text and retained source pixels are independent outputs.
+        body = (f"# {text}" if kind == "TITLE" else text) + f"\n\n![转录原图]({asset_ref})"
+    elif kind == "TITLE":
         body = f"# {text}" if text else "<!-- TITLE_REVIEW_REQUIRED -->"
     elif kind in {"TEXT", "CAPTION", "HEADER_FOOTER", "PAGE_NUMBER"}:
         body = text or (

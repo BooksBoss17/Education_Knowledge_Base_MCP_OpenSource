@@ -188,14 +188,25 @@ def _table_review_blocks(blocks):
 
 class DocxImageContentAdapter:
     def __init__(self, *, models_root=None, config_path=None, mcp_root=None,
-                 layout_factory=None, pdf_runtime_factory=None):
+                 layout_factory=None, pdf_runtime_factory=None, batch_region_jobs=False,
+                 native_backend_factory=None):
         self.models_root, self.config_path, self.mcp_root = models_root, config_path, mcp_root
         self.layout_factory = layout_factory
         self.pdf_runtime_factory = pdf_runtime_factory
+        self.batch_region_jobs = bool(batch_region_jobs)
+        if native_backend_factory is None:
+            from .resource_profiles import resource_profile
+            if resource_profile().name == '6gb':
+                from .isolated_native_backends import NativeBackendFactory
+                native_backend_factory = NativeBackendFactory(
+                    models_root=models_root, config_path=config_path, mcp_root=mcp_root)
+        self.native_backend_factory = native_backend_factory
 
     def _layout(self):
         if self.layout_factory is not None:
             return self.layout_factory()
+        if self.native_backend_factory is not None:
+            return self.native_backend_factory.layout()
         from .pdf_layout_runtime import FormalPaddleLayoutRuntime
         return FormalPaddleLayoutRuntime(models_root=self.models_root,
                                         config_path=self.config_path, mcp_root=self.mcp_root)
@@ -270,7 +281,7 @@ class DocxImageContentAdapter:
             if layout is not None:
                 layout.unload()
         from .resource_profiles import resource_profile
-        if resource_profile().name == '10gb' and len(jobs) > 1:
+        if (self.batch_region_jobs or resource_profile().name == '10gb') and len(jobs) > 1:
             replacements.update(self._convert_region_batch(jobs, identity, work, output_dir, summary))
         else:
             for index, node, image, rows in jobs:
@@ -372,7 +383,9 @@ class DocxImageContentAdapter:
             report = {**result.report, 'review_item_count': review_count}
             replacements[id(node)] = self._bind_regions(node, image, index, output_dir, summary,
                                                         package, report, page_ir, markdown=markdown)
-        summary['batch_execution'] = {'profile': '10gb', 'independent_image_pages': len(jobs),
+        from .resource_profiles import resource_profile
+        summary['batch_execution'] = {'profile': resource_profile().name, 'explicit_batch_region_jobs': self.batch_region_jobs,
+                                     'independent_image_pages': len(jobs),
                                      'pdf_pipeline_invocations': 1, 'source_pixels_changed': False}
         return replacements
 

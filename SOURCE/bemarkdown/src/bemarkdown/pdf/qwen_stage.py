@@ -44,15 +44,44 @@ class QwenStageRunner:
             rows.append({'sample_id':request.region_id,'path':str(path),'crop_sha256':request.crop_sha256})
         manifest=folder/'inputs.json';output=folder/'outputs.json'
         value={'model_root':str(self.resolved.model_root),'model_fingerprint':self.resolved.manifest['model_fingerprint'],
-            'crop_root':str(self.crop_root),'rows':rows,'vram_limit_mib':self.vram_limit_mib,'max_new_tokens':self.max_new_tokens}
+            'crop_root':str(self.crop_root),'rows':rows,'vram_limit_mib':self.vram_limit_mib,'max_new_tokens':self.max_new_tokens,
+            'prediction_cache_root':str(self.output_root/self.resolved.model_id/'prediction-cache')}
         manifest.write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
         worker=Path(__file__).parent/'workers/qwen_ocr.py';env=os.environ.copy();env.update(PYTHONIOENCODING='utf-8',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
         started=time.perf_counter()
-        with (folder/'stdout.log').open('w',encoding='utf8') as stdout,(folder/'stderr.log').open('w',encoding='utf8') as stderr:
-            process=subprocess.run([str(self.python),str(worker),'--manifest',str(manifest),'--output',str(output)],env=env,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0)
-        if process.returncode or not output.exists():raise RuntimeError(f'QWEN_WORKER_FAILED:{self.resolved.model_id}:exit={process.returncode}:diagnostics={folder}')
-        values=json.loads(output.read_text(encoding='utf8'))
-        if [r['sample_id'] for r in values]!=[r['sample_id'] for r in rows]:raise RuntimeError('QWEN_WORKER_CARDINALITY_ID_MISMATCH')
-        metric=json.loads(output.with_suffix('.runtime.json').read_text(encoding='utf8'))
-        metric.update(provider_id=provider_id,process_wall_seconds=time.perf_counter()-started);self.stage_metrics.append(metric)
-        return values
+        from ..resource_profiles import resource_profile
+        bounded=resource_profile().name=='6gb'
+        from contextlib import nullcontext
+        if bounded:
+            from ..isolated_native_backends import stage_boundary
+            from ..owned_stage_process import owned_run
+            boundary=stage_boundary()
+            execute=owned_run
+        else:
+            boundary=nullcontext()
+            execute=subprocess.run
+        process=None
+        try:
+            with boundary, (folder/'stdout.log').open('w',encoding='utf8') as stdout,(folder/'stderr.log').open('w',encoding='utf8') as stderr:
+                options={'env':env,'stdout':stdout,'stderr':stderr,
+                         'creationflags':subprocess.CREATE_NO_WINDOW if os.name=='nt' else 0,
+                         'timeout':900}
+                if bounded:
+                    options.update(stage=self.resolved.model_id,journal_path=folder/'resources.jsonl')
+                process=execute([str(self.python),str(worker),'--manifest',str(manifest),'--output',str(output)],**options)
+            if process.returncode or not output.exists():
+                from ..stage_failure import retain_stage_failure
+                failure=retain_stage_failure(folder,stage=self.resolved.model_id,exit_code=process.returncode)
+                raise RuntimeError(f'QWEN_WORKER_FAILED:{self.resolved.model_id}:exit={process.returncode}:os_error={failure["os_error"]}:diagnostics={failure["persistent_diagnostics"]}')
+            values=json.loads(output.read_text(encoding='utf8'))
+            if [r['sample_id'] for r in values]!=[r['sample_id'] for r in rows]:raise RuntimeError('QWEN_WORKER_CARDINALITY_ID_MISMATCH')
+            metric=json.loads(output.with_suffix('.runtime.json').read_text(encoding='utf8'))
+            metric.update(provider_id=provider_id,process_wall_seconds=time.perf_counter()-started);self.stage_metrics.append(metric)
+            return values
+        except BaseException as exc:
+            if not (isinstance(exc,RuntimeError) and str(exc).startswith('QWEN_WORKER_FAILED:')):
+                from ..stage_failure import retain_stage_failure
+                failure=retain_stage_failure(folder,stage=self.resolved.model_id,
+                    exit_code=process.returncode if process is not None else None,error=exc)
+                setattr(exc,'persistent_diagnostics',failure['persistent_diagnostics'])
+            raise
