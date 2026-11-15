@@ -23,7 +23,7 @@ import uuid
 import zipfile
 from urllib.parse import unquote
 
-VERSION = "0.5.4"
+VERSION = "0.6.0"
 RASTER_SUFFIXES = frozenset({'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'})
 HANDOFF = runpy.run_path(str(Path(__file__).with_name("review_handoff.py")))
 SEMANTIC = runpy.run_path(str(Path(__file__).with_name("semantic_review.py")))
@@ -183,23 +183,15 @@ class Service:
 
     def info(self):
         manifest = json.loads((self.mcp_root / "TOOLS/bemarkdown/TOOL_MANIFEST.json").read_text(encoding="utf-8"))
-        ram_path=runpy.run_path(str(self.mcp_root / "TOOLS/bemarkdown/engine.py"))["engine_root"](self.mcp_root / "TOOLS/bemarkdown") / "host_memory_policy.py"
-        try:
-            host_ram_policy=runpy.run_path(str(ram_path))["configured_policy"](self.mcp_root / "TOOLS/bemarkdown") if ram_path.is_file() else None
-        except OSError as error:
-            # Read-only inspection remains available without NVIDIA drivers.
-            # Task execution still uses the unchanged fail-closed admission.
-            host_ram_policy=dict(supported=False,status="DEVICE_OBSERVATION_UNAVAILABLE",
-                                 reason=f"{type(error).__name__}: {error}")
-        return dict(host_memory_policy=host_ram_policy, server_version=VERSION, workspace=str(self.workspace), output_root=str(self.output),
+        return dict(server_version=VERSION, workspace=str(self.workspace), output_root=str(self.output),
                     workspace_check=self.workspace_manager.inspect(),
                     models_root=str(self.mcp_root / "MODELS"), python=str(self.python),
-                    engine_release=json.loads((self.mcp_root/"TOOLS/bemarkdown/ROUTE_MANIFEST.json").read_text(encoding="utf-8"))["release_id"], tool_version=manifest.get("tool_version", manifest.get("version")), wheel_sha256=manifest["wheel"]["sha256"],
+                    tool_version=manifest.get("tool_version", manifest.get("version")), wheel_sha256=manifest["wheel"]["sha256"],
                     input_roots=[str(p) for p in self.allowed],
                     installed_runtime=self.runtime_identity,
                     visual_model_requirement=self.vision.status(),
                     workflow="convert -> status -> read + original source -> evidence-based review",
-                    constraints="Generic conversion produces intermediate Markdown. Explicit textbook imports back up originals; textbook_organize publishes reviewed chapters. Retained formula/table images remain unrecognized.")
+                    constraints="Generic conversion produces intermediate Markdown. Explicit textbook imports back up originals; textbook_organize publishes reviewed chapters. Retained formula/table images are source evidence, not proof of recognition failure or accuracy; consult the conversion report for recognition and review status.")
 
     def state_path(self, job_id):
         if not isinstance(job_id, str) or not re.fullmatch(r"[a-f0-9]{32}", job_id):
@@ -223,10 +215,12 @@ class Service:
             raise ValueError('Supported material_type: textbook')
         if book_title is not None and material_type != 'textbook':
             raise ValueError('book_title requires material_type=textbook')
+        if material_type == 'textbook':
+            TEXTBOOK['skill'](self)
+        original_input = str(source)
         if not getattr(self, '_managed_job_id', None):
             bridge = runpy.run_path(str(Path(__file__).with_name('managed_bridge.py')))
             return bridge['submit_conversion'](self, source, material_type, book_title, sha(source), retry_job_id)
-        original_input = str(source)
         if material_type == 'textbook':
             TEXTBOOK['skill'](self)
             book_title = book_title or source.stem
@@ -258,10 +252,13 @@ class Service:
                 command = [str(self.python), "-I", "-X", "utf8", "-m", "bemarkdown", "convert", value["source"],
                            "--json", "--models-root", str(self.mcp_root / "MODELS"), "--output-root", str(output_root)]
                 optimized = self.mcp_root / "TOOLS/bemarkdown/convert.py"
-                if not optimized.is_file():raise RuntimeError('UNIFIED_CONVERSION_ENTRY_MISSING')
+                if not optimized.is_file():raise RuntimeError("UNIFIED_CONVERSION_ENTRY_MISSING")
                 if Path(value["source"]).suffix.lower() in ({".pdf", ".docx", ".doc"} | RASTER_SUFFIXES):
-                    command = [str(self.python), "-I", "-X", "utf8", str(optimized), "--source", value["source"], "--json", "--mcp-root", str(self.mcp_root), "--output-root", str(output_root), "--caller-pid", str(os.getpid())]
-                    value["ocr_route"] = "native-isolated-1455-r6"
+                    command = [str(self.python), "-I", "-X", "utf8", str(optimized), "--source", value["source"],
+                               "--json", "--mcp-root", str(self.mcp_root), "--output-root", str(output_root),
+                               "--caller-pid", str(os.getpid())]
+                    route_manifest = json.loads((optimized.parent/"ROUTE_MANIFEST.json").read_text(encoding="utf-8"))
+                    value["ocr_route"] = "local-model-api-v1" if route_manifest.get("engine") == "LOCAL_MODEL_API_V1" else "native-isolated-1455-r6"
                 if Path(value["source"]).suffix.lower() in ({'.pdf'} | RASTER_SUFFIXES):
                     command.append("--debug")
                 env = {k: v for k, v in os.environ.items() if k not in ("PYTHONPATH", "PYTHONHOME")}
@@ -311,7 +308,6 @@ class Service:
                 result = json.loads((directory / "stdout.json").read_text(encoding="utf-8"))
                 if not result.get("success") or result.get("source_sha256") != value["source_sha256"]:
                     raise RuntimeError("Conversion failed its source/result contract")
-                value["host_memory_policy"] = result.get("host_memory_policy")
                 package = Path(result["package_path"]).resolve(strict=True)
                 if not package.is_relative_to(output_root):
                     raise RuntimeError("Unexpected output package location")
@@ -320,24 +316,24 @@ class Service:
                 handoff['image_screening_summary']={key:result['image_screening'].get(key) for key in
                     ('status','reason','protected_count','classified_count','excluded_count','candidate_count')}
                 atomic_json(directory / 'agent_handoff.json', handoff)
-                if handoff["source_sha256"] != value["source_sha256"]:
-                    raise RuntimeError("Source changed during handoff export")
-                value["agent_handoff"] = dict(candidate_count=handoff["candidate_count"], evidence_available=handoff["evidence_available"],
-                                           read_tool="bemarkdown_read", read_kind="handoff", basis=handoff["candidate_basis"],
-                                           image_screening_status=handoff.get('image_screening_summary',{}).get('status'),
-                                           image_screening_task_count=len(handoff.get('image_screening_tasks',[])))
-                validation_command = [str(self.python), "-I", "-X", "utf8", "-m", "bemarkdown", "validate", str(package), "--json"]
-                if value.get("ocr_route") == "native-isolated-1455-r6":
-                    validation_command = [str(self.python), "-I", "-X", "utf8", str(self.mcp_root / "TOOLS/bemarkdown/route/native_validate.py"), str(package), "--json"]
-                validate = subprocess.run(validation_command, cwd=self.workspace, env=env, capture_output=True, timeout=120)
-                (directory / "validation.json").write_bytes(validate.stdout)
-                validation = json.loads(validate.stdout)
-                if validate.returncode or not validation.get("valid"):
-                    raise RuntimeError("Converted package validation failed")
-                value.update(status="SUCCEEDED", conversion=result, validation=validation,
-                             original_markdown_sha256=sha(package / "document.md"))
-                if value.get('material_type') == 'textbook':
-                    value['textbook_skill'] = TEXTBOOK['skill'](self)
+            if handoff["source_sha256"] != value["source_sha256"]:
+                raise RuntimeError("Source changed during handoff export")
+            value["agent_handoff"] = dict(candidate_count=handoff["candidate_count"], evidence_available=handoff["evidence_available"],
+                                       read_tool="bemarkdown_read", read_kind="handoff", basis=handoff["candidate_basis"],
+                                       image_screening_status=handoff.get('image_screening_summary',{}).get('status'),
+                                       image_screening_task_count=len(handoff.get('image_screening_tasks',[])))
+            validation_command = [str(self.python), "-I", "-X", "utf8", "-m", "bemarkdown", "validate", str(package), "--json"]
+            if value.get("ocr_route") == "native-isolated-1455-r6":
+                validation_command = [str(self.python), "-I", "-X", "utf8", str(self.mcp_root / "TOOLS/bemarkdown/route/native_validate.py"), str(package), "--json"]
+            validate = subprocess.run(validation_command, cwd=self.workspace, env=env, capture_output=True, timeout=120)
+            (directory / "validation.json").write_bytes(validate.stdout)
+            validation = json.loads(validate.stdout)
+            if validate.returncode or not validation.get("valid"):
+                raise RuntimeError("Converted package validation failed")
+            value.update(status="SUCCEEDED", conversion=result, validation=validation,
+                         original_markdown_sha256=sha(package / "document.md"))
+            if value.get('material_type') == 'textbook':
+                value['textbook_skill'] = TEXTBOOK['skill'](self)
         except Exception as exc:
             value.update(status="CANCELLED" if self.closing.is_set() else "FAILED", error=type(exc).__name__ + ": " + str(exc))
         finally:
@@ -357,10 +353,19 @@ class Service:
             self.closing.wait(0.1)
 
 
+
+
+
     def prepare_handoff(self, package, directory, source):
         package, directory = package.resolve(strict=True), directory.resolve(strict=True)
         if not package.is_relative_to(self.output) or not directory.is_relative_to(self.jobs):
             raise ValueError("Handoff storage outside workspace")
+        report = json.loads((package / "conversion_report.json").read_text(encoding="utf-8"))
+        if report.get('runtime', {}).get('route') == 'bemarkdown-next-local-api-v1':
+            builder = runpy.run_path(str(Path(__file__).with_name('next_handoff.py')))['build_handoff']
+            result = builder(source, (package/'document.md').read_bytes(), report)
+            atomic_json(directory/'agent_handoff.json', result)
+            return result
         debug = (package / "debug").resolve()
         if not debug.is_relative_to(package):
             raise ValueError("Debug source outside converted package")

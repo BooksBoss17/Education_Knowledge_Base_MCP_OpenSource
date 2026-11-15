@@ -1,0 +1,26 @@
+{
+  "schema": "bemarkdown-local-model-api-v1",
+  "roles": {
+    "layout": {
+      "backend": "pp-doclayout-v3",
+      "model_root": "../../../MODELS/PP-DocLayoutV3",
+      "threshold": 0.35,
+      "label_map": {}
+    },
+    "formula": {
+      "backend": "xiaomi-ocr-0",
+      "model_root": "../../../MODELS/Xiaomi-OCR-0",
+      "max_new_tokens": 2048
+    },
+    "table": {
+      "backend": "ovisocr3",
+      "model_root": "../../../MODELS/ovisocr3",
+      "max_new_tokens": 4096
+    },
+    "text": {
+      "backend": "ovisocr3",
+      "model_root": "../../../MODELS/ovisocr3",
+      "max_new_tokens": 2048
+    }
+  }
+}

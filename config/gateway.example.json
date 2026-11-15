@@ -1,0 +1,32 @@
+{
+  "roles": {
+    "layout": {
+      "protocol": "bemarkdown",
+      "url": "http://127.0.0.1:8766/v1/layout"
+    },
+    "formula": {
+      "protocol": "chat-completions",
+      "url": "https://api.example.com/v1/chat/completions",
+      "model": "YOUR_VISION_MODEL",
+      "key_env": "MODEL_API_KEY",
+      "max_tokens": 4096,
+      "timeout_seconds": 120
+    },
+    "table": {
+      "protocol": "chat-completions",
+      "url": "https://api.example.com/v1/chat/completions",
+      "model": "YOUR_VISION_MODEL",
+      "key_env": "MODEL_API_KEY",
+      "max_tokens": 4096,
+      "timeout_seconds": 120
+    },
+    "text": {
+      "protocol": "chat-completions",
+      "url": "https://api.example.com/v1/chat/completions",
+      "model": "YOUR_VISION_MODEL",
+      "key_env": "MODEL_API_KEY",
+      "max_tokens": 4096,
+      "timeout_seconds": 120
+    }
+  }
+}

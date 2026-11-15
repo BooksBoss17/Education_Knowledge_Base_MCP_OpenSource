@@ -1,0 +1,25 @@
+{
+  "schema": "bemarkdown-local-model-api-v1",
+  "roles": {
+    "layout": {
+      "url": "http://127.0.0.1:8765/v1/layout",
+      "timeout_seconds": 600,
+      "token_env": "BEMARKDOWN_GATEWAY_TOKEN"
+    },
+    "formula": {
+      "url": "http://127.0.0.1:8765/v1/formula",
+      "timeout_seconds": 600,
+      "token_env": "BEMARKDOWN_GATEWAY_TOKEN"
+    },
+    "table": {
+      "url": "http://127.0.0.1:8765/v1/table",
+      "timeout_seconds": 600,
+      "token_env": "BEMARKDOWN_GATEWAY_TOKEN"
+    },
+    "text": {
+      "url": "http://127.0.0.1:8765/v1/text",
+      "timeout_seconds": 600,
+      "token_env": "BEMARKDOWN_GATEWAY_TOKEN"
+    }
+  }
+}

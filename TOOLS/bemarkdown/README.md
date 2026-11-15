@@ -1,6 +1,3 @@
-# BeMarkdown 0.3.0
+# BeMarkdown public API-first tool
 
-One installed wheel serves MCP, managed CLI and validation.
-Use python -m bemarkdown convert INPUT --mcp-root MCP --output-root OUTPUT --json.
-The Python library remains the same low-level implementation; production CLI and MCP use the persistent manager.
-No core overlay or automatic external completion. Old completion payload is retained only in development rollback evidence.
+Core version 0.4.3+localapi.4. Use ../../README.md for public installation and endpoint configuration. This distribution does not contain the private offline dependency payload or any model weights. `install.py` forwards to the public installer. `convert.py` is the shared-manager entry; `python -m bemarkdown` is the direct core CLI.

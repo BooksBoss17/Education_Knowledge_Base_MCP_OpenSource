@@ -1,0 +1,37 @@
+name: API-first MCP
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows-api:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      BEMARKDOWN_GATEWAY_TOKEN: ci-fixture-token-not-a-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify and install API-only core
+        shell: pwsh
+        run: |
+          python scripts/verify_release.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/setup.py --api-config config/model-api.example.json --workspace "$env:RUNNER_TEMP/knowledge-workspace"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Gateway, managed conversion and MCP transport
+        shell: pwsh
+        run: |
+          $receipt = Get-Content .local/runtime-selection.json | ConvertFrom-Json
+          $python = Join-Path $PWD $receipt.python
+          & $python -m pip install "pytest>=8,<10"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $python -m pytest tests -q
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $python tests/managed_smoke.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

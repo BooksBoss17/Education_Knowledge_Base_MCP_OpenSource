@@ -126,8 +126,6 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
         return dict(status='SUCCESS',screening_model='wemm',images_total=0,distinct_images=0,groups=[],actual_exclusions=0)
     template_path=HERE/'screening_templates.json'
     templates=json.loads(template_path.read_text('utf-8'))
-    if templates.get('status') == 'NOT_CONFIGURED_PUBLIC':
-        return dict(status='NOT_CONFIGURED', actual_exclusions=0, message='Register source-bound screening templates before this optional route.')
     if templates.get('preprocessing')!=PIXELS['PREPROCESSING']:
         raise ValueError('Screening template preprocessing mismatch; rebuild or verify templates first')
     manager=getattr(service,'workspace_manager',None)

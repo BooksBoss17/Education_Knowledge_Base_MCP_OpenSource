@@ -1,128 +1,66 @@
-当前版本：BeMarkdown 0.3.0，单一 wheel 与受管入口；原 optimized 目录已合入 TOOLS/bemarkdown。见 [统一说明](docs/UNIFIED_BEMARKDOWN.md)。以下历史说明以本段和统一说明为准。
+# Education Knowledge Base MCP · BeMarkdown API 版
 
-# Education Knowledge Base MCP · 基底版本
+将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 无需下载本项目过去的固定模型组合。默认不安装模型权重，不启用图片分类或 Semantic Retention。
 
-面向教学知识库的本地 MCP。当前主要工具 **BeMarkdown** 将 DOCX、PDF 转成保留来源信息的中间 Markdown，供 agent 继续复核和整理。
+核心版本 **0.4.3+localapi.4**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
 
-2026-10-16 更新：受管任务队列、跨会话恢复、内存/显存准入、提速选项及内置图片分类。安装前请读[本版使用与升级说明](docs/MANAGED_CONVERSION.md)，尤其是图片分类的独立运行环境要求。
+## 转换流程
 
-安装脚本现支持兼容依赖复用和验证后的运行时切换，详见[安装与升级说明](docs/INSTALLATION_UPGRADE.md)。
+```text
+PDF / 图片 / Word中的截图
+  → layout：版面框和阅读顺序
+  → formula：公式与框内文字
+  → table：完整表格（保留单元格内公式）
+  → text：其余可见文字及漏框公式
+  → 位置组装、同源去重、残片过滤
+  → document.md + 图片 + 来源与校验清单
 
-自有代码采用 **AGPL-3.0-only**；第三方组件保留原许可证。完整条款见 [LICENSE](LICENSE)、[许可核查](docs/LICENSE_AUDIT.md) 和 [第三方声明](THIRD_PARTY_NOTICES.md)。
-
-## 当前可以做什么
-
-- 自动初始化教学知识库工作区，检查目录结构，分页列举文件；按明确请求修复目录或调整框架。
-- 转换原生 Word、扫描截图型 Word、原生 PDF 和扫描 PDF。
-- 解析正文、公式与表格，将示意图保存成图片并在 Markdown 中引用。
-- 提供异步转换任务、状态查询、日志、原文件证据和待复核候选项。
-- 让 agent 根据原文证据执行精确替换，保留原始 Markdown 和修改记录；对三模型文字候选支持上下文语义修复（字数变化受正负 1 字限制并单独记录推断依据）。
-- 保留教材组织接口，但当前交付未附带 `textbook-import` skill；普通转换可用，缺少匹配编排包时不要启用教材导入模式。
-- 正文段落图片可调用局部转换复用同一模型与 GPU 队列，不重新转换整份文档。
-- 共享登记 15 个模型，包含转换模型、B200、Qwen3.5-9B 和 Embedding 资源。实际依赖按工具及下载计划安装，不将可下载资源等同于已接入的能力。
-
-输出定位是**中间产物**。按教学资料类型删减、拼接、整理成知识库条目的流程，可继续通过 Skills 或新工具实现。
-
-## 视觉模型要求
-
-本 MCP 仅支持可接收图片的视觉模型。首次使用（以及切换模型、重连或空闲超过 30 分钟后）必须先完成 `bemarkdown_vision` 挑战：服务返回一张含六个符号的图片，调用方实际读出符号并以 `action="verify"` 提交答案。验证通过前，转换、读取、复核与教材整理工具均返回 `VISION_MODEL_REQUIRED`。该检查验证的是实际图片可达性，不是可信的模型身份。
-
-## 部署
-
-当前完整技术路线验证于 **Windows x64、CPython 3.11、NVIDIA GPU**。建议独立显存大于 10 GiB；6–10 GiB 使用较保守调度。复杂页面仍可能触及显存限制。需要兼容 CUDA 13 系列 PyTorch wheel 的 NVIDIA 驱动；安装脚本获取用户态运行库，显卡驱动由操作系统管理员维护。
-
-推荐预留 **100 GB 可用磁盘空间**用于模型、Python 环境、下载缓存和转换输出。完整模型约二十多 GB，实际占用还包括运行库。只有转换需求时可选择 `conversion`，跳过两套较大的 Embedding 资源。
-
-1. 下载或克隆此文件夹，保持文件完整。GitHub 仓库不内置大型权重和 NVIDIA 运行库。
-2. 在 Windows PowerShell 中进入此目录，运行：
-
-```powershell
-.\setup.ps1
+原生Word正文、表格、可解析公式 → 直接解析；无需先转PDF
 ```
 
-脚本会先提示外部许可证，再检查／安装 Python 3.11、LibreOffice 和必要的 Visual C++ 运行库，下载并校验模型，创建隔离环境，安装固定依赖，运行完整 GPU 检查，初始化工作区并输出 MCP 配置。系统组件自动安装使用 Windows `winget`，可能需要用户允许 UAC。没有 winget 时可从官方站点安装这些前置组件后重试。
+成功识别的公式、表格区域在后续文字输入中遮盖，失败内容保留来源待核。四个角色可指向不同服务，也可以共用一个模型。普通聊天API不能直接充当版面检测器：layout 必须返回图像像素坐标、类别及阅读顺序。
 
-已阅读并接受外部条款、需要无人值守部署时：
+## 快速开始（Windows MCP）
 
-```powershell
-.\setup.ps1 -AcceptExternalLicenses
-```
-
-只安装当前转换所需的 11 个模型：
+安装 Python 3.11、Git。复制并编辑 `config/model-api.example.json`，指向你自己的四角色服务。核心连接回环地址；远端服务通过下一节的网关接入。
 
 ```powershell
-.\setup.ps1 -AcceptExternalLicenses -Models conversion
+$env:BEMARKDOWN_GATEWAY_TOKEN = 'replace-with-a-long-random-local-token'
+python scripts/setup.py --api-config config/model-api.example.json --workspace C:/KnowledgeWorkspace
 ```
 
-可用 `-Workspace` 指定工作区，`-PythonExe` 指定现有 Python 3.11，`-RuntimeDirectory` 指定隔离环境，`-ModelCache` 指定已有共享 `MODELS` 目录。导入缓存也会检查每个文件的大小和 SHA-256。中断后重新执行可复用已完成的下载。
+安装器只安装转换依赖和本仓库的核心wheel，不下载Torch、模型或LibreOffice。将生成的 `.local/mcp-client.json` 合并到MCP客户端配置中；如需转换工作区外文件，在启动参数中添加 `--input-root` 和允许目录。不要提交 `.local` 或密钥。
 
-3. 安装完成显示 `READY_FULL` 后，将生成的 **`.local/mcp-client.json`** 内容加入 MCP 客户端。它已包含本机路径和所选 Python 环境，无需复制他人的路径配置。
-4. 需要转换工作区以外的文件时，在配置的 `args` 中追加 `--input-root` 和该资料目录。可重复添加多个目录。
+受管 MCP 目前支持 Windows；API模式的客户端不要求本地GPU。推理服务自身负责资源预算，客户端只对自己的RAM和作业生命周期进行管理。内置本地模型模式另有GPU环境要求，见 [模型与部署](docs/MODELS.md)。Linux/macOS可尝试核心CLI，未宣称完整MCP管理器跨平台支持。
 
-模型推理在本地完成。MCP 服务本身不绑定某个 agent 平台或云模型；复核所用 agent 由客户端配置。
+```powershell
+# 独立核心CLI；不经过MCP队列，调用者自行管理并发
+.local/runtimes/<wheel-hash>/Scripts/python.exe -m bemarkdown convert input.pdf --api-config config/model-api.example.json --output-root outputs --json
+```
 
-## 目录
+## 调用联网API
 
-| 目录 | 用途 |
-| --- | --- |
-| `MODELS/` | 共享模型登记及权威清单；运行安装脚本后补齐模型文件 |
-| `TOOLS/bemarkdown/` | BeMarkdown wheel、依赖锁定和运行清单 |
-| `TOOLS/education_mcp/` | 标准 stdio MCP 适配层（0.4.0，11 个工具）、工作区管理 |
-| `SOURCE/bemarkdown/` | 与发布 wheel 对应的可修改源码及构建配置 |
-| `SKILLS/` | 工作流编排技能（含 `textbook-import` 教材导入流程） |
-| `scripts/` | 自动安装、模型下载、校验等部署脚本 |
-| `docs/` | 部署、许可、技术路线和扩展说明 |
-| `licenses/` | 上游许可证据和组件清单 |
+编辑 `config/gateway.example.json`：layout使用兼容的版面服务；formula/table/text可使用支持图片的 Chat Completions 兼容服务，填写完整URL和实际模型名。示例域名是占位符，不能直接调用。
 
-此仓库是一份可扩展基底。可以让 agent 设计新的 MCP 工具、共享模型接口或插件；具体方法见 [扩展指南](docs/EXTENDING.md)。
+```powershell
+$env:MODEL_API_KEY = '填写你的密钥'
+# 使用安装生成的Python路径启动网关（保持运行）
+.local/runtimes/<wheel-hash>/Scripts/python.exe scripts/api_gateway.py --config config/gateway.example.json
+```
 
-## MCP 接口
+远端调用会发送相应页面/裁图，并按服务商计费。密钥从环境变量读取；网关不自动重试，不将服务商错误正文写入日志。必须设置至少16字符的 `BEMARKDOWN_GATEWAY_TOKEN` 保护网关，并在客户端各角色配置 `token_env`；使用MCP时将此环境变量配置在MCP客户端启动环境中。
 
-适配层版本 0.4.0，共 11 个工具。首次使用必须先通过 `bemarkdown_vision` 验证（见上文"视觉模型要求"）。
+**这是协议适配，不保证每一家服务商原样兼容。** 不支持的图片格式、模型参数、结构化表格输出等须由使用者适配。公开测试使用本机模拟上游，未使用你的密钥或实际付费服务。远端model_fingerprint表示声明配置的指纹，不表示已核验远端权重。
 
-| 工具 | 用途 |
-| --- | --- |
-| `bemarkdown_vision` | 视觉模型门禁：领取六符号图片挑战并验证；未通过前其余工具锁定 |
-| `knowledge_workspace` | 初始化后的检查、文件盘点、指定目录修复、框架配置 |
-| `bemarkdown_info` | 查询转换环境及工作流信息 |
-| `bemarkdown_convert` | 提交 DOCX/PDF 转换，立即返回任务 ID；`material_type="textbook"` 先备份原件并返回教材导入 skill |
-| `bemarkdown_status` | 查询或短时等待任务状态 |
-| `bemarkdown_read` | 读取 Markdown、报告、资源及复核任务（`handoff_summary` 汇总三模型文字候选、表格任务与图片区域复核） |
-| `bemarkdown_source` | 按来源位置获取原文件证据；截图 Word 可查保留分页，小字可用 `region` + `dpi=288` 放大 |
-| `bemarkdown_convert_image` | 将含完整正文段落的输出图片送入现有转换管线局部转换，保留父子任务与来源哈希 |
-| `bemarkdown_review_context` | 返回被标记正文段及其前 3 后 1 上下文与当前哈希，供语义修复使用 |
-| `bemarkdown_review` | 基于原文证据的唯一匹配替换；支持 `context_semantic` 语义修复（整段替换，字数变化正负 1 字内，记录推断依据） |
-| `textbook_organize` | 教材整理：图片清单/缩略图检查、分章预览与发布到 `KNOWLEDGE_BASE/TEXTBOOKS/` |
+## 本地模型
 
-转换产物写入 `<工作区>/tmp/bemarkdown/`。每个产物通常由 `document.md`、`conversion_report.json` 和引用图片组成；启用证据导出时还有调试／来源信息。修订后增加 `document.reviewed.md` 与 `agent_review.json`。
+推荐通过自建服务实现 [四角色协议](docs/API.md)，这样可随时替换模型，无需修改转换核心。已有V3/Xiaomi/Ovis后端作为可选参考；不安装它们也能使用自建或远端API。见 [部署说明](docs/MODELS.md)。
 
-教材导入流程：`bemarkdown_convert(material_type="textbook")` → 按返回的 `textbook-import` skill 复核中间 Markdown 与全部图片 → `textbook_organize` 确认章节边界、清理无内容装饰、转写纯标题图片 → `preview` 校验后 `publish` 分章入库。示意图与含正文/公式/表格的图片一律保留引用。
+## 输出与边界
 
-运行记录位于 `<工作区>/tmp/bemarkdown/.mcp/jobs/<任务ID>/`，包括状态、标准输出、错误日志、校验结果和 agent 交接信息。安装日志在本仓库 `.local/logs/`。
+- 输出包含Markdown、图片、来源坐标、模型响应身份和文件哈希，支持包校验。
+- 低信息残片过滤有意接受少量孤立标点损失，以减少错误扩写；不是通用纠错器。
+- OCR错字、复杂布局、公式与配分归属仍可能需要核对。工程测试通过不等于全文或检索问答准确率认证。
+- 源码与已发布wheel逐文件对应；不包含模型权重、教材样本、个人路径、宿主环境或密钥。
 
-## 技术与验证说明
-
-详见 [BeMarkdown 完整技术路线](docs/BEMARKDOWN_TECHNICAL_SCHEME.md)。本版本保留三模型文字 OCR、FormulaNet 公式识别、表格专用模型、示意图区域保护与来源复核链路；适配层为 0.4.0，新增视觉模型门禁、教材导入与分章整理、上下文语义修复和段落图片局部转换。适配层更新内容与验证范围见 [发布验证](docs/VALIDATION.md) 的"适配层 0.4.0 更新"一节。
-
-模型一致或转换任务成功，均不等于内容完全正确。复杂公式、表格、阅读顺序和图文边界仍可能需要复核；历史优化结果不能当作全语料 90%／95% 正确率保证。截图型 Word 的端到端速度也受图片数量、版面复杂度、模型启动及 agent 复核影响。验收范围见 [发布验证](docs/VALIDATION.md)。
-
-## 发布到 GitHub
-
-本文件夹可作为新的仓库根目录。保留 `.gitignore`、`.gitattributes`、许可证、源码和第三方声明；不要提交 `.local`、工作区、运行日志、下载缓存或模型权重。使用全新的 Git 历史，不要复制内部开发仓库的 `.git`。
-
-执行安装、测试或二次构建后，可运行随包校验脚本检查发布文件。模型是独立下载资源，Git checkout 本身不能恢复权重。
-
-
-
-
-
-
-
-
-
-
-历史记录：[2026-10-07 版本说明](docs/RELEASE_20261007.md)。[B200 模型资产](https://github.com/BooksBoss17/BeMarkdown-Retention-B200)沿用已发布权重；当前集成行为以本版使用说明为准。
-
-## 独立语义筛图 MCP
-
-冻结的 B200 + Qwen3.5-9B 独立接口继续可用；本版 BeMarkdown 在 OCR 后串行调用分类并生成派生包。独立运行环境的安装方式及原冻结评测口径见[语义筛图说明](docs/SEMANTIC_RETENTION.md)，新增用途观察与待审边界见[本版说明](docs/MANAGED_CONVERSION.md)。
+许可证：AGPL-3.0-only；第三方与模型各自许可见 [说明](THIRD_PARTY_NOTICES.md)。

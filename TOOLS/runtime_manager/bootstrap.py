@@ -8,7 +8,6 @@ from pathlib import Path
 import sys
 import tempfile
 import time
-import runpy
 
 
 def sha(path):
@@ -42,15 +41,16 @@ def registry(mcp_root, python):
     mode = json.loads(configuration.read_text(encoding='utf-8')).get('mode', 'auto')
     local = Path(os.environ.get('LOCALAPPDATA', Path.home()))
     manifest = json.loads((root/'TOOLS/bemarkdown/TOOL_MANIFEST.json').read_text(encoding='utf-8'))
-    conversion_python = runpy.run_path(str(root/'TOOLS/education_mcp/runtime_selection.py'))['resolve_runtime'](root).resolve(strict=True)
+    # conversion_python is resolved from the activation receipt above.
     semantic_python = None
     semantic_scheme = root/'TOOLS/semantic_retention/SCHEME.json'
     if semantic_scheme.is_file():
-        try:
-            semantic=runpy.run_path(str(root/'TOOLS/semantic_retention/bootstrap.py'))['runtime_config'](root/'TOOLS/semantic_retention')
-            semantic_python=Path(semantic['source_python']).resolve(strict=True)
-        except FileNotFoundError:
-            pass  # OCR-only installations may explicitly disable image screening.
+        scheme=json.loads(semantic_scheme.read_text(encoding='utf-8'))
+        receipt=local/'BeMarkdownSemanticRetention/runtimes'/scheme['runtime_id']/'runtime.json'
+        if receipt.is_file():
+            semantic=json.loads(receipt.read_text(encoding='utf-8'))
+            if semantic.get('status')=='VERIFIED_HOST_RUNTIME':
+                semantic_python=Path(semantic['source_python']).resolve(strict=True)
     programs = {}
     for name, relative in {
         'education-convert': 'education_mcp/managed_worker.py',
@@ -78,6 +78,18 @@ def registry(mcp_root, python):
             # retains its existing dynamic GPU/CPU placement within these guards.
             programs[name]['requirement'] = dict(extra_private_bytes=11*1024**3,
                 extra_physical_bytes=8*1024**3,extra_gpu_mib=3*1024)
+        elif manifest.get('runtime_route') == 'LOCAL_MODEL_API_V1':
+            # One owned job includes the controller, API listener and sequential
+            # model subprocesses. Do not enqueue a nested GPU job for each role.
+            programs[name]['requirement'] = dict(extra_private_bytes=8*1024**3,
+                extra_physical_bytes=8*1024**3, extra_gpu_mib=5120)
+    if (root/'.local/model-api.json').is_file():
+        policy = root/'TOOLS/runtime_manager/external_resource_policy.py'
+        for name in ('education-convert','native-convert'):
+            programs[name]['resource_kind']='cpu'
+            programs[name]['gpu_key']='EXTERNAL_API'
+            programs[name]['requirement']=dict(extra_private_bytes=512*1024**2,extra_physical_bytes=512*1024**2,extra_gpu_mib=0)
+        programs.pop('education-screen',None)
     value = dict(schema='ekb-run-manager-registry-v1', programs=programs,
                  resource_policy=dict(module_path=str(policy), sha256=sha(policy), gpu_index=0, mode=mode))
     encoded = json.dumps(value, sort_keys=True, ensure_ascii=False, indent=2).encode('utf-8')

@@ -1,2 +1,6 @@
-# Preserve byte-addressed manifests, source and wheel identities on every host.
-* -text
+* text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.whl binary
+SOURCE/** -text
