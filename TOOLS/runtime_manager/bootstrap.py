@@ -70,6 +70,12 @@ def registry(mcp_root, python):
                               resource_kind='gpu', gpu_key='GPU:0',
                               requirement=dict(extra_private_bytes=128 * 1024**2,
                                                extra_physical_bytes=128 * 1024**2, extra_gpu_mib=0))
+        if name in {'education-convert', 'native-convert'}:
+            # Bind imported session workers as well as the small registered entry.
+            bound = list(engine_root.rglob('*.py')) + list((root/'TOOLS/bemarkdown').glob('*.py'))
+            bound += list((root/'TOOLS/education_mcp').glob('*.py'))
+            bound += [p for p in (root/'TOOLS/bemarkdown/config/local-model-server.json', root/'.local/model-api.json') if p.is_file()]
+            programs[name]['runtime_files'] = {str(p.resolve()): sha(p) for p in sorted(bound)}
         if name == 'semantic-retention':
             programs[name]['requirement'] = dict(extra_private_bytes=int(5.9*1024**3)+128*1024**2,
                 extra_physical_bytes=int(4.9*1024**3)+128*1024**2, extra_gpu_mib=5.6*1024)

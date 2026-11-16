@@ -85,6 +85,8 @@ class TransformersV3LayoutRuntime:
             self.model_root, local_files_only=True, trust_remote_code=False
         ).to("cuda:0").eval()
         self.metrics["load_seconds"] = time.perf_counter() - started
+        self.metrics["model_load_count"] = self.metrics.get("model_load_count", 0) + 1
+        self.metrics["total_load_seconds"] = self.metrics.get("total_load_seconds", 0.0) + self.metrics["load_seconds"]
         self.identity.update(
             {
                 "model_fingerprint": _sha256(self.model_root / "model.safetensors"),
@@ -243,6 +245,8 @@ class TransformersVisionOcrRuntime:
             device_map="cuda:0",
         ).eval()
         self.metrics["load_seconds"] = time.perf_counter() - started
+        self.metrics["model_load_count"] = self.metrics.get("model_load_count", 0) + 1
+        self.metrics["total_load_seconds"] = self.metrics.get("total_load_seconds", 0.0) + self.metrics["load_seconds"]
         self.identity.update(
             {
                 "model_fingerprint": _sha256(self.model_root / "model.safetensors"),

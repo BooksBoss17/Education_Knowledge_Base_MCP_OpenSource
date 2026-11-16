@@ -30,13 +30,17 @@ def main():
         donor=args.dependency_runtime.resolve()
         if donor.is_dir():donor=donor/("Scripts/python.exe" if os.name=="nt" else "bin/python")
         # Exclude the donor's BeMarkdown core; this environment owns its wheel.
-        site=subprocess.check_output([str(python),'-c','import site;print(site.getsitepackages()[0])'],text=True).strip()
+        # On Windows getsitepackages()[0] is the venv root, processed before
+        # Lib/site-packages. A donor .pth there shadows the newly installed core.
+        (runtime/'public_dependencies.pth').unlink(missing_ok=True)
+        site=subprocess.check_output([str(python),'-I','-c','import sysconfig;print(sysconfig.get_path("purelib"))'],text=True).strip()
         donor_sites=json.loads(subprocess.check_output([str(donor),'-I','-c','import sys,json;from pathlib import Path;print(json.dumps([p for p in sys.path if Path(p).is_dir() and (Path(p).name in {"site-packages","dependencies"})]))'],text=True))
         Path(site,'public_dependencies.pth').write_text('\n'.join(donor_sites)+'\n',encoding='utf8')
     else:
         subprocess.run([str(python),'-m','pip','install','-r',str(ROOT/'scripts/requirements-core.txt')],check=True)
     subprocess.run([str(python),'-m','pip','install','--no-deps','--ignore-installed',str(wheel)],check=True)
     subprocess.run([str(python),'-I','-c','import bemarkdown,lxml,fitz,PIL,numpy,psutil,mathtypejx;print(bemarkdown.__version__)'],check=True)
+    subprocess.run([str(python),'-I','-c','import runpy,sys;from pathlib import Path;p=Path(sys.argv[1]);runpy.run_path(str(p/"engine.py"))["engine_root"](p)',str(ROOT/'TOOLS/bemarkdown')],check=True)
     config=args.api_config.resolve();subprocess.run([str(python),'-I','-c','from bemarkdown.pdf.local_model_api import read_config;import sys;read_config(sys.argv[1])',str(config)],check=True)
     local=ROOT/'.local';(local/'model-api.json').write_bytes(config.read_bytes())
     receipt={'status':'READY_FULL','python':python.relative_to(ROOT).as_posix(),'wheel_sha256':manifest['wheel']['sha256'],

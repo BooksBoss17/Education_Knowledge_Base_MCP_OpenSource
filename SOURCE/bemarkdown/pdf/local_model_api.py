@@ -15,7 +15,7 @@ import uuid
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import urlsplit
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
 from .visual_serial_pipeline import LOCAL_API_POLICY, VisualSerialOrchestrator, VisualSerialPolicy
@@ -25,6 +25,36 @@ ROLES = ("layout", "formula", "table", "text")
 LEGACY_ROLES = frozenset({"layout", "formula", "text"})
 MAX_BYTES = 64 * 1024 * 1024
 MAX_ITEMS = 128
+SESSION_SCHEMA = "bemarkdown-model-session-v2"
+
+
+def request_batches(items, *, max_items=MAX_ITEMS, max_bytes=MAX_BYTES, max_pixels=None):
+    """Bound transport batches independently of backend GPU minibatch size."""
+    if type(max_items) is not int or not 1 <= max_items <= MAX_ITEMS:
+        raise ModelApiError("MODEL_API_BATCH_ITEMS_INVALID")
+    if type(max_bytes) is not int or not 1024 <= max_bytes <= MAX_BYTES:
+        raise ModelApiError("MODEL_API_BATCH_BYTES_INVALID")
+    if max_pixels is not None and (type(max_pixels) is not int or max_pixels <= 0):
+        raise ModelApiError("MODEL_API_BATCH_PIXELS_INVALID")
+    batch, byte_count, pixel_count = [], 512, 0
+    for item in items:
+        item_bytes = len(json.dumps(item, ensure_ascii=False).encode("utf-8")) + 2
+        pixels = 0
+        if max_pixels is not None:
+            from PIL import Image
+            with Image.open(BytesIO(base64.b64decode(item["image_base64"], validate=True))) as image:
+                pixels = image.width * image.height
+        if item_bytes + 512 > max_bytes or (max_pixels is not None and pixels > max_pixels):
+            raise ModelApiError("MODEL_API_SINGLE_ITEM_EXCEEDS_BATCH_LIMIT")
+        if batch and (len(batch) >= max_items or byte_count + item_bytes > max_bytes
+                      or (max_pixels is not None and pixel_count + pixels > max_pixels)):
+            yield batch
+            batch, byte_count, pixel_count = [], 512, 0
+        batch.append(item)
+        byte_count += item_bytes
+        pixel_count += pixels
+    if batch:
+        yield batch
 
 
 class ModelApiError(ValueError):
@@ -76,6 +106,8 @@ def read_config(path):
         env = spec.get("token_env")
         if env and not os.environ.get(env):
             raise ModelApiError(f"MODEL_API_TOKEN_ENV_MISSING:{env}")
+        if spec.get("session_mode", "auto") not in {"auto", "off", "required"}:
+            raise ModelApiError("MODEL_API_SESSION_MODE_INVALID")
     return config
 
 
@@ -89,32 +121,128 @@ class LocalModelApi:
         self.role, self.spec = role, dict(spec)
         self.identity = {"role": role, "endpoint": local_url(spec["url"]), "invoked": False}
         self.metrics = {"requests": []}
+        self.capability = None
+        self.discovery_done = False
+        self.session_id = None
+        self.stage_id = None
+        self.stage_requests = 0
+        self.stage_items = 0
+        suffix = f"/v1/{role}"
+        self.base_url = spec["url"][:-len(suffix)] if spec["url"].endswith(suffix) else None
+
+    def _http(self, url, payload=None, *, missing_ok=False):
+        headers = {"Content-Type": "application/json"}
+        if self.spec.get("token_env"):
+            headers["Authorization"] = "Bearer " + os.environ[self.spec["token_env"]]
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8") if payload is not None else None
+        if body is not None and len(body) > MAX_BYTES:
+            raise ModelApiError("MODEL_API_REQUEST_TOO_LARGE")
+        try:
+            with build_opener(ProxyHandler({}), _NoRedirect()).open(
+                    Request(local_url(url), body, headers), timeout=self.spec.get("timeout_seconds", 600)) as response:
+                data = response.read(MAX_BYTES + 1)
+            if len(data) > MAX_BYTES:
+                raise ModelApiError("MODEL_API_RESPONSE_TOO_LARGE")
+            return json.loads(data)
+        except HTTPError as exc:
+            if missing_ok and exc.code in {404, 405, 501}:
+                return None
+            detail = exc.read(8192).decode("utf-8", errors="replace")
+            raise ModelApiError(f"MODEL_API_HTTP_ERROR:{self.role}:{exc.code}:{detail}") from exc
+
+    def _progress(self, state, request_id=None, model_unloaded=False):
+        from ..model_session import record_progress
+        record_progress({"role": self.role, "stage_id": self.stage_id, "session_id": self.session_id,
+                         "state": state, "request_id": request_id, "completed_requests": self.stage_requests,
+                         "completed_items": self.stage_items, "model_unloaded": model_unloaded})
+
+    def discover(self):
+        if self.discovery_done:
+            return
+        mode = self.spec.get("session_mode", "auto")
+        if mode == "off" or self.base_url is None:
+            if mode == "required":
+                raise ModelApiError("MODEL_API_SESSION_ENDPOINT_REQUIRED")
+            self.discovery_done = True
+            return
+        value = self._http(self.base_url + "/v1/capabilities", missing_ok=True)
+        if value is not None:
+            if (not isinstance(value, dict) or value.get("schema") != "bemarkdown-model-api-capabilities-v1"
+                    or not isinstance(value.get("roles"), list) or self.role not in value["roles"]):
+                raise ModelApiError("MODEL_API_CAPABILITIES_INVALID")
+            session_roles = value.get("session_roles", value["roles"])
+            if not isinstance(session_roles, list) or any(role not in value["roles"] for role in session_roles):
+                raise ModelApiError("MODEL_API_CAPABILITIES_SESSION_ROLES_INVALID")
+            if value.get("session_schema") == SESSION_SCHEMA and self.role in session_roles:
+                for key, minimum, maximum in (("max_items", 1, MAX_ITEMS), ("max_bytes", 1024, MAX_BYTES)):
+                    if type(value.get(key)) is not int or not minimum <= value[key] <= maximum:
+                        raise ModelApiError("MODEL_API_CAPABILITIES_LIMIT_INVALID")
+                self.capability = value
+        if mode == "required" and self.capability is None:
+            raise ModelApiError("MODEL_API_SESSION_UNSUPPORTED")
+        self.discovery_done = True
+
+    def _session_call(self, action, payload=None):
+        return self._http(self.base_url + "/v2/session/" + action,
+                          {**(payload or {}), "schema": SESSION_SCHEMA, "session_id": self.session_id})
+
+    def _open_session(self):
+        if self.session_id is not None:
+            return
+        self.session_id = uuid.uuid4().hex
+        try:
+            value = self._session_call("open", {"role": self.role})
+            if (value.get("schema") != SESSION_SCHEMA or value.get("session_id") != self.session_id
+                    or value.get("role") != self.role or value.get("state") != "OPEN"):
+                raise ModelApiError("MODEL_API_SESSION_OPEN_INVALID")
+        except BaseException:
+            self.close()
+            raise
+
+    def batches(self, items):
+        self.discover()
+        limits = self.capability or {}
+        default_count = limits.get("layout_batch_items", 1) if self.role == "layout" else MAX_ITEMS
+        return request_batches(items,
+            max_items=min(self.spec.get("batch_items", default_count), limits.get("max_items", MAX_ITEMS)),
+            max_bytes=min(self.spec.get("batch_bytes", MAX_BYTES), limits.get("max_bytes", MAX_BYTES)),
+            max_pixels=self.spec.get("batch_pixels"))
 
     def request(self, items):
+        self.discover()
+        if self.stage_id is None:
+            self.stage_id = uuid.uuid4().hex
         request_id = uuid.uuid4().hex
         payload = {"schema": SCHEMA, "role": self.role, "request_id": request_id, "items": items}
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         if len(body) > MAX_BYTES or not 0 < len(items) <= MAX_ITEMS:
             raise ModelApiError("MODEL_API_REQUEST_TOO_LARGE")
-        headers = {"Content-Type": "application/json"}
-        if self.spec.get("token_env"):
-            headers["Authorization"] = "Bearer " + os.environ[self.spec["token_env"]]
         started = time.perf_counter()
+        self._progress("RUNNING", request_id)
         try:
-            opener = build_opener(ProxyHandler({}), _NoRedirect())
-            with opener.open(Request(self.spec["url"], body, headers),
-                             timeout=self.spec.get("timeout_seconds", 600)) as response:
-                data = response.read(MAX_BYTES + 1)
-            if len(data) > MAX_BYTES:
-                raise ModelApiError("MODEL_API_RESPONSE_TOO_LARGE")
-            result = json.loads(data)
-        except HTTPError as exc:
-            detail = exc.read(8192).decode("utf-8", errors="replace")
-            raise ModelApiError(f"MODEL_API_HTTP_ERROR:{self.role}:{exc.code}:{detail}") from exc
+            if self.capability is not None:
+                self._open_session()
+                try:
+                    result = self._session_call("infer", payload)
+                except (TimeoutError, ConnectionError, URLError):
+                    status = self._session_call("status", {"request_id": request_id})
+                    from ..model_session import payload_digest
+                    receipt = status.get("receipt", {})
+                    if (status.get("session_id") != self.session_id or status.get("request_state") != "COMPLETE"
+                            or receipt.get("payload_sha256") != payload_digest(payload)):
+                        raise ModelApiError("MODEL_API_REQUEST_COMPLETION_UNKNOWN")
+                    result = receipt["result"]
+            else:
+                result = self._http(self.spec["url"], payload)
         except Exception as exc:
+            self._progress("REQUEST_FAILED", request_id)
             raise ModelApiError(f"MODEL_API_REQUEST_FAILED:{self.role}:{type(exc).__name__}:{exc}") from exc
-        if (result.get("schema") != SCHEMA or result.get("role") != self.role
-                or result.get("request_id") != request_id or result.get("released") is not True):
+        expected_schema = SESSION_SCHEMA if self.session_id else SCHEMA
+        released = (result.get("request_complete") is True and result.get("model_unloaded") is False
+                    and result.get("released") is False and result.get("session_id") == self.session_id
+                    if self.session_id else result.get("released") is True)
+        if (result.get("schema") != expected_schema or result.get("role") != self.role
+                or result.get("request_id") != request_id or not released):
             raise ModelApiError("MODEL_API_RESPONSE_BINDING_OR_RELEASE_INVALID")
         rows = result.get("items")
         expected = [item["id"] for item in items]
@@ -132,12 +260,25 @@ class LocalModelApi:
         self.metrics["requests"].append({"request_id": request_id, "count": len(items),
                                           "wall_seconds": time.perf_counter() - started,
                                           "server": result.get("metrics", {})})
+        self.stage_requests += 1
+        self.stage_items += len(items)
+        self._progress("BATCH_COMPLETE", request_id, model_unloaded=self.session_id is None)
         by_id = {row["id"]: row for row in rows}
         return [by_id[key] for key in expected]
 
     def close(self):
-        # The API contract requires resources to be released before responding.
-        pass
+        if self.session_id is not None:
+            started = time.perf_counter()
+            value = self._session_call("close")
+            if (value.get("schema") != SESSION_SCHEMA or value.get("session_id") != self.session_id
+                    or value.get("model_unloaded") is not True or value.get("state") != "CLOSED"):
+                raise ModelApiError("MODEL_API_SESSION_UNLOAD_UNCONFIRMED")
+            self.metrics.setdefault("sessions", []).append({**value, "close_wall_seconds": time.perf_counter()-started})
+            self.session_id = None
+        if self.stage_id is not None:
+            self._progress("STAGE_COMPLETE", model_unloaded=True)
+            self.stage_id = None
+            self.stage_requests = self.stage_items = 0
 
 
 class LayoutApiRuntime(LocalModelApi):
@@ -146,8 +287,12 @@ class LayoutApiRuntime(LocalModelApi):
         crop_root = Path(output_dir) / "_bemarkdown/visual_serial/api_crops"
         crop_root.mkdir(parents=True, exist_ok=True)
         regions = []
-        for render in renders:
-            result = self.request([{"id": str(render.page_index), **encoded_image(render.image_bytes)}])[0]
+        by_id = {str(render.page_index): render for render in renders}
+        if len(by_id) != len(renders):
+            raise ModelApiError("MODEL_API_DUPLICATE_PAGE_IDS")
+        items = ({"id": str(render.page_index), **encoded_image(render.image_bytes)} for render in renders)
+        predictions = ((by_id[row["id"]], row) for batch in self.batches(items) for row in self.request(batch))
+        for render, result in predictions:
             with Image.open(BytesIO(render.image_bytes)) as source:
                 image = source.convert("RGB")
             try:
@@ -181,28 +326,20 @@ class LayoutApiRuntime(LocalModelApi):
 
 class OcrApiRuntime(LocalModelApi):
     def recognize_batch(self, crops):
-        output, batch, size = [], [], 0
+        def items():
+            for index, crop in enumerate(crops):
+                data = Path(crop["path"]).read_bytes()
+                if hashlib.sha256(data).hexdigest() != crop["sha256"]:
+                    raise ModelApiError("MODEL_API_CROP_HASH_MISMATCH")
+                yield {"id": str(index), **encoded_image(data),
+                       "serialization_profile": crop.get("serialization_profile", "default")}
 
-        def flush():
-            if batch:
-                for row in self.request(batch):
-                    if not isinstance(row.get("text"), str):
-                        raise ModelApiError("MODEL_API_OCR_TEXT_REQUIRED")
-                    output.append(row["text"])
-
-        for index, crop in enumerate(crops):
-            data = Path(crop["path"]).read_bytes()
-            if hashlib.sha256(data).hexdigest() != crop["sha256"]:
-                raise ModelApiError("MODEL_API_CROP_HASH_MISMATCH")
-            item = {"id": str(index), **encoded_image(data),
-                    "serialization_profile": crop.get("serialization_profile", "default")}
-            item_size = len(json.dumps(item).encode("utf-8"))
-            if batch and (len(batch) >= MAX_ITEMS or size + item_size > MAX_BYTES - 4096):
-                flush()
-                batch, size = [], 0
-            batch.append(item)
-            size += item_size
-        flush()
+        output = []
+        for batch in self.batches(items()):
+            for row in self.request(batch):
+                if not isinstance(row.get("text"), str):
+                    raise ModelApiError("MODEL_API_OCR_TEXT_REQUIRED")
+                output.append(row["text"])
         return output
 
 

@@ -1,12 +1,12 @@
 {
   "name": "bemarkdown",
-  "version": "0.4.3+localapi.4",
-  "release_id": "bemarkdown-spatial-fragment-20261116-v4",
+  "version": "0.4.4+localapi.6",
+  "release_id": "bemarkdown-api-session-20261116-v2",
   "runtime_route": "LOCAL_MODEL_API_V1",
   "wheel": {
-    "path": "dist/bemarkdown-0.4.3+localapi.4-py3-none-any.whl",
-    "sha256": "a1cd78f4c351ca46c21061dcb15b5dec6da0d654cb97f33341ab5fb38dbdbff2",
-    "python_modules": 43
+    "path": "dist/bemarkdown-0.4.4+localapi.6-py3-none-any.whl",
+    "sha256": "b19db12b8e5730ceefac6b31ac79542a2fd4890e331336f9b809379a5bd197c0",
+    "python_modules": 44
   },
   "distribution": "PUBLIC_API_FIRST"
 }

@@ -613,13 +613,15 @@ class VisualSerialOrchestrator(VisualSerialRuntimeAdapter):
         if not callable(detect):
             raise VisualSerialContractError("VISUAL_SERIAL_LAYOUT_ADAPTER_INVALID")
         output_dir = kwargs.get("output_dir")
-        if "output_dir" in inspect.signature(detect).parameters:
-            regions = detect(renders, output_dir=output_dir)
-        else:
-            regions = detect(renders)
-        close_layout = getattr(self.layout_runtime, "close", None)
-        if callable(close_layout):
-            close_layout()
+        try:
+            if "output_dir" in inspect.signature(detect).parameters:
+                regions = detect(renders, output_dir=output_dir)
+            else:
+                regions = detect(renders)
+        finally:
+            close_layout = getattr(self.layout_runtime, "close", None)
+            if callable(close_layout):
+                close_layout()
         regions = add_page_fallbacks(regions, renders, output_dir)
         plan = build_visual_serial_plan(regions, policy=self.policy)
         from .spatial_assembly import complete_figure_edges

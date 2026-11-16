@@ -1,7 +1,7 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "bemarkdown-api-first-20261116-v1",
-  "bemarkdown_wheel_sha256": "a1cd78f4c351ca46c21061dcb15b5dec6da0d654cb97f33341ab5fb38dbdbff2",
+  "release_id": "bemarkdown-api-session-20261116-v2",
+  "bemarkdown_wheel_sha256": "b19db12b8e5730ceefac6b31ac79542a2fd4890e331336f9b809379a5bd197c0",
   "files": {
     "asset_screening.py": "e3f0ed9818f1f5e8379b88bda682d118a6ad9b07fcf5d55725f6e5e161e2554b",
     "atomic_files.py": "b25301470331a273020c5899c4e2f135c179e6b1213becdbcb792c646f916b7d",
@@ -10,7 +10,7 @@
     "IMAGE_SCREENING.md": "3fb4dbbaf96bd1e23237be5b53063251f3f77d929627175a72ced4515c426a22",
     "install.py": "9d98cde268bd50cd90f9d4b0d3909c715cb1c059d96bd8716789d1cb303256b3",
     "launch.py": "03a7482a5d77adba9607b59736592773b1867eeb6664a81655a580dda1a13852",
-    "managed_bridge.py": "5f64b8f2be4edff1dc3457449d84a5a92e599dca1ecebf61777ca92403d8617a",
+    "managed_bridge.py": "00ada5e86ba459d1f00cbc20220bacf5a62ca631b49ccbb40d8714c7dc8d9469",
     "managed_worker.py": "103aca724e8511dd6c42536543b5a50e840ba2b5c25c49fa5d770b93606d115f",
     "next_handoff.py": "44c21a2aeefe991b332ff6f9ce3cc7f4424a6bef2f5c3c28017b80683100dddc",
     "README.md": "8f2e7aecaf9f0d27e3711423cc20c90005d300047914ce88f77b77d035643383",
@@ -26,7 +26,7 @@
     "screening_templates.json": "4eeeadb3bd5ad0df580ec1e335bd4b876f2d35bae0909756da02b1fe6a3b8afc",
     "section_anchors.py": "ad2e566c990053ffabe93853e82ae17e158f9f88a87b1aeed9a9afe0a151c4e2",
     "semantic_review.py": "f1ae3fc8bbe4cc8bd336cf6f5e48917ba70429fe5925e1a45ccdb2b4f580581e",
-    "server.py": "34f770b8079dd2b4adb37c6e78ca27b245f6c2743d6ed91346c6d35ac4ec9a0a",
+    "server.py": "39b979df469d33372f8208a2814c16000378892fd8e456c695f92e8ded45124a",
     "TEXTBOOK_IMPORT.md": "1f5bf1ff918b108a8fb0607f2f5d8d4149a9251ebbb2957ef9c66b2e3459e29b",
     "textbook_revision.py": "890bab90970c4f9dd111e20f8e210ead16cfe6e6fc259c9c4ee93b4e18999e2d",
     "textbook_workflow.py": "4fb427b5ae549188641cd9460476a8887fdc4df0cea9846535165206cfcc4a81",

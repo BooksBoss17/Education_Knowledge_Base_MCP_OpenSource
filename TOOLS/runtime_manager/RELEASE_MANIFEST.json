@@ -1,9 +1,9 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "bemarkdown-api-first-20261116-v1",
-  "bemarkdown_wheel_sha256": "a1cd78f4c351ca46c21061dcb15b5dec6da0d654cb97f33341ab5fb38dbdbff2",
+  "release_id": "bemarkdown-api-session-20261116-v2",
+  "bemarkdown_wheel_sha256": "b19db12b8e5730ceefac6b31ac79542a2fd4890e331336f9b809379a5bd197c0",
   "files": {
-    "bootstrap.py": "f397ef742116afd774721a0c14007f5b885147cfc79e4c83f754356b0ad65adb",
+    "bootstrap.py": "d2ff4881221c10fb63dc0e29a21f8718201c1822d56351f8e76e553ce76e9585",
     "external_resource_policy.py": "dc14efab8878562b2b9bfbaa235af64a129778d8915713955148281f74e0b47f",
     "native_gateway.py": "b09021d32691ac1c845926cd697c6ddada8a233046454c5133538018900a1fe4",
     "native_worker.py": "a2f63013159ee3bcdcdc901dfb8666d9458e7591071582c39166e8043734965c",
@@ -23,11 +23,11 @@
     "src/ekb_model_runtime/run_manager/__init__.py": "fef446a566aa67fe3afe1517afaa41897fd2f16ea5f9a10bb98ecbb43bcf0065",
     "src/ekb_model_runtime/run_manager/client.py": "c4359d93bfcb604dd52280ab7f6b4621de76854116d8442d8b047a4fa8dc4496",
     "src/ekb_model_runtime/run_manager/common.py": "1dada5b76f752661a01e3137c7c93062cb221b9e73edd048e4ee16248c6d2f57",
-    "src/ekb_model_runtime/run_manager/daemon.py": "e6a7d198e0d3f764418bb56109bd4f93394468a544af0ff6960bca0ff0e5c7af",
+    "src/ekb_model_runtime/run_manager/daemon.py": "1215e6e65520fdb8f9e547d4bc91b671a8e3c0d982dd5829e8e5eb699562a912",
     "src/ekb_model_runtime/run_manager/ipc.py": "dc40cde930c4f89bac3f22f2a5dfe2e894328e4c4b4e4d906b7e99a797f79945",
     "src/ekb_model_runtime/run_manager/process.py": "60be514185b3d17d1f9f2934d3e2350aa72c6c5631dc0250fc41e444ac468ed9",
     "src/ekb_model_runtime/run_manager/README.md": "9c73f383be1658d3abd1c6e424abe03d12e6460aa684a37dee6aa1233b411904",
-    "src/ekb_model_runtime/run_manager/registry.py": "34bc25230528987b0dbf2397d21d9a42cfe3d2e8f4a0687c1c37a773decc02fc",
+    "src/ekb_model_runtime/run_manager/registry.py": "597e1089bb9b0e7c849b4871dec1c5a29abeb10588416e06db27ae56dbfec79d",
     "src/ekb_model_runtime/run_manager/storage.py": "eebb452f8109ed1bf3b835d039901cb7df52b13344c74183e74e6134f0a6f001",
     "src/ekb_model_runtime/runtime_registry.py": "72bddf4bdbb05b06c30405d637e34a9321029fd42c1c8f2bbf6af19eb02a5f07",
     "src/ekb_model_runtime/worker_contract.py": "5947ce9655f4f7fa475ad5fdf8c85b5f421d9b707dd8fbec514132ea2dbcc1ed"

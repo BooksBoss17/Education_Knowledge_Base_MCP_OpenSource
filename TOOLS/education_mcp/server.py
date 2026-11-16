@@ -270,9 +270,12 @@ class Service:
                 value['resource_profile'] = selected_profile
                 target_mib, hard_limit_mib = (10240, 10240) if selected_profile == '10gb' else (6144, 6144)
                 managed_policy = json.loads(os.environ.get('BEMARKDOWN_HOST_MEMORY_POLICY_JSON', '{}'))
-                if managed_policy:
+                external_api = managed_policy.get('schema') == 'public-external-api-ram-v1'
+                if external_api:
+                    target_mib = hard_limit_mib = None
+                elif managed_policy:
                     target_mib = hard_limit_mib = managed_policy['gpu_whole_card_cap_bytes'] / 2**20
-                value['gpu_usage'] = dict(scope='WHOLE_DEVICE_SAMPLED', peak_mib=None, samples=0,
+                value['gpu_usage'] = dict(scope='EXTERNAL_API_NOT_OBSERVED' if external_api else 'WHOLE_DEVICE_SAMPLED', peak_mib=None, samples=0,
                     target_mib=target_mib, hard_limit_mib=hard_limit_mib, target_exceeded=False,
                     hard_limit_termination=False, measurement_errors=0)
                 value.update(status="RUNNING", started_at=time.time(), command=command)
@@ -284,7 +287,7 @@ class Service:
                     atomic_json(directory / "state.json", value)
                     next_gpu_sample = 0.0
                     while process.poll() is None:
-                        if time.monotonic() >= next_gpu_sample:
+                        if not external_api and time.monotonic() >= next_gpu_sample:
                             try:
                                 used = self.workspace_manager.sample_gpu_usage()
                                 if used is not None:
