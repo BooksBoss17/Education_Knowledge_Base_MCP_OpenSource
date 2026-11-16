@@ -3,12 +3,12 @@
   "default_image_screening": false,
   "files": {
     "convert.py": "41daf8d2f993ff7ed175fc5515841e7f1d13d125bc2a14c95678ba43131d9ebc",
-    "dist/bemarkdown-0.4.3+localapi.4-py3-none-any.whl": "a1cd78f4c351ca46c21061dcb15b5dec6da0d654cb97f33341ab5fb38dbdbff2",
-    "doctor.py": "bd8caac093c00fe0c167a976d0b11758536fa54c828175a7e91527d7c1d556ec",
+    "dist/bemarkdown-0.4.4+localapi.6-py3-none-any.whl": "b19db12b8e5730ceefac6b31ac79542a2fd4890e331336f9b809379a5bd197c0",
+    "doctor.py": "4923e101cd720371d66a9e3f8534e87247d514520be0309d340f238aad09e8be",
     "engine.py": "7c7223ceba7598dfc275bb6f5b714353f4866ddf69142c8c947ef9c67d52db4c",
     "HOST_MEMORY_POLICY.json": "6bf5582e62021e90f089a46c551e3af19a0418e375ff40250603ce8b25a1f6a9",
     "install.py": "32aa3dd991bc709b0732cc3e7b5dbbca5075145d45e220450fe5a279248c17df",
     "README.md": "68a3febfb6b0c32ed17b96da38985f4adcaae8a2366928952fed142a6862854b",
-    "TOOL_MANIFEST.json": "747231246f0ec4b447aead1d992b1541c9757b60eb3c03c559d22a737780aa87"
+    "TOOL_MANIFEST.json": "1653e88fdad1d7d66060f8fe3fe95c7777848f6ee0823ded91edaa739e119822"
   }
 }

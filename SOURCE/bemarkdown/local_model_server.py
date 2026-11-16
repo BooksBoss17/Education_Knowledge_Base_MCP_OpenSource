@@ -10,6 +10,7 @@ import hmac
 import hashlib
 import json
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -61,7 +62,7 @@ def make_backend(role, spec):
                                        max_new_tokens=spec.get("max_new_tokens", 2048))
 
 
-def infer(payload, config, *, backend_factory=make_backend):
+def infer(payload, config, *, backend_factory=make_backend, release_backend=True):
     role = payload["role"]
     validate_request(payload, role)
     spec = config["roles"][role]
@@ -96,7 +97,8 @@ def infer(payload, config, *, backend_factory=make_backend):
                 items = [{"id": item["id"], "text": value}
                          for item, value in zip(payload["items"], values, strict=True)]
         finally:
-            backend.close()
+            if release_backend:
+                backend.close()
         identity = dict(backend.identity)
         if role == "table":
             from .pdf.visual_serial_prompts import prompt_for, prompt_fingerprint
@@ -138,8 +140,92 @@ class ProcessBackend:
         self.config_path = Path(config_path).resolve()
         self.config_sha256 = hashlib.sha256(self.config_path.read_bytes()).hexdigest()
         self.timeout = timeout
+        self.session = None
+        self.closed_sessions = {}
+
+    def capabilities(self):
+        from .model_session import SESSION_SCHEMA
+        return {"schema": "bemarkdown-model-api-capabilities-v1", "roles": list(ROLES),
+                "session_schema": SESSION_SCHEMA, "max_items": MAX_ITEMS, "max_bytes": MAX_BYTES,
+                "layout_batch_items": 8, "idle_seconds": 120}
+
+    def session_action(self, action, payload):
+        from .model_session import SessionProcess, SESSION_SCHEMA
+        session_id = payload.get("session_id", "")
+        if payload.get("schema") != SESSION_SCHEMA or not isinstance(session_id, str) or not re.fullmatch(r"[a-f0-9]{32}", session_id):
+            raise ModelApiError("MODEL_API_SESSION_BINDING_INVALID")
+        home, job = os.environ.get("EKB_RUN_MANAGER_HOME"), os.environ.get("EKB_MANAGED_JOB_ID", "")
+        journal = Path(home) / "jobs" / job / "model_api_sessions" / session_id if home and re.fullmatch(r"[a-f0-9]{32}", job) else None
+        closed = self.closed_sessions.get(session_id)
+        if closed is None and journal is not None and (journal / "CLOSED.json").is_file():
+            closed = {"schema": SESSION_SCHEMA, "state": "CLOSED", **json.loads((journal / "CLOSED.json").read_text("utf-8"))}
+        if action == "open":
+            if hashlib.sha256(self.config_path.read_bytes()).hexdigest() != self.config_sha256:
+                raise ModelApiError("MODEL_API_SERVER_CONFIG_CHANGED")
+            role = payload.get("role")
+            if role not in ROLES:
+                raise ModelApiError("MODEL_API_SESSION_ROLE_INVALID")
+            if closed is not None:
+                raise ModelApiError("MODEL_API_SESSION_ALREADY_CLOSED")
+            if self.session is not None:
+                if self.session.session_id != session_id or self.session.role != role:
+                    raise ModelApiError("MODEL_API_ANOTHER_SESSION_ACTIVE")
+            else:
+                home = os.environ.get("EKB_RUN_MANAGER_HOME")
+                job = os.environ.get("EKB_MANAGED_JOB_ID")
+                if not home or not job:
+                    raise ModelApiError("MODEL_API_MANAGED_JOB_REQUIRED")
+                journal = Path(home) / "jobs" / job / "model_api_sessions"
+                self.session = SessionProcess(self.config_path, role, timeout=self.timeout,
+                    idle_seconds=120, journal_root=journal, session_id=session_id)
+            return {"schema": SESSION_SCHEMA, "session_id": session_id, "role": role, "state": "OPEN"}
+        if self.session is None or self.session.session_id != session_id:
+            if action in {"close", "status"} and closed is not None:
+                result = dict(closed)
+                if action == "status" and payload.get("request_id") is not None:
+                    home = os.environ.get("EKB_RUN_MANAGER_HOME")
+                    job = os.environ.get("EKB_MANAGED_JOB_ID")
+                    key = hashlib.sha256(str(payload["request_id"]).encode()).hexdigest()
+                    receipt = Path(home) / "jobs" / job / "model_api_sessions" / session_id / (key + ".json")
+                    result["request_state"] = "COMPLETE" if receipt.exists() else "UNKNOWN"
+                    if receipt.exists():
+                        result["receipt"] = json.loads(receipt.read_text("utf-8"))
+                return result
+            raise ModelApiError("MODEL_API_SESSION_UNKNOWN")
+        if action == "status":
+            return {"schema": SESSION_SCHEMA, **self.session.status(payload.get("request_id"))}
+        if action == "close":
+            return self.close_session()
+        if action == "infer":
+            internal = {key: value for key, value in payload.items() if key != "session_id"}
+            internal["schema"] = SCHEMA
+            validate_request(internal, self.session.role)
+            return self.session.request(internal)
+        raise ModelApiError("MODEL_API_SESSION_ACTION_UNKNOWN")
+
+    def close_session(self):
+        from .model_session import SESSION_SCHEMA
+        session = self.session
+        if session is None:
+            return None
+        closed = {"schema": SESSION_SCHEMA, "state": "CLOSED", **session.close()}
+        self.closed_sessions[session.session_id] = closed
+        while len(self.closed_sessions) > 64:
+            del self.closed_sessions[next(iter(self.closed_sessions))]
+        self.session = None
+        return closed
+
+    def reap(self):
+        if self.session is not None and self.session.child.poll() is not None:
+            self.close_session()
+
+    def close(self):
+        self.close_session()
 
     def __call__(self, payload):
+        self.reap()
+        if self.session is not None:
+            raise ModelApiError("MODEL_API_ANOTHER_SESSION_ACTIVE")
         # This child inherits the run manager's Windows Job and resource budget.
         if not os.environ.get("EKB_MANAGED_JOB_ID"):
             raise ModelApiError("MODEL_API_MANAGED_JOB_REQUIRED")
@@ -187,13 +273,35 @@ def create_server(address, backend, *, token):
             except (BrokenPipeError, ConnectionResetError):
                 pass  # A disconnected client does not restart finished inference.
 
-        def do_POST(self):
-            role = self.path.removeprefix("/v1/")
-            if self.path != f"/v1/{role}" or role not in ROLES:
-                self.send_json(404, {"error": "unknown role endpoint"})
-                return
+        def authorized(self):
             if not hmac.compare_digest(self.headers.get("Authorization", ""), "Bearer " + token):
                 self.send_json(401, {"error": "unauthorized"})
+                return False
+            return True
+
+        def do_GET(self):
+            if not self.authorized():
+                return
+            capability = getattr(backend, "capabilities", None)
+            if self.path == "/v1/capabilities" and callable(capability):
+                try:
+                    result = capability()
+                except Exception as exc:
+                    self.send_json(500, {"error": str(exc)})
+                    return
+                self.send_json(200, result)
+            else:
+                self.send_json(404, {"error": "capabilities unsupported"})
+
+        def do_POST(self):
+            role = self.path.removeprefix("/v1/")
+            action = self.path.removeprefix("/v2/session/")
+            session_request = (self.path == f"/v2/session/{action}" and action in {"open", "infer", "close", "status"}
+                               and callable(getattr(backend, "session_action", None)))
+            if not session_request and (self.path != f"/v1/{role}" or role not in ROLES):
+                self.send_json(404, {"error": "unknown role endpoint"})
+                return
+            if not self.authorized():
                 return
             if self.headers.get_content_type() != "application/json" or self.headers.get("Transfer-Encoding"):
                 self.send_json(415, {"error": "JSON with Content-Length required"})
@@ -203,19 +311,36 @@ def create_server(address, backend, *, token):
                 if not 0 < length <= MAX_BYTES:
                     raise ModelApiError("MODEL_API_REQUEST_SIZE_INVALID")
                 payload = json.loads(self.rfile.read(length))
-                validate_request(payload, role)
+                if session_request:
+                    if not isinstance(payload, dict):
+                        raise ModelApiError("MODEL_API_SESSION_OBJECT_REQUIRED")
+                else:
+                    validate_request(payload, role)
             except (ValueError, OSError) as exc:
                 self.send_json(400, {"error": str(exc)})
                 return
             try:
-                result = backend(payload)
+                result = backend.session_action(action, payload) if session_request else backend(payload)
             except Exception as exc:
                 self.send_json(500, {"error": str(exc)})
                 return
             self.send_json(200, result)
 
-    # One request at a time: no overlapping GPU model loads across roles.
-    return HTTPServer(address, Handler)
+    class Server(HTTPServer):
+        def service_actions(self):
+            reap = getattr(backend, "reap", None)
+            if callable(reap):
+                reap()
+
+        def server_close(self):
+            try:
+                close = getattr(backend, "close", None)
+                if callable(close):
+                    close()
+            finally:
+                super().server_close()
+
+    return Server(address, Handler)
 
 
 def main(argv=None):

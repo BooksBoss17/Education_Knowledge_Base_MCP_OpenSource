@@ -8,6 +8,16 @@ import string
 from .common import RunManagerError, bounded_number, file_sha, fingerprint
 
 
+def verify_runtime_files(program):
+    bindings = program.get("runtime_files", {})
+    if not isinstance(bindings, dict):
+        raise RunManagerError("INVALID_RUNTIME_FILE_BINDINGS")
+    for name, digest in bindings.items():
+        path = Path(name)
+        if not path.is_absolute() or not path.is_file() or file_sha(path) != digest:
+            raise RunManagerError("REGISTERED_RUNTIME_FILE_CHANGED", name)
+
+
 def load_registry(path):
     path = Path(path).resolve(strict=True)
     value = json.loads(path.read_text(encoding="utf-8"))
@@ -24,6 +34,7 @@ def load_registry(path):
             raise RunManagerError("PROGRAM_OUTSIDE_INSTALLATION", identifier)
         if file_sha(script) != row["script_sha256"]:
             raise RunManagerError("PROGRAM_SOURCE_CHANGED", identifier)
+        verify_runtime_files(row)
         current.update(python=str(python), script=str(script), actual_python_sha256=file_sha(python))
         if row.get("python_sha256") and current["actual_python_sha256"] != row["python_sha256"]:
             raise RunManagerError("PROGRAM_INTERPRETER_CHANGED", identifier)

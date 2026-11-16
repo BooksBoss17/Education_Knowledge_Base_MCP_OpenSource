@@ -52,6 +52,14 @@ def status(service, job_id):
     if actual not in {'SUCCEEDED'} or state.get('status') != 'SUCCEEDED':
         state['status'] = actual
     state['runtime_manager'] = observed
+    progress_path = Path(observed['job_folder']) / 'model_api_progress.json' if observed.get('job_folder') else None
+    if progress_path and progress_path.is_file():
+        progress = json.loads(progress_path.read_text(encoding='utf-8'))
+        if progress.get('job_id') != job_id:
+            raise ValueError('Model API progress belongs to a different job')
+        progress['job_state'] = actual
+        progress['live'] = actual == 'RUNNING'
+        state['model_api_progress'] = progress
     return state
 
 

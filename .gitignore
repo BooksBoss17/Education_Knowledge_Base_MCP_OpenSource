@@ -8,3 +8,5 @@ MODELS/**
 !MODELS/README.md
 config/*.private.json
 outputs/
+
+.pytest_cache/

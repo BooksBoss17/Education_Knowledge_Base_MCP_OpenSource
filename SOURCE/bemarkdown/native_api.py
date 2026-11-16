@@ -40,8 +40,11 @@ class NativeFormulaApi(FormulaReview):
         if groups:
             # Protocol/network errors fail the job; a successful empty prediction
             # is handled by the safety gate and preserves the original preview.
-            outputs = self.api.recognize_batch([{'path': str(g['path']), 'sha256': sha}
-                                               for sha, g in groups.items()])
+            try:
+                outputs = self.api.recognize_batch([{'path': str(g['path']), 'sha256': sha}
+                                                   for sha, g in groups.items()])
+            finally:
+                self.api.close()
             identity = self.api.identity
             self._runtime_fingerprint = {
                 **identity, 'model_identifier': identity['model_id'],

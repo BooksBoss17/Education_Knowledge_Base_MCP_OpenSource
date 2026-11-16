@@ -2,7 +2,7 @@
 
 将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 无需下载本项目过去的固定模型组合。默认不安装模型权重，不启用图片分类或 Semantic Retention。
 
-核心版本 **0.4.3+localapi.4**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
+核心版本 **0.4.4+localapi.6**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
 
 ## 转换流程
 
@@ -64,3 +64,12 @@ $env:MODEL_API_KEY = '填写你的密钥'
 - 源码与已发布wheel逐文件对应；不包含模型权重、教材样本、个人路径、宿主环境或密钥。
 
 许可证：AGPL-3.0-only；第三方与模型各自许可见 [说明](THIRD_PARTY_NOTICES.md)。
+
+
+### Optional stage sessions
+
+The gateway discovers `/v1/capabilities` for BeMarkdown upstreams. Roles advertising `bemarkdown-model-session-v2` can reuse an owned model worker across transport batches through open/infer/status/close. Other roles, including ordinary Chat Completions, retain v1 behavior. Configure `session_mode` as `auto` (default), `off`, or `required` in the client role configuration; `batch_items`, `batch_bytes`, and optional `batch_pixels` bound transport requests. These do not enable GPU parallel inference or certify remote resource release. Changing models still requires checking the provider's limits, request duration and resource policy.
+
+Completion and unload are separate: a v2 infer result reports request_complete=true and model_unloaded=false; close must confirm CLOSED and model_unloaded=true. A lost inference response may be recovered from a matching request receipt, never blindly repeated. The gateway forwards at most one active session and retains 64 closed-session routes; upstreams own their idle cleanup. This release does not automatically resume interrupted document conversions. The MCP status includes stage/batch progress when supplied by the converter.
+
+阶段会话的字段、完成收据、超时及资源边界见[协议说明](docs/MODEL_SESSIONS.md)。

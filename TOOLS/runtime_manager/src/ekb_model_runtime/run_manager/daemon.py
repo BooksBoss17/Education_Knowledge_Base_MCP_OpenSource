@@ -18,7 +18,7 @@ if not __package__:
 from .common import ACTIVE, RunManagerError, RotatingLog, atomic_json, bounded_number, canonical, code_fingerprint, file_sha, fingerprint
 from .ipc import auth_key, mac, receive, secure_root, send
 from .process import NamedMutex, OwnedProcess, WindowsJob, in_any_job, mutex_name, process_identity
-from .registry import ResourceAdapter, load_registry, requirement
+from .registry import ResourceAdapter, load_registry, requirement, verify_runtime_files
 from .storage import Store
 
 
@@ -251,6 +251,7 @@ class Manager:
         owned = None
         try:
             program = self.registry["programs"][job["program_id"]]
+            verify_runtime_files(program)
             if file_sha(program["script"]) != program["script_sha256"] or file_sha(program["python"]) != program["actual_python_sha256"]:
                 raise RunManagerError("REGISTERED_PROGRAM_CHANGED")
             if job["payload"].get("source") and file_sha(job["payload"]["source"]) != job["payload"]["source_sha256"]:
