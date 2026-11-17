@@ -19,28 +19,19 @@ def sample_device(**_):
 
 
 def resolve_device_policy(total_physical_bytes,commit_limit_bytes,gpu_total_bytes,**_):
-    cap=min(8*GiB,total_physical_bytes//2,commit_limit_bytes//2)
-    p={'schema':'public-external-api-ram-v1','project_ram_cap_gib':cap/GiB,
-       'ram_reserve':min(2*GiB,total_physical_bytes//8),'commit_reserve':min(2*GiB,commit_limit_bytes//8),
-       'gpu_uuid':'EXTERNAL_API','gpu_total_bytes':0,'mode':'external','supported':True,
+    p={'schema':'public-external-api-ram-v1','project_ram_cap_gib':None,
+       'ram_reserve':0,'commit_reserve':0,
+       'gpu_uuid':'EXTERNAL_API','gpu_total_bytes':0,'mode':'monitor','supported':True,
        'total_physical_bytes':total_physical_bytes,'commit_limit_bytes':commit_limit_bytes}
     p['policy_fingerprint']=hashlib.sha256(json.dumps(p,sort_keys=True).encode()).hexdigest()
     return p
 
 
 def evaluate_admission(p,o,r,reservations=None):
-    reasons=[]
-    if r['extra_gpu_mib']:return {'decision':'CAPACITY_INSUFFICIENT','reasons':['EXTERNAL_API_CANNOT_OWN_LOCAL_GPU']}
-    if r['extra_private_bytes']>p['project_ram_cap_gib']*GiB:
-        return {'decision':'CAPACITY_INSUFFICIENT','reasons':['CLIENT_RAM_REQUIREMENT_TOO_LARGE']}
-    if o['physical_free_bytes']-r['extra_physical_bytes']<p['ram_reserve']:reasons.append('PHYSICAL_RESERVE')
-    if o['commit_headroom_bytes']-r['extra_private_bytes']<p['commit_reserve']:reasons.append('COMMIT_RESERVE')
-    return {'decision':'WAIT' if reasons else 'ADMIT','reasons':reasons,'policy_fingerprint':p['policy_fingerprint']}
+    if r['extra_gpu_mib']:
+        return {'decision':'CAPACITY_INSUFFICIENT','reasons':['EXTERNAL_API_CANNOT_OWN_LOCAL_GPU']}
+    return {'decision':'ADMIT','reasons':[],'policy_fingerprint':p['policy_fingerprint']}
 
 
 def check_current(p,o,raise_on_violation=False):
-    reasons=[]
-    if o.get('group_current_bytes',0)>p['project_ram_cap_gib']*GiB:reasons.append('CLIENT_RAM_CAP')
-    if o['physical_free_bytes']<p['ram_reserve']:reasons.append('PHYSICAL_RESERVE')
-    if o['commit_headroom_bytes']<p['commit_reserve']:reasons.append('COMMIT_RESERVE')
-    return {'allowed':not reasons,'decision':'STOP' if reasons else 'CONTINUE','reasons':reasons,'policy_fingerprint':p['policy_fingerprint']}
+    return {'allowed':True,'decision':'CONTINUE','reasons':[],'policy_fingerprint':p['policy_fingerprint']}

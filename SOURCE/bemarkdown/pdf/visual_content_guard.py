@@ -16,6 +16,48 @@ def math_key(value: str) -> str:
     return re.sub(r"\s+", "", value.replace(r"\left", "").replace(r"\right", ""))
 
 
+def alphabet_array_without_glyphs(value, crop):
+    """Flag an OCR alphabet array when the crop lacks a plausible horizontal row of glyphs."""
+    if not isinstance(value, str) or r"\end{array}" not in value:
+        return False
+    body = re.sub(r"\s+", "", value).strip("$")
+    letters = re.findall(r"\\text\{([A-Z])\}", body)
+    count = len(letters)
+    if count < 6 or "".join(letters) != "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[:count]:
+        return False
+    alphabet = r"\quad".join(r"\text{" + letter + "}" for letter in letters)
+    if body not in {r"\begin{array}{" + alignment + "}" + alphabet + r"\end{array}"
+                    for alignment in ("c", "l", "r")}:
+        return False
+    import cv2
+    import numpy as np
+    from PIL import Image
+    with Image.open(crop["path"]) as image:
+        if count < 26:
+            rgb = np.asarray(image.convert("RGB"), dtype=np.int16)
+            if (rgb.max(axis=2) - rgb.min(axis=2) > 40).mean() < 0.15:
+                return False
+        gray = np.asarray(image.convert("L"))
+    for level in (80, 140, 205, 240):
+        for ink in (gray < level, gray > level):
+            stats = cv2.connectedComponentsWithStats(ink.astype("uint8"))[2][1:]
+            shapes = [(x, y + h/2, w, h) for x, y, w, h, area in stats
+                      if area >= 4 and h >= 3 and 0.1*h <= w <= 2.2*h]
+            if len(shapes) > 200:
+                return False  # Complex image: keep the transcription.
+            shapes.sort()
+            for _, center_y, _, height in shapes:
+                end = -1
+                aligned = 0
+                for x, y, w, h in shapes:
+                    if x >= end and abs(y-center_y) < 0.4*height and 0.5*height <= h <= 1.6*height:
+                        aligned += 1
+                        end = x+w-1
+                if aligned >= (count+1)//2:
+                    return False
+    return True
+
+
 def output_problem(value: Any, *, formula: bool = False) -> str | None:
     if not isinstance(value, str) or not value.strip():
         return "EMPTY_OCR"

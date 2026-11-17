@@ -24,7 +24,7 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
-from .visual_content_guard import MATH_SPAN, clean_text_output, duplicate_text_regions, output_problem
+from .visual_content_guard import MATH_SPAN, alphabet_array_without_glyphs, clean_text_output, duplicate_text_regions, output_problem
 
 
 VISUAL_SERIAL_SCHEMA = "bemarkdown-visual-serial-transcription-v1"
@@ -750,7 +750,9 @@ class VisualSerialExecutor:
                     Path(output_dir)/"_bemarkdown/visual_serial/table_masked_crops",mask_kind="table")
                 plan=replace(plan,text_regions=masked.text_regions)
         from .spatial_assembly import prepare_slots, assemble
-        plan, assembly_groups, contained_formulas, assembly_reviews = prepare_slots(plan, formulas, output_dir)
+        line_merge = getattr(self.text_runtime, 'spec', {}).get('text_line_merge', 'off') in {True, 'on'}
+        plan, assembly_groups, contained_formulas, assembly_reviews = prepare_slots(
+            plan, formulas, output_dir, line_merge=line_merge)
         self.effective_plan = plan
         text_started = time.perf_counter()
         try:
@@ -787,6 +789,9 @@ class VisualSerialExecutor:
                 if removed and not str(cleaned).strip():
                     suppressed.append(region.region_id)
             reason = output_problem(cleaned)
+            if alphabet_array_without_glyphs(cleaned, region.crop):
+                reason = "ALPHABET_ARRAY_SOURCE_REVIEW"
+                cleaned = ""
             if reason and region.region_id not in suppressed:
                 review_items.append({"region_id":region.region_id, "reason":reason, "raw_output":value})
                 if reason in {"EMPTY_MARKUP_OUTPUT", "EMPTY_MATH_BODY", "UNPAIRED_MATH_DELIMITER"}:
@@ -834,6 +839,9 @@ class VisualSerialExecutor:
             "text_input_provenance": {r.region_id:{"bbox":list(r.bbox), "crop":dict(r.crop), "metadata":dict(r.metadata)} for r in plan.text_regions},
             "preserved_region_ids": [region.region_id for region in plan.preserved_regions],
             "stage_trace": list(self._stage_trace),
+            "line_merge": {"enabled": line_merge,
+                           "merged_blocks": sum(len(g.get('line_merges', [])) for g in assembly_groups),
+                           "source_rows": sum(len(m['sources']) for g in assembly_groups for m in g.get('line_merges', []))},
             "serial": True,
             "formula_text_input_disjoint": not ({r.region_id for r in plan.formula_regions} & {r.region_id for r in plan.text_regions}),
             "formula_text_input_disjoint_scope": "REGION_IDS; failed formulas may enter text fallback",
@@ -857,4 +865,3 @@ def assert_visual_serial_result(result: Mapping[str, Any]) -> None:
         raise VisualSerialContractError("VISUAL_SERIAL_STAGE_ORDER_INVALID")
     if result.get("image_screening_called") or result.get("final_review_called"):
         raise VisualSerialContractError("VISUAL_SERIAL_FORBIDDEN_STAGE_RECORDED")
-

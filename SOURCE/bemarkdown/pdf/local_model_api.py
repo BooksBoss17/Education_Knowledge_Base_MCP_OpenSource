@@ -6,12 +6,14 @@ objects are part of the protocol. Inference is never retried automatically.
 from __future__ import annotations
 
 import base64
+import copy
 import hashlib
 import json
 import math
 import os
 import time
 import uuid
+from collections import OrderedDict
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -118,7 +120,13 @@ class _NoRedirect(HTTPRedirectHandler):
 
 class LocalModelApi:
     def __init__(self, role, spec):
-        self.role, self.spec = role, dict(spec)
+        # A runtime is one immutable service binding. Keep a public compatibility
+        # view, but never let mutation change an existing session or cache scope.
+        self.role, self.spec = role, copy.deepcopy(dict(spec))
+        self._role_snapshot = role
+        self._config_snapshot = copy.deepcopy(self.spec)
+        token_env = self._config_snapshot.get("token_env")
+        self._token = os.environ.get(token_env) if token_env else None
         self.identity = {"role": role, "endpoint": local_url(spec["url"]), "invoked": False}
         self.metrics = {"requests": []}
         self.capability = None
@@ -130,16 +138,24 @@ class LocalModelApi:
         suffix = f"/v1/{role}"
         self.base_url = spec["url"][:-len(suffix)] if spec["url"].endswith(suffix) else None
 
+    def _assert_config_fixed(self):
+        if self.role != self._role_snapshot or self.spec != self._config_snapshot:
+            raise ModelApiError("MODEL_API_CONFIG_CHANGED_DURING_DOCUMENT")
+
     def _http(self, url, payload=None, *, missing_ok=False):
         headers = {"Content-Type": "application/json"}
-        if self.spec.get("token_env"):
-            headers["Authorization"] = "Bearer " + os.environ[self.spec["token_env"]]
+        token_env = self._config_snapshot.get("token_env")
+        if token_env:
+            if self._token is None:
+                raise ModelApiError(f"MODEL_API_TOKEN_ENV_MISSING:{token_env}")
+            headers["Authorization"] = "Bearer " + self._token
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8") if payload is not None else None
         if body is not None and len(body) > MAX_BYTES:
             raise ModelApiError("MODEL_API_REQUEST_TOO_LARGE")
         try:
             with build_opener(ProxyHandler({}), _NoRedirect()).open(
-                    Request(local_url(url), body, headers), timeout=self.spec.get("timeout_seconds", 600)) as response:
+                    Request(local_url(url), body, headers),
+                    timeout=self._config_snapshot.get("timeout_seconds", 600)) as response:
                 data = response.read(MAX_BYTES + 1)
             if len(data) > MAX_BYTES:
                 raise ModelApiError("MODEL_API_RESPONSE_TOO_LARGE")
@@ -157,9 +173,10 @@ class LocalModelApi:
                          "completed_items": self.stage_items, "model_unloaded": model_unloaded})
 
     def discover(self):
+        self._assert_config_fixed()
         if self.discovery_done:
             return
-        mode = self.spec.get("session_mode", "auto")
+        mode = self._config_snapshot.get("session_mode", "auto")
         if mode == "off" or self.base_url is None:
             if mode == "required":
                 raise ModelApiError("MODEL_API_SESSION_ENDPOINT_REQUIRED")
@@ -204,11 +221,12 @@ class LocalModelApi:
         limits = self.capability or {}
         default_count = limits.get("layout_batch_items", 1) if self.role == "layout" else MAX_ITEMS
         return request_batches(items,
-            max_items=min(self.spec.get("batch_items", default_count), limits.get("max_items", MAX_ITEMS)),
-            max_bytes=min(self.spec.get("batch_bytes", MAX_BYTES), limits.get("max_bytes", MAX_BYTES)),
-            max_pixels=self.spec.get("batch_pixels"))
+            max_items=min(self._config_snapshot.get("batch_items", default_count), limits.get("max_items", MAX_ITEMS)),
+            max_bytes=min(self._config_snapshot.get("batch_bytes", MAX_BYTES), limits.get("max_bytes", MAX_BYTES)),
+            max_pixels=self._config_snapshot.get("batch_pixels"))
 
     def request(self, items):
+        self._assert_config_fixed()
         self.discover()
         if self.stage_id is None:
             self.stage_id = uuid.uuid4().hex
@@ -233,7 +251,7 @@ class LocalModelApi:
                         raise ModelApiError("MODEL_API_REQUEST_COMPLETION_UNKNOWN")
                     result = receipt["result"]
             else:
-                result = self._http(self.spec["url"], payload)
+                result = self._http(self._config_snapshot["url"], payload)
         except Exception as exc:
             self._progress("REQUEST_FAILED", request_id)
             raise ModelApiError(f"MODEL_API_REQUEST_FAILED:{self.role}:{type(exc).__name__}:{exc}") from exc
@@ -256,7 +274,8 @@ class LocalModelApi:
         if hasattr(self, "_stable_identity") and self._stable_identity != stable:
             raise ModelApiError("MODEL_API_MODEL_CHANGED_DURING_DOCUMENT")
         self._stable_identity = stable
-        self.identity = {**identity, "role": self.role, "endpoint": self.spec["url"], "invoked": True}
+        self.identity = {**identity, "role": self.role,
+                         "endpoint": self._config_snapshot["url"], "invoked": True}
         self.metrics["requests"].append({"request_id": request_id, "count": len(items),
                                           "wall_seconds": time.perf_counter() - started,
                                           "server": result.get("metrics", {})})
@@ -325,7 +344,49 @@ class LayoutApiRuntime(LocalModelApi):
 
 
 class OcrApiRuntime(LocalModelApi):
+    def __init__(self, role, spec):
+        super().__init__(role, spec)
+        enabled = role == "text" and spec.get("text_result_cache", "on") in {True, "on"}
+        entries = spec.get("text_result_cache_entries", 4096)
+        characters = spec.get("text_result_cache_characters", 16 * 1024 * 1024)
+        if type(entries) is not int or entries <= 0 or type(characters) is not int or characters <= 0:
+            raise ModelApiError("MODEL_API_TEXT_CACHE_LIMIT_INVALID")
+        self._cache_enabled = enabled
+        self._cache_entries = OrderedDict()
+        self._cache_limits = (entries, characters)
+        self._cache_characters = 0
+        self.metrics["text_result_cache"] = {
+            "enabled": enabled, "scope": "document", "occurrences": 0,
+            "model_generations": 0, "hits": 0, "evictions": 0,
+            "identity_bypass_occurrences": 0, "empty_results_not_cached": 0,
+            "entries": 0, "characters": 0, "max_entries": entries, "max_characters": characters,
+        }
+
+    def _cache_scope(self):
+        identity = getattr(self, "_stable_identity", None)
+        if not identity or not identity.get("prompt_fingerprint") or "max_new_tokens" not in identity:
+            return None
+        scope = {"role": self._role_snapshot, "spec": self._config_snapshot, "identity": identity}
+        return hashlib.sha256(json.dumps(scope, ensure_ascii=False, sort_keys=True,
+                                         separators=(",", ":")).encode("utf-8")).hexdigest()
+
+    def _cache_store(self, key, text):
+        size = len(text)
+        entries, characters = self._cache_limits
+        while self._cache_entries and (len(self._cache_entries) >= entries
+                                      or self._cache_characters + size > characters):
+            _, old = self._cache_entries.popitem(last=False)
+            self._cache_characters -= len(old)
+            self.metrics["text_result_cache"]["evictions"] += 1
+        if size > characters:
+            return
+        self._cache_entries[key] = text
+        self._cache_characters += size
+
     def recognize_batch(self, crops):
+        # Check before lookup: a mutated endpoint must never observe a cache hit.
+        self._assert_config_fixed()
+
         def items():
             for index, crop in enumerate(crops):
                 data = Path(crop["path"]).read_bytes()
@@ -334,12 +395,60 @@ class OcrApiRuntime(LocalModelApi):
                 yield {"id": str(index), **encoded_image(data),
                        "serialization_profile": crop.get("serialization_profile", "default")}
 
-        output = []
-        for batch in self.batches(items()):
-            for row in self.request(batch):
-                if not isinstance(row.get("text"), str):
+        if not self._cache_enabled:
+            output = []
+            for batch in self.batches(items()):
+                for row in self.request(batch):
+                    if not isinstance(row.get("text"), str):
+                        raise ModelApiError("MODEL_API_OCR_TEXT_REQUIRED")
+                    output.append(row["text"])
+            self.metrics["text_result_cache"]["occurrences"] += len(output)
+            self.metrics["text_result_cache"]["model_generations"] += len(output)
+            return output
+
+        output = [None] * len(crops)
+        stats = self.metrics["text_result_cache"]
+        stats["occurrences"] += len(crops)
+        for original in self.batches(items()):
+            scope = self._cache_scope()
+            groups = OrderedDict()
+            for item in original:
+                key = (item["sha256"], item["serialization_profile"])
+                if scope is not None and key in self._cache_entries:
+                    text = self._cache_entries.pop(key)
+                    self._cache_entries[key] = text
+                    output[int(item["id"])] = text
+                    stats["hits"] += 1
+                else:
+                    groups.setdefault(key, []).append(item)
+            representatives = [members[0] for members in groups.values()]
+            rows = self.request(representatives) if representatives else []
+            deferred = []
+            for (key, members), row in zip(groups.items(), rows, strict=True):
+                text = row.get("text")
+                if not isinstance(text, str):
                     raise ModelApiError("MODEL_API_OCR_TEXT_REQUIRED")
-                output.append(row["text"])
+                output[int(members[0]["id"])] = text
+                scope = self._cache_scope()
+                has_content = bool(text.strip())
+                reusable = scope is not None and has_content
+                if reusable:
+                    self._cache_store(key, text)
+                    for item in members[1:]:
+                        output[int(item["id"])] = text
+                        stats["hits"] += 1
+                else:
+                    stats["identity_bypass_occurrences"] += (len(members) if scope is None else 0)
+                    stats["empty_results_not_cached"] += (1 if scope is not None and not has_content else 0)
+                    deferred.extend(members[1:])
+            for batch in self.batches(iter(deferred)):
+                for item, row in zip(batch, self.request(batch), strict=True):
+                    if not isinstance(row.get("text"), str):
+                        raise ModelApiError("MODEL_API_OCR_TEXT_REQUIRED")
+                    output[int(item["id"])] = row["text"]
+            stats["model_generations"] += len(representatives) + len(deferred)
+        stats["entries"] = len(self._cache_entries)
+        stats["characters"] = self._cache_characters
         return output
 
 

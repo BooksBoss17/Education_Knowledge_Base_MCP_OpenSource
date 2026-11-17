@@ -65,6 +65,9 @@ def contained_results(regions, values):
     """Suppress only same-page contained formulas with literal output coverage."""
     def lexical(value):
         value = re.sub(r'\s+', '', value).replace(r'^{\prime}', "'")
+        # A thin space before a typeset unit and the font used to print that
+        # unit do not change its value. Keep distinct unit symbols distinct.
+        value = re.sub(r"~?\\(?:mathrm|text)\{(kg|km/h|cm|mm|m/s|s|Hz|Pa)\}", r"\\unit{\1}", value)
         return re.sub(r"\{([A-Za-z](?:_\{[^{}]+\})?)\}", r"\1", value)
     normalized = {k: lexical(v) for k, v in values.items()}
     result = {}
@@ -74,7 +77,9 @@ def contained_results(regions, values):
             continue
         owners = [p for p in regions if p.page_index == child.page_index
                   and p.region_id != child.region_id and p.bbox != child.bbox
-                  and contains(p.bbox, child.bbox)
+                  and (contains(p.bbox, child.bbox) or (
+                      p.bbox[2]-p.bbox[0] >= 1.5*(child.bbox[2]-child.bbox[0])
+                      and contains((p.bbox[0]-1, p.bbox[1]-1, p.bbox[2]+1, p.bbox[3]+1), child.bbox)))
                   and value in normalized.get(p.region_id, '')]
         if owners:
             owner = max(owners, key=lambda p: (p.bbox[2]-p.bbox[0])*(p.bbox[3]-p.bbox[1]))
@@ -82,8 +87,157 @@ def contained_results(regions, values):
     return result
 
 
-def prepare_slots(plan, formulas, output_dir):
-    """Split only masked parents whose formula ownership is unique and contained.
+def merge_continuous_text_rows(parent, rows, fragments, target):
+    """Merge only confirmed prose rows; retained slot pixels are the sole ink source."""
+    if parent.normalized_label not in {'text', 'content', 'abstract'} or parent.metadata.get('review_reason'):
+        return rows, fragments, []
+    from PIL import Image
+    by_id = {r.region_id: r for r in fragments}
+    output_rows, additions, records = [], [], []
+    removed = set()
+
+    def build(run, merge_index):
+        if len(run) < 2:
+            return run, None, None
+        regions = [by_id[row[0][1]] for row in run]
+        heights = [r.bbox[3]-r.bbox[1] for r in regions]
+        reference = sorted(heights)[len(heights)//2]
+        if reference <= 0 or any(not .65*reference <= h <= 1.5*reference for h in heights):
+            return run, None, None
+        for previous, current in zip(regions, regions[1:]):
+            gap = current.bbox[1]-previous.bbox[3]
+            overlap = min(previous.bbox[2],current.bbox[2])-max(previous.bbox[0],current.bbox[0])
+            width = min(previous.bbox[2]-previous.bbox[0],current.bbox[2]-current.bbox[0])
+            if (not 0 <= gap <= .9*reference or overlap < .5*width
+                    or abs(current.bbox[0]-previous.bbox[0]) > max(2.5*reference,.25*width)):
+                return run, None, None
+        images = []
+        for region in regions:
+            if region.metadata.get('review_reason') or region.metadata.get('assembly_parent') != parent.region_id:
+                return run, None, None
+            with Image.open(region.crop['path']) as source:
+                if source.width <= 12 or source.height <= 12:
+                    return run, None, None
+                images.append(source.convert('RGB').crop((6,6,source.width-6,source.height-6)))
+        widths = [r.bbox[2]-r.bbox[0] for r in regions]
+        sx = images[0].width/widths[0]; sy = images[0].height/heights[0]
+        if (any(abs(image.width/sx-width) > 2 for image,width in zip(images,widths))
+                or any(abs(image.height/sy-height) > 2 for image,height in zip(images,heights))):
+            for image in images:image.close()
+            return run, None, None
+        left = min(r.bbox[0] for r in regions); top = min(r.bbox[1] for r in regions)
+        right = max(r.bbox[2] for r in regions); bottom = max(r.bbox[3] for r in regions)
+        canvas = Image.new('RGB',(int(round((right-left)*sx))+12,int(round((bottom-top)*sy))+12),'white')
+        sources = []
+        for region, image in zip(regions,images):
+            canvas.paste(image,(6+int(round((region.bbox[0]-left)*sx)),6+int(round((region.bbox[1]-top)*sy))))
+            image.close()
+            sources.append({'region_id':region.region_id,'bbox':list(region.bbox),'page_index':region.page_index,
+                            'parent_region_id':parent.region_id,'source_crop_sha256':region.crop['sha256']})
+        rid = f'{parent.region_id}__merge{merge_index:04d}'
+        target.mkdir(parents=True,exist_ok=True)
+        path = target/(rid+'.png'); canvas.save(path); canvas.close()
+        crop = {'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+        merged = replace(parent,region_id=rid,bbox=(left,top,right,bottom),crop=crop,
+            metadata={**parent.metadata,'assembly_parent':parent.region_id,
+                      'line_merge_sources':[s['region_id'] for s in sources],
+                      'line_merge':{'parent_region_id':parent.region_id,'page_index':parent.page_index,
+                                    'bbox':[left,top,right,bottom],'input_sha256':crop['sha256'],
+                                    'sources':sources}})
+        record = {'merged_region_id':rid,'parent_region_id':parent.region_id,'page_index':parent.page_index,
+                  'bbox':[left,top,right,bottom],'input_sha256':crop['sha256'],'sources':sources}
+        return [[['text',rid]]], merged, record
+
+    position = 0
+    while position < len(rows):
+        if len(rows[position]) != 1 or rows[position][0][0] != 'text' or rows[position][0][1] not in by_id:
+            output_rows.append(rows[position]); position += 1; continue
+        end = position + 1
+        while (end < len(rows) and len(rows[end]) == 1 and rows[end][0][0] == 'text'
+               and rows[end][0][1] in by_id):
+            end += 1
+        # If the next mixed row starts with prose, its leading glyphs are not
+        # present in this merge's pixels. The OCR model may nevertheless predict
+        # them at the merge boundary (book12/p28: “电压” -> “电压为”), while the
+        # retained next slot emits the same word again. Fall back to source cuts.
+        if (end < len(rows) and rows[end] and rows[end][0][0] == 'text'
+                and any(slot[0] == 'formula' for slot in rows[end])):
+            output_rows.extend(rows[position:end])
+            position = end
+            continue
+        replacement, merged, record = build(rows[position:end], len(records))
+        output_rows.extend(replacement)
+        if merged is not None:
+            additions.append(merged); records.append(record)
+            removed.update(source['region_id'] for source in record['sources'])
+        position = end
+    return output_rows, [r for r in fragments if r.region_id not in removed] + additions, records
+
+
+def _bottom_overhang_line_evidence(parent, formula):
+    """Return scale-normalized evidence for a small inline bottom overhang only."""
+    import numpy as np
+    from PIL import Image
+
+    formula_height = formula.bbox[3]-formula.bbox[1]
+    overhang = formula.bbox[3]-parent.bbox[3]
+    covered = max(0.0, min(formula.bbox[3], parent.bbox[3])-max(formula.bbox[1], parent.bbox[1]))
+    center = (formula.bbox[1]+formula.bbox[3])/2
+    # A tall inline fraction may exceed the prose box, but most of its body and
+    # its vertical center must still share that box. These ratios are independent
+    # of render DPI and leave ample margin around the observed 92%+ true cases.
+    if (formula_height <= 0 or covered/formula_height < .75
+            or overhang <= 0 or overhang > .25*formula_height
+            or not parent.bbox[1] <= center <= parent.bbox[3]):
+        return None
+    with Image.open(parent.crop['path']) as source:
+        ink = np.asarray(source.convert('L')) < 225
+    h, w = ink.shape
+    sx = w/(parent.bbox[2]-parent.bbox[0])
+    sy = h/(parent.bbox[3]-parent.bbox[1])
+    # The parent crop is already formula-masked. Exclude the formula columns
+    # again to ensure that only adjacent prose can supply same-line evidence.
+    x0 = max(0, int((formula.bbox[0]-parent.bbox[0])*sx))
+    x1 = min(w, int(np.ceil((formula.bbox[2]-parent.bbox[0])*sx)))
+    outside = np.ones(w, dtype=bool)
+    outside[x0:x1] = False
+    if not outside.any():
+        return None
+    y0 = max(0, int((max(formula.bbox[1], parent.bbox[1])-parent.bbox[1])*sy))
+    y1 = min(h, int(np.ceil((min(formula.bbox[3], parent.bbox[3])-parent.bbox[1])*sy)))
+    if y1 <= y0:
+        return None
+    prose_rows = ink[:, outside].any(axis=1)
+    runs = []
+    start = None
+    for y, occupied in enumerate([*prose_rows, False]):
+        if occupied and start is None:
+            start = y
+        elif not occupied and start is not None:
+            runs.append((start, y))
+            start = None
+    candidates = [(a, b, max(0, min(b, y1)-max(a, y0))) for a, b in runs]
+    candidates = [row for row in candidates if row[2] > 0]
+    if not candidates:
+        return None
+    a, b, shared_rows = max(candidates, key=lambda row: row[2])
+    # Adjacent prose can occupy only the central part of a tall fraction. A
+    # quarter of the covered band is sufficient; isolated touching ink is not.
+    if shared_rows < .25*(y1-y0):
+        return None
+    line_height = (b-a)/sy
+    # The bottom excess must also be small relative to the neighboring prose
+    # line. Convert pixels back to plan units so raster scale cancels out.
+    if line_height <= 0 or overhang > .5*line_height:
+        return None
+    return {'formula_height': formula_height, 'bottom_overhang': overhang,
+            'covered_fraction': covered/formula_height,
+            'adjacent_line_height': line_height,
+            'same_line_fraction': shared_rows/(y1-y0)}
+
+
+def prepare_slots(plan, formulas, output_dir, *, line_merge=False):
+    """Split masked parents with unique containment or narrow overhang evidence.
 
     Horizontal cuts are blank scanlines. Vertical cuts abut already masked
     rectangles. Low-information residuals follow the explicit filtering policy;
@@ -97,6 +251,50 @@ def prepare_slots(plan, formulas, output_dir):
     active = [f for f in plan.formula_regions if formulas.get(f.region_id) and f.region_id not in suppressed]
     ownership = {}
     for f in active:
+        # Mask metadata records any positive rectangle intersection and is only
+        # a candidate clue. Strict containment remains sufficient; a bottom
+        # overhang additionally needs body, same-line prose and order evidence.
+        masked = [t for t in plan.text_regions if t.page_index == f.page_index
+                  and f.region_id in t.metadata.get('masked_formula_region_ids', [])]
+        if masked:
+            if len(masked) == 1:
+                parent = masked[0]
+                contained_here = contains((parent.bbox[0]-2, parent.bbox[1]-2,
+                                           parent.bbox[2]+2, parent.bbox[3]+2), f.bbox)
+                # Keep the old outer conditions, then only narrow this branch.
+                # Top/side overhangs and ambiguous sources remain on the prior path.
+                bottom_overhang = (parent.bbox[0]-2 <= f.bbox[0] and
+                                   parent.bbox[1]-2 <= f.bbox[1] and
+                                   parent.bbox[2]+2 >= f.bbox[2] and
+                                   f.bbox[3] > parent.bbox[3]+2)
+                if bottom_overhang:
+                    parent_source = parent.metadata.get('source_region_id', parent.region_id)
+                    reading_clear = parent.reading_order < f.reading_order
+                    for other in plan.text_regions:
+                        if other.page_index != parent.page_index:
+                            continue
+                        other_source = other.metadata.get('source_region_id', other.region_id)
+                        if other.region_id == parent.region_id or other_source == parent_source:
+                            continue
+                        overlap_x = min(parent.bbox[2], other.bbox[2])-max(parent.bbox[0], other.bbox[0])
+                        same_column = overlap_x > .5*min(parent.bbox[2]-parent.bbox[0],
+                                                        other.bbox[2]-other.bbox[0])
+                        if not same_column:
+                            continue
+                        if parent.reading_order < other.reading_order < f.reading_order:
+                            reading_clear = False
+                            break
+                        if (other.reading_order >= parent.reading_order
+                                and other.bbox[1] < f.bbox[3]
+                                and other.bbox[3] > parent.bbox[3]):
+                            reading_clear = False
+                            break
+                    bottom_overhang = (reading_clear and
+                                       _bottom_overhang_line_evidence(parent, f) is not None)
+                if contained_here or bottom_overhang:
+                    ownership[f.region_id] = parent.region_id
+            # A formula masked from multiple columns has no unique prose owner.
+            continue
         candidates = [t for t in plan.text_regions if t.page_index == f.page_index and contains((t.bbox[0]-2,t.bbox[1]-2,t.bbox[2]+2,t.bbox[3]+2), f.bbox)]
         if len(candidates) == 1:
             ownership[f.region_id] = candidates[0].region_id
@@ -130,6 +328,36 @@ def prepare_slots(plan, formulas, output_dir):
                 bands.append([int(y),int(y)+1])
             else:
                 bands[-1][1] = int(y)+1
+        # A tall fraction can bridge the whitespace between two prose rows.
+        # Cut at its lower edge only when that edge falls between ink rows and
+        # the following text has a substantial run of its own. Keep it full-width.
+        cuts = set()
+        for x_start, top_edge, x_end, bottom_edge in boxes.values():
+            if bottom_edge >= h or bottom_edge - top_edge < 12:
+                continue
+            if any(b < bottom_edge < d for _, b, _, d in boxes.values()):
+                continue
+            above = ink[top_edge:bottom_edge].any(axis=1)
+            prior = np.flatnonzero(above)
+            gap = bottom_edge - top_edge - 1 - prior[-1] if len(prior) else 0
+            if gap >= max(4, (bottom_edge-top_edge)*0.12):
+                for band_start, band_end in bands:
+                    if band_start < bottom_edge < band_end and band_end-bottom_edge >= 0.45*(bottom_edge-top_edge):
+                        cuts.add(bottom_edge)
+        # Fractions on successive lines can overlap vertically by a few
+        # detector pixels. The formula crops stay whole; only the already
+        # whitened prose image is split along an empty scanline.
+        for top_edge in {b for _, b, _, _ in boxes.values()}:
+            crossing = [(b, d) for _, b, _, d in boxes.values() if b < top_edge < d]
+            if (crossing and all(d-top_edge <= 0.08*(d-b) for b, d in crossing)
+                    and top_edge >= 4 and not ink[top_edge-4:top_edge].any()):
+                cuts.add(top_edge)
+        if cuts:
+            split_bands = []
+            for band_start, band_end in bands:
+                edges = [band_start, *sorted(y for y in cuts if band_start < y < band_end), band_end]
+                split_bands.extend(zip(edges, edges[1:]))
+            bands = split_bands
         # A separate row consisting only of a few dots must not define its own
         # font size. Estimate a floor from normal ink runs in the same parent.
         runs=[];length=0
@@ -143,7 +371,7 @@ def prepare_slots(plan, formulas, output_dir):
         rows, fragments, invalid, filtered = [], [], False, []
         candidate_index = 0
         for top,bottom in bands:
-            fs = sorted([f for f in local if boxes[f.region_id][1] < bottom and boxes[f.region_id][3] > top],key=lambda f:boxes[f.region_id][0])
+            fs = sorted([f for f in local if top <= (boxes[f.region_id][1]+boxes[f.region_id][3])/2 < bottom],key=lambda f:boxes[f.region_id][0])
             if any(boxes[a.region_id][2] > boxes[b.region_id][0] for a,b in zip(fs,fs[1:])):
                 invalid = True
                 break
@@ -195,8 +423,11 @@ def prepare_slots(plan, formulas, output_dir):
             out.append(parent)
             reviews.append({'region_id':parent.region_id,'reason':'SPATIAL_SLOT_OVERLAP_UNRESOLVED'})
         else:
+            merges = []
+            if line_merge:
+                rows, fragments, merges = merge_continuous_text_rows(parent, rows, fragments, target)
             out.extend(fragments)
-            groups.append({'parent':parent,'rows':rows,'filtered_fragments':filtered})
+            groups.append({'parent':parent,'rows':rows,'filtered_fragments':filtered,'line_merges':merges})
     return replace(plan,text_regions=tuple(out)),groups,suppressed,reviews
 
 
@@ -214,7 +445,8 @@ def assemble(groups, texts, formulas, markdown_ids):
         parent=group['parent']
         outputs[parent.region_id]='\n\n'.join(rows)
         provenance.append({'parent':parent.to_dict(),'rows':group['rows'],
-                           'filtered_fragments':group.get('filtered_fragments',[])})
+                           'filtered_fragments':group.get('filtered_fragments',[]),
+                           'line_merges':group.get('line_merges',[])})
     return outputs,consumed,provenance
 
 

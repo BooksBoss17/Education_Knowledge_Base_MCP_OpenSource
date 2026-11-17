@@ -2,7 +2,7 @@
 
 将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 无需下载本项目过去的固定模型组合。默认不安装模型权重，不启用图片分类或 Semantic Retention。
 
-核心版本 **0.4.4+localapi.6**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
+核心版本 **0.4.6+localapi.8**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
 
 ## 转换流程
 
@@ -73,3 +73,11 @@ The gateway discovers `/v1/capabilities` for BeMarkdown upstreams. Roles adverti
 Completion and unload are separate: a v2 infer result reports request_complete=true and model_unloaded=false; close must confirm CLOSED and model_unloaded=true. A lost inference response may be recovered from a matching request receipt, never blindly repeated. The gateway forwards at most one active session and retains 64 closed-session routes; upstreams own their idle cleanup. This release does not automatically resume interrupted document conversions. The MCP status includes stage/batch progress when supplied by the converter.
 
 阶段会话的字段、完成收据、超时及资源边界见[协议说明](docs/MODEL_SESSIONS.md)。
+
+## 0.4.6 更新
+
+Word矩形图片按裁剪、翻转、旋转和普通非重叠图片组合的可见外观转录。公式邻近行切分、配分组装和同源框去重已改进。重复裁图缓存按文档和API身份隔离，实验连续文字行合并默认关闭。
+
+当前采用monitor资源策略，记录客户端内存和受管进程用量，应用层RAM/VRAM档位与自动上限停用。联网API服务端的资源由服务提供方管理，本地外部模型服务由使用者部署。通过config中的四角色接口配置选用自己的模型。
+
+复杂遮罩、重叠图片组合仍保图待核。两个已调查的公式填空标签与截断边框样例本轮未增加修复，内容准确率须按实际资料复核。

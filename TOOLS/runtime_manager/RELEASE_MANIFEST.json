@@ -1,10 +1,10 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "bemarkdown-api-session-20261116-v2",
-  "bemarkdown_wheel_sha256": "b19db12b8e5730ceefac6b31ac79542a2fd4890e331336f9b809379a5bd197c0",
+  "release_id": "bemarkdown-word-ocr-20261118-v8",
+  "bemarkdown_wheel_sha256": "91383ec0910e6a7cb932a68912a6f095a193b35b00426050ad9eb446689cfa28",
   "files": {
     "bootstrap.py": "d2ff4881221c10fb63dc0e29a21f8718201c1822d56351f8e76e553ce76e9585",
-    "external_resource_policy.py": "dc14efab8878562b2b9bfbaa235af64a129778d8915713955148281f74e0b47f",
+    "external_resource_policy.py": "355f90ed65f58d57efc3d5c71ff3e08168e3e2d948c121aef1a66816ba4ba236",
     "native_gateway.py": "b09021d32691ac1c845926cd697c6ddada8a233046454c5133538018900a1fe4",
     "native_worker.py": "a2f63013159ee3bcdcdc901dfb8666d9458e7591071582c39166e8043734965c",
     "package_binding.py": "2e04c09956cdcd01f949756b023a0eaa29bfa1d3d242dc892792b600b34785cf",

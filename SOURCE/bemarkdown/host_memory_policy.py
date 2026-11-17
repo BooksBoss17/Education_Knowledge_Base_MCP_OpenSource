@@ -34,12 +34,13 @@ def resolve_policy(total_bytes,mode='auto'):
     """Compatible RAM-only resolver. No sampling, environment mutation or imports."""
     total_bytes=_integer(total_bytes,'total_physical_bytes',True)
     installed=max(1,round(total_bytes/GiB))
-    if mode=='legacy6':cap,physical,commit=6.,8.,9.
+    if mode=='monitor':cap,physical,commit=None,0.,0.
+    elif mode=='legacy6':cap,physical,commit=6.,8.,9.
     elif mode=='auto':
         cap=12. if installed>=24 else 8. if installed>=16 else 6. if installed>=8 else max(1.,installed/2)
         physical=min(8.,max(2.,installed/4))
         commit=min(9.,max(3.,min(cap,installed/2)*.75))
-    else:raise ValueError('HOST_RAM_MODE_MUST_BE_AUTO_OR_LEGACY6')
+    else:raise ValueError('HOST_RAM_MODE_MUST_BE_MONITOR_AUTO_OR_LEGACY6')
     return dict(schema=SCHEMA,mode=mode,total_physical_bytes=total_bytes,project_ram_cap_gib=cap,
         physical_free_floor_gib=physical,commit_headroom_floor_gib=commit,gpu_policy_changed=mode=='auto')
 
@@ -53,7 +54,8 @@ def resolve_device_policy(total_physical_bytes,commit_limit_bytes,gpu_total_byte
     # Commit capacity is not physical RAM. Never promise a private-commit cap
     # that cannot coexist with the configured system commit reserve.
     if mode=='auto':p['project_ram_cap_gib']=max(0.,min(nominal,commit/GiB-p['commit_headroom_floor_gib']))
-    if mode=='legacy6':reserve=1024*MiB;cap=6144*MiB;startup=7168*MiB
+    if mode=='monitor':reserve=0;cap=None;startup=0
+    elif mode=='legacy6':reserve=1024*MiB;cap=6144*MiB;startup=7168*MiB
     else:
         reserve=max(768*MiB,math.ceil(total*.15/(256*MiB))*256*MiB)
         cap=max(0,total-reserve);startup=0
@@ -63,7 +65,7 @@ def resolve_device_policy(total_physical_bytes,commit_limit_bytes,gpu_total_byte
         gpu_whole_card_cap_bytes=cap,gpu_startup_free_floor_bytes=startup,
         supported=supported,unsupported_reason=None if supported else 'SINGLE_GPU_ZERO_MAPPING_REQUIRED',
         stage_wait_timeout_seconds=60.,stage_wait_poll_seconds=1.,
-        model_execution_profile='6gb',model_loading_parameters_changed=False,
+        model_execution_profile='unrestricted' if mode=='monitor' else '6gb',model_loading_parameters_changed=False,
         reservation_semantics='UNSTARTED_UNCONSUMED_ONLY; running allocations already in live measurements')
     p['policy_fingerprint']=_digest(p)
     return p
@@ -93,6 +95,13 @@ def _obs(policy,observation):
 
 def check_current(policy,observation,*,raise_on_violation=True):
     _validated_policy(policy);s=_obs(policy,observation)
+    if policy['mode']=='monitor':
+        failed=[] if policy['supported'] else [policy['unsupported_reason']]
+        result=dict(decision='STOP' if failed else 'CONTINUE',allowed=not failed,reasons=failed,
+            policy_fingerprint=policy['policy_fingerprint'],observation=s)
+        if failed and raise_on_violation:
+            raise ResourcePolicyError(';'.join(failed),decision='CAPACITY_INSUFFICIENT',details=result)
+        return result
     limits=(('GROUP_CURRENT_PROJECT_RAM_CAP',s['group_current_bytes']>policy['project_ram_cap_gib']*GiB),
         ('GROUP_WORKING_PROJECT_RAM_CAP',s['group_working_bytes']>policy['project_ram_cap_gib']*GiB),
         ('PHYSICAL_FREE_POLICY_FLOOR',s['physical_free_bytes']<policy['physical_free_floor_gib']*GiB),
@@ -129,6 +138,11 @@ def evaluate_admission(policy,observation,requirement,reservations=None):
         physical_free_bytes=s['physical_free_bytes']-physical-rw,
         commit_headroom_bytes=s['commit_headroom_bytes']-private-rp,
         gpu_free_bytes=s['gpu_free_bytes']-gpu-rg,gpu_used_bytes=s['gpu_used_bytes']+gpu+rg)
+    if policy['mode']=='monitor':
+        reasons=[] if policy['supported'] else [policy['unsupported_reason']]
+        return dict(decision='CAPACITY_INSUFFICIENT' if reasons else 'ADMIT',reasons=reasons,
+            projected=projected,policy_fingerprint=policy['policy_fingerprint'],
+            reservations_count=len(unstarted),observed_whole_card_used_bytes=s['gpu_used_bytes'])
     capacity=[]
     if not policy['supported']:capacity.append(policy['unsupported_reason'])
     if private+reserve>policy['project_ram_cap_gib']*GiB:capacity.append('MODEL_PRIVATE_REQUIREMENT_EXCEEDS_PROJECT_CAP')

@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import re
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Mapping, Sequence
@@ -26,6 +27,70 @@ def _package_paths(value, output_dir):
     if isinstance(value, (list, tuple)):
         return [_package_paths(item, output_dir) for item in value]
     return value
+
+_SCORE = re.compile(r"[（(]\s*\d+(?:\.\d+)?\s*分\s*[)）]")
+
+
+def _join_score_rows(content, regions, positions, formulas):
+    """Join consecutive emitted blocks only with same-row, source-bound score evidence."""
+    for index, first in enumerate(regions[:-1]):
+        second = regions[index+1]
+        a = positions.get(first.region_id)
+        b = positions.get(second.region_id)
+        if a is None or b != a + 1 or not content[a]:
+            continue
+        left, right = content[a], content[b]
+        repeated_prefix = None
+        # Overlapping text boxes may both have read the same short lead-in.
+        # Only collapse it when both boxes actually masked the same next formula.
+        if index + 2 < len(regions) and second.label == "text":
+            third = regions[index+2]
+            start = _SCORE.search(left)
+            if (start and not left[start.end():].strip() and left[:start.start()].strip() == right.strip()
+                    and third.region_id in first.metadata.get("masked_formula_region_ids", [])
+                    and third.region_id in second.metadata.get("masked_formula_region_ids", [])
+                    and positions.get(third.region_id) == b+1
+                    and first.bbox[0]-2 <= second.bbox[0] and second.bbox[2] <= first.bbox[2]+2
+                    and abs(first.bbox[1]-second.bbox[1]) <= 3 and abs(first.bbox[3]-second.bbox[3]) <= 3):
+                repeated_prefix = b
+                second = third
+                b += 1
+                right = content[b]
+        # A score can follow a standalone formula or a prose answer.
+        if second.label == "formula_number" and _SCORE.fullmatch(right):
+            score, answer = second, first
+            if answer.label not in {"formula", "display_formula", "inline_formula", "text"}:
+                continue
+            if answer.bbox[2] > score.bbox[0] or "\n\n" in left.strip():
+                continue
+            pieces = [left, right]
+        else:
+            # A wider text box can contain a right-hand score while its formula
+            # was masked out and emitted separately. Restore it before the score.
+            match = _SCORE.search(left)
+            if (not match or left[match.end():].strip() or "\n" in left.strip()
+                    or second.region_id not in formulas
+                    or second.region_id not in first.metadata.get("masked_formula_region_ids", [])
+                    or not first.bbox[0] <= second.bbox[0] < second.bbox[2] <= first.bbox[2]):
+                continue
+            score, answer = first, second
+            pieces = [left[:match.start()].strip(), right, match.group()]
+        top = max(answer.bbox[1], score.bbox[1])
+        bottom = min(answer.bbox[3], score.bbox[3])
+        small = min(answer.bbox[3]-answer.bbox[1], score.bbox[3]-score.bbox[1])
+        large = max(answer.bbox[3]-answer.bbox[1], score.bbox[3]-score.bbox[1])
+        if small <= 0 or bottom-top < 0.7*small or large > 3*small:
+            continue
+        inline = []
+        for piece in pieces:
+            if piece.startswith("$$\n") and piece.endswith("\n$$"):
+                piece = "$" + piece[3:-3].strip() + "$"
+            inline.append(piece.strip())
+        content[a] = " ".join(part for part in inline if part)
+        content[b] = ""
+        if repeated_prefix is not None:
+            content[repeated_prefix] = ""
+
 
 def _write_visual_package(
     *,
@@ -96,11 +161,13 @@ def _write_visual_package(
             page_regions = [SimpleNamespace(region_id=f'p{page_index:04d}-undetected',
                 label='unresolved_page', crop={'path':str(fallback)}, bbox=box)]
             review_items.append({'page':page_index+1, 'reason':'NO_LAYOUT_REGIONS_SOURCE_PRESERVED'})
+        positions = {}
         for region in page_regions:
             if region.region_id in suppressed or region.region_id in caption_ids:
                 continue
             value = str(formula.get(region.region_id, table.get(region.region_id, text.get(region.region_id, '')))).strip()
             if value:
+                positions[region.region_id] = len(content)
                 if region.region_id in formula and region.region_id not in formula_markdown_ids:
                     content.append(f'${value}$' if region.label == 'inline_formula' else f'$$\n{value}\n$$')
                 elif region.label in {'doc_title','paragraph_title'}:
@@ -151,7 +218,8 @@ def _write_visual_package(
                         "provenance": {"bbox_render_px": list(region.bbox), "caption_region_ids": captions.get(region.region_id, []), "source_aliases": metadata.get("source_aliases", []), "original_bbox": metadata.get("original_bbox")},
                     }
                 )
-    (output_dir / "document.md").write_text("\n\n".join(content).strip() + "\n", encoding="utf-8")
+        _join_score_rows(content, page_regions, positions, formula)
+    (output_dir / "document.md").write_text("\n\n".join(block for block in content if block).strip() + "\n", encoding="utf-8")
     (output_dir / "assets_manifest.jsonl").write_text(
         "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in asset_rows),
         encoding="utf-8",

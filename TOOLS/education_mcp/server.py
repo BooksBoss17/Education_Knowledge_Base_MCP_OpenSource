@@ -268,13 +268,18 @@ class Service:
                     selected_profile = '6gb'
                 env['BEMARKDOWN_RESOURCE_PROFILE'] = selected_profile
                 value['resource_profile'] = selected_profile
-                target_mib, hard_limit_mib = (10240, 10240) if selected_profile == '10gb' else (6144, 6144)
+                target_mib = hard_limit_mib = None
                 managed_policy = json.loads(os.environ.get('BEMARKDOWN_HOST_MEMORY_POLICY_JSON', '{}'))
                 external_api = managed_policy.get('schema') == 'public-external-api-ram-v1'
                 if external_api:
                     target_mib = hard_limit_mib = None
                 elif managed_policy:
-                    target_mib = hard_limit_mib = managed_policy['gpu_whole_card_cap_bytes'] / 2**20
+                    cap = managed_policy['gpu_whole_card_cap_bytes']
+                    target_mib = hard_limit_mib = cap / 2**20 if cap is not None else None
+                if managed_policy.get('mode') == 'monitor':
+                    selected_profile = 'unrestricted'
+                    env['BEMARKDOWN_RESOURCE_PROFILE'] = selected_profile
+                    value['resource_profile'] = selected_profile
                 value['gpu_usage'] = dict(scope='EXTERNAL_API_NOT_OBSERVED' if external_api else 'WHOLE_DEVICE_SAMPLED', peak_mib=None, samples=0,
                     target_mib=target_mib, hard_limit_mib=hard_limit_mib, target_exceeded=False,
                     hard_limit_termination=False, measurement_errors=0)
@@ -294,8 +299,8 @@ class Service:
                                     observation = value['gpu_usage']
                                     observation['samples'] += 1
                                     observation['peak_mib'] = max(observation['peak_mib'] or 0, used)
-                                    observation['target_exceeded'] |= used > target_mib
-                                    if used > hard_limit_mib:
+                                    observation['target_exceeded'] |= target_mib is not None and used > target_mib
+                                    if hard_limit_mib is not None and used > hard_limit_mib:
                                         observation['hard_limit_termination'] = True
                                         stop_owned_process(process)
                                         raise RuntimeError('Whole-device GPU usage exceeded selected profile limit')

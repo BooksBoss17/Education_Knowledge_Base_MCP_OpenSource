@@ -37,11 +37,8 @@ def default_desktop():
 def select_profile(total_mib):
     if total_mib is None:
         return dict(profile=None, recommended=False, reason='GPU_MEMORY_UNKNOWN')
-    if total_mib < 6144:
-        return dict(profile=None, recommended=False, reason='BELOW_6GB_NOT_RECOMMENDED')
-    name = '10gb' if total_mib > 10240 else '6gb'
-    return dict(profile=name, recommended=True, budget_mib=10240 if name == '10gb' else 6144,
-                reason='DETECTED_DEDICATED_GPU_MEMORY')
+    return dict(profile='unrestricted', recommended=True, budget_mib=None,
+                reason='RESOURCE_MONITORING_ONLY')
 
 
 def detect_gpu():

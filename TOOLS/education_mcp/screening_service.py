@@ -27,14 +27,15 @@ def write(path,obj):
     temp.replace(path)
 
 
-def compute(service,run_id,run_root,manifest,model_path,conversion_lock,profile='6gb'):
+def compute(service,run_id,run_root,manifest,model_path,conversion_lock,profile='unrestricted'):
     """One local process owns GPU; source/model changes fail closed."""
     state_path=run_root/'state.json'
     gpu=dict(profile=profile,limit_mib=RESOURCES['LIMITS'][profile],peak_mib=0,
              samples=0,measurement_errors=0,budget_exceeded=False,scope='WHOLE_DEVICE_SAMPLED')
     managed_policy=json.loads(os.environ.get('BEMARKDOWN_HOST_MEMORY_POLICY_JSON','{}'))
     if managed_policy:
-        gpu['limit_mib']=managed_policy['gpu_whole_card_cap_bytes']/2**20
+        cap=managed_policy['gpu_whole_card_cap_bytes']
+        gpu['limit_mib']=cap/2**20 if cap is not None else None
         gpu['policy_fingerprint']=managed_policy['policy_fingerprint']
     try:
         with conversion_lock(service.jobs.parent/'gpu.lock',service.closing):
@@ -61,7 +62,7 @@ def compute(service,run_id,run_root,manifest,model_path,conversion_lock,profile=
                                 if gpu['measurement_errors']>=3:raise RuntimeError('Screening GPU measurements unavailable')
                             else:
                                 gpu['samples']+=1;gpu['peak_mib']=max(gpu['peak_mib'],used)
-                                if used>gpu['limit_mib']:
+                                if gpu['limit_mib'] is not None and used>gpu['limit_mib']:
                                     gpu['budget_exceeded']=True
                                     raise RuntimeError('Screening GPU budget exceeded; owned worker stopped')
                             time.sleep(.25)
@@ -129,7 +130,10 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
     if templates.get('preprocessing')!=PIXELS['PREPROCESSING']:
         raise ValueError('Screening template preprocessing mismatch; rebuild or verify templates first')
     manager=getattr(service,'workspace_manager',None)
-    profile=(manager.state()['gpu'].get('profile') if manager is not None else state.get('resource_profile')) or '6gb'
+    profile=(manager.state()['gpu'].get('profile') if manager is not None else state.get('resource_profile')) or 'unrestricted'
+    policy_path = service.mcp_root / 'TOOLS/bemarkdown/HOST_MEMORY_POLICY.json'
+    if policy_path.is_file() and json.loads(policy_path.read_text(encoding='utf-8-sig')).get('mode') == 'monitor':
+        profile = 'unrestricted'
     if profile not in RESOURCES['LIMITS']:raise ValueError('Invalid screening GPU profile')
     model_path=service.mcp_root/'MODELS/WeMM-Embedding-4B'
     if not model_path.is_dir():raise ValueError('Registered WeMM model is unavailable')

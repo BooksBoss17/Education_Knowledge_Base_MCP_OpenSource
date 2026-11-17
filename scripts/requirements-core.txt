@@ -9,3 +9,4 @@ psutil==7.2.2
 packaging==26.3
 einops==0.8.2
 mathtypejx @ git+https://github.com/a917470154/mathtypejx.git@7d90e7274c85cf56ac28d4d15e593044693d7e70
+opencv-python-headless==4.10.0.84

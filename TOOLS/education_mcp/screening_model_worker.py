@@ -55,7 +55,7 @@ def main():
     parser.add_argument('--model-path',type=Path,required=True)
     parser.add_argument('--kind',choices=['wemm','siglip2'],required=True)
     parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--resource-profile',choices=['6gb','10gb'],default='6gb')
+    parser.add_argument('--resource-profile',choices=['6gb','10gb','unrestricted'],default='unrestricted')
     args=parser.parse_args()
     if sha(args.manifest)!=args.manifest_sha256:
         raise ValueError('Frozen input manifest mismatch')
@@ -89,7 +89,8 @@ def main():
         resources=runpy.run_path(str(Path(__file__).with_name('screening_resources.py')))
         free_bytes,total_bytes=torch.cuda.mem_get_info()
         budget=resources['plan_budget'](args.resource_profile,total_bytes/2**20,(total_bytes-free_bytes)/2**20)
-        torch.cuda.set_per_process_memory_fraction(budget['allocator_fraction'],device=0)
+        if budget['allocator_fraction'] is not None:
+            torch.cuda.set_per_process_memory_fraction(budget['allocator_fraction'],device=0)
         torch.cuda.reset_peak_memory_stats()
         write(args.output/'resource-plan.json',budget)
         event('RESOURCE_ADMITTED',**budget)
@@ -99,10 +100,13 @@ def main():
         write(args.output/'model-files.json',model_files)
         loading=time.perf_counter()
         processor=AutoProcessor.from_pretrained(str(model_path),trust_remote_code=args.kind=='wemm',local_files_only=True)
-        import psutil
-        cpu_mib=min(49152,int(psutil.virtual_memory().available/2**20)-4096)
-        if cpu_mib<2048:
-            raise RuntimeError('WeMM host-memory budget unavailable for explicit weight offload')
+        placement_options = {}
+        if budget['gpu_weight_budget_mib'] is not None:
+            import psutil
+            cpu_mib = min(49152, int(psutil.virtual_memory().available / 2**20) - 4096)
+            if cpu_mib < 2048:
+                raise RuntimeError('WeMM host-memory budget unavailable for explicit weight offload')
+            placement_options['max_memory'] = {0: budget['gpu_weight_budget_mib'] * 2**20, 'cpu': cpu_mib * 2**20}
         import transformers.modeling_utils as modeling
         adapter=runpy.run_path(str(Path(__file__).with_name('wemm_readonly_safetensors.py')))
         scope=adapter['readonly_safe_open_scope'](modeling) if args.kind=='wemm' else contextlib.nullcontext(None)
@@ -111,12 +115,17 @@ def main():
                 write(args.output/'loading-adapter.json',adapter_receipt)
             model=AutoModel.from_pretrained(str(model_path),trust_remote_code=args.kind=='wemm',local_files_only=True,
                 dtype=torch.bfloat16 if args.kind=='wemm' else torch.float32,
-                device_map='auto',max_memory={0:budget['gpu_weight_budget_mib']*2**20,'cpu':cpu_mib*2**20},
+                device_map='auto',**placement_options,
                 offload_buffers=True,offload_folder=str(args.output/'offload')).eval()
         device_map={k:str(v) for k,v in getattr(model,'hf_device_map',{}).items()}
+        if not device_map:
+            # A single-device load can omit Accelerate's dispatch map.
+            devices = {str(parameter.device) for parameter in model.parameters()}
+            if len(devices) == 1 and next(iter(devices)).startswith('cuda'):
+                device_map = {'': devices.pop()}
+        write(args.output/'device-map.json',device_map)
         if not device_map or any(v=='disk' for v in device_map.values()):
             raise RuntimeError('WeMM placement unavailable within GPU/host-memory budget; disk offload not allowed')
-        write(args.output/'device-map.json',device_map)
         torch.cuda.synchronize()
         if args.kind=='wemm':
             write(args.output/'file-residency-reclaim.json',reclaim_loaded_file_pages())

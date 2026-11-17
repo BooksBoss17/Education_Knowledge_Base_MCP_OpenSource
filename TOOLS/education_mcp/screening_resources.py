@@ -4,17 +4,24 @@ import json
 import os
 
 POLICY = 'wemm-bf16-weight-offload-v1'
-LIMITS = {'6gb': 6144, '10gb': 10240}
+LIMITS = {'6gb': 6144, '10gb': 10240, 'unrestricted': None}
 
 
 def plan_budget(profile, total_mib, used_mib):
+    snapshot = json.loads(os.environ.get('BEMARKDOWN_HOST_MEMORY_POLICY_JSON', '{}'))
+    if snapshot.get('mode') == 'monitor':
+        profile = 'unrestricted'
     if profile not in LIMITS:
-        raise ValueError('WeMM resource profile must be 6gb or 10gb')
+        raise ValueError(f'Unknown WeMM resource profile: {profile}')
     if total_mib <= 0 or used_mib < 0 or used_mib > total_mib:
         raise ValueError('Invalid GPU memory measurement')
+    if profile == 'unrestricted':
+        return dict(policy=POLICY, profile=profile, whole_device_limit_mib=None,
+                    observed_total_mib=total_mib, observed_used_before_load_mib=used_mib,
+                    allocator_fraction=None, gpu_weight_budget_mib=None, allocator_limit_mib=None,
+                    precision='bfloat16', quantization=False, placement='AUTO')
     ceiling = min(LIMITS[profile], int(total_mib))
-    snapshot = json.loads(os.environ.get('BEMARKDOWN_HOST_MEMORY_POLICY_JSON', '{}'))
-    if snapshot:
+    if snapshot.get('gpu_whole_card_cap_bytes') is not None:
         ceiling = min(ceiling, snapshot['gpu_whole_card_cap_bytes'] / 2**20)
     # Account for the display, other apps and our CUDA context before loading.
     # Reserve 256 MiB beyond the allocator plus 1024 MiB for activations/hooks.
