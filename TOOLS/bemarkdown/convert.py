@@ -25,6 +25,23 @@ def parse_args(argv=None):
     return p.parse_args(argv)
 
 
+def parse_core_options(raw):
+    options = json.loads(raw)
+    allowed = {'formula_ocr', 'mtef_cache', 'mtef_cache_dir', 'replace',
+               'continue_on_error', 'reuse_formula_model'}
+    if not isinstance(options, dict) or options.keys() - allowed:
+        raise ValueError('UNKNOWN_CORE_OPTIONS')
+    for name in ('replace', 'continue_on_error', 'reuse_formula_model'):
+        if name in options and type(options[name]) is not bool:
+            raise ValueError('INVALID_CORE_OPTION:' + name)
+    for name, choices in (('formula_ocr', ('auto', 'off')), ('mtef_cache', ('off', 'memory', 'persistent'))):
+        if name in options and options[name] not in choices:
+            raise ValueError('INVALID_CORE_OPTION:' + name)
+    if options.get('mtef_cache_dir') is not None and not isinstance(options['mtef_cache_dir'], str):
+        raise ValueError('INVALID_CORE_OPTION:mtef_cache_dir')
+    return options
+
+
 def main(argv=None):
     args=parse_args(argv);tool=Path(__file__).resolve().parent
     try:
@@ -39,9 +56,7 @@ def main(argv=None):
             target=(tool/relative).resolve()
             if not target.is_relative_to(tool) or boot['sha'](target)!=expected:
                 raise ValueError('CONVERSION_PAYLOAD_CHANGED:'+relative)
-        options=json.loads(args.core_options)
-        allowed={'formula_ocr','mtef_cache','mtef_cache_dir','replace','continue_on_error','reuse_formula_model'}
-        if not isinstance(options,dict) or set(options)-allowed:raise ValueError('UNKNOWN_CORE_OPTIONS')
+        options = parse_core_options(args.core_options)
         continue_on_error=options.pop('continue_on_error',False)
         options.pop('reuse_formula_model',None)
         from bemarkdown.next_runtime import convert_document

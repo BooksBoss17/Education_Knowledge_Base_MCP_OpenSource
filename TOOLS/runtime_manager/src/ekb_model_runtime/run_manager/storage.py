@@ -38,6 +38,8 @@ class Store:
                     if scope is not None:
                         database.execute("UPDATE jobs SET scope_key=? WHERE job_id=?", (scope, row["job_id"]))
             database.execute("CREATE INDEX IF NOT EXISTS scope_lookup ON jobs(program_id,workspace,scope_key,created DESC)")
+            database.execute("CREATE INDEX IF NOT EXISTS waiting_deadline ON jobs(wait_deadline) WHERE state IN ('QUEUED','WAITING_RESOURCES')")
+            database.execute("CREATE INDEX IF NOT EXISTS workspace_jobs ON jobs(workspace,created)")
 
     @contextmanager
     def connect(self):
@@ -86,14 +88,32 @@ class Store:
             raise RunManagerError("UNKNOWN_JOB")
         return self._snapshot(row)
 
-    def list(self, states=None, limit=100):
+    def list(self, states=None, limit=100, *, workspace=None):
+        clauses, parameters = [], []
+        if states:
+            marks = ",".join("?" for _ in states)
+            clauses.append(f"state IN ({marks})")
+            parameters.extend(states)
+        if workspace is not None:
+            clauses.append("workspace=?")
+            parameters.append(workspace)
+        where = " WHERE " + " AND ".join(clauses) if clauses else ""
+        order = "created" if states else "created DESC"
         with self.connect() as database:
-            if states:
-                marks = ",".join("?" for _ in states)
-                rows = database.execute(f"SELECT * FROM jobs WHERE state IN ({marks}) ORDER BY created LIMIT ?", (*states, limit)).fetchall()
-            else:
-                rows = database.execute("SELECT * FROM jobs ORDER BY created DESC LIMIT ?", (limit,)).fetchall()
+            rows = database.execute(f"SELECT * FROM jobs{where} ORDER BY {order} LIMIT ?", (*parameters, limit)).fetchall()
         return [self._snapshot(row) for row in rows]
+
+    def expire_waiting(self, now):
+        error = {"code": "RESOURCE_WAIT_TIMEOUT"}
+        waiting = "state IN ('QUEUED','WAITING_RESOURCES') AND wait_deadline<=?"
+        with self.connect() as database:
+            database.execute("BEGIN IMMEDIATE")
+            for state in ("QUEUED", "WAITING_RESOURCES"):
+                event = canonical({"from": state, "to": "WAIT_EXPIRED", "error": error})
+                database.execute(f"INSERT INTO events(job_id,at,event) SELECT job_id,?,? FROM jobs WHERE {waiting} AND state=?",
+                                 (now, event, now, state))
+            database.execute(f"UPDATE jobs SET state='WAIT_EXPIRED',updated=?,error=? WHERE {waiting}",
+                             (now, canonical(error), now))
 
     def lookup(self, program_id, workspace, public_id):
         if not isinstance(public_id, str) or not re.fullmatch(r"[a-f0-9]{12}", public_id):

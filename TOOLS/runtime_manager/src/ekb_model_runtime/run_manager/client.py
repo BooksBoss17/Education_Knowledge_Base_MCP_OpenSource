@@ -17,7 +17,7 @@ class RunManagerClient:
     def __init__(self, root=None):
         self.root = home(root)
 
-    def _call(self, operation, **arguments):
+    def _call(self, operation, *, expected_identity=None, **arguments):
         try:
             endpoint = json.loads((self.root / "endpoint.json").read_text(encoding="utf-8"))
         except (OSError, ValueError) as error:
@@ -25,6 +25,8 @@ class RunManagerClient:
         identity = process_identity(endpoint["identity"]["pid"])
         if identity != endpoint["identity"]:
             raise RunManagerError("STALE_DAEMON_IDENTITY")
+        if expected_identity is not None and identity != expected_identity:
+            raise RunManagerError("DAEMON_IDENTITY_CHANGED")
         return exchange(self.root, endpoint, operation, arguments)
 
     def ping(self):
@@ -40,8 +42,8 @@ class RunManagerClient:
                           scope_key=scope_key, requirement=requirement or {}, policy=policy, wait_timeout=wait_timeout,
                           retry_of=retry_of, config_fingerprint=config_fingerprint, run_timeout=run_timeout)
 
-    def status(self, job_id):
-        return self._call("status", job_id=job_id)
+    def status(self, job_id, *, workspace=None):
+        return self._call("status", job_id=job_id, workspace=str(workspace) if workspace is not None else None)
 
     get = status
 
@@ -51,26 +53,38 @@ class RunManagerClient:
     def find_scope(self, program_id, workspace, scope_key):
         return self._call("find_scope", program_id=program_id, workspace=str(Path(workspace).resolve()), scope_key=scope_key)
 
-    def list(self, states=None, limit=20):
-        return self._call("list", states=states, limit=limit)
+    def list(self, states=None, limit=20, *, workspace=None):
+        return self._call("list", states=states, limit=limit,
+                          workspace=str(workspace) if workspace is not None else None)
 
-    def adopt(self, job_id, client_id):
-        return self._call("adopt", job_id=job_id, client_id=client_id)
+    def adopt(self, job_id, client_id, *, workspace=None):
+        return self._call("adopt", job_id=job_id, client_id=client_id,
+                          workspace=str(workspace) if workspace is not None else None)
 
-    def cancel(self, job_id, reason="user", wait_seconds=0):
-        value = self._call("cancel", job_id=job_id, reason=reason)
+    def cancel(self, job_id, reason="user", wait_seconds=0, *, workspace=None):
+        value = self._call("cancel", job_id=job_id, reason=reason,
+                           workspace=str(workspace) if workspace is not None else None)
         deadline = time.monotonic() + wait_seconds
         while value["state"] == "CANCEL_REQUESTED" and time.monotonic() < deadline:
             time.sleep(.1)
-            value = self.status(job_id)
+            value = self.status(job_id, workspace=workspace)
         return value
 
     def owns_process(self, job_id, pid, created):
         return self._call("owns_process", job_id=job_id, pid=pid, created=str(created))
 
-    def shutdown(self):
-        """Administrative drain-only shutdown; refuses while tasks are active."""
-        return self._call("shutdown")
+    def shutdown(self, wait_seconds=0):
+        """Stop an idle manager and optionally wait for that exact process to exit."""
+        identity = self.ping()["identity"] if wait_seconds else None
+        result = self._call("shutdown", expected_identity=identity)
+        if identity is not None:
+            deadline = time.monotonic() + wait_seconds
+            while process_identity(identity["pid"]) == identity:
+                if time.monotonic() >= deadline:
+                    raise RunManagerError("DAEMON_SHUTDOWN_TIMEOUT")
+                time.sleep(.1)
+            result["exit_confirmed"] = True
+        return result
 
 
 def ensure_daemon(*, registry_path, root=None, python=None, timeout=15):

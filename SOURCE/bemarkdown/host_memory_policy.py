@@ -60,7 +60,9 @@ def resolve_device_policy(total_physical_bytes,commit_limit_bytes,gpu_total_byte
         reserve=max(768*MiB,math.ceil(total*.15/(256*MiB))*256*MiB)
         cap=max(0,total-reserve);startup=0
     supported=(gpu_index==0 and gpu_count==1 and mapping_supported)
-    p.update(commit_limit_bytes=commit,nominal_ram_cap_gib=nominal,gpu_total_bytes=total,
+    if mode != 'monitor':
+        p['commit_limit_bytes'] = commit
+    p.update(nominal_ram_cap_gib=nominal,gpu_total_bytes=total,
         gpu_uuid=gpu_uuid,gpu_index=gpu_index,gpu_count=gpu_count,gpu_reserve_bytes=reserve,
         gpu_whole_card_cap_bytes=cap,gpu_startup_free_floor_bytes=startup,
         supported=supported,unsupported_reason=None if supported else 'SINGLE_GPU_ZERO_MAPPING_REQUIRED',
@@ -71,8 +73,13 @@ def resolve_device_policy(total_physical_bytes,commit_limit_bytes,gpu_total_byte
     return p
 
 def _validated_policy(p):
-    expected=resolve_device_policy(p['total_physical_bytes'],p['commit_limit_bytes'],p['gpu_total_bytes'],
+    expected=resolve_device_policy(p['total_physical_bytes'],p.get('commit_limit_bytes',p['total_physical_bytes']),p['gpu_total_bytes'],
         gpu_uuid=p['gpu_uuid'],gpu_index=p['gpu_index'],gpu_count=p['gpu_count'],mode=p['mode'],mapping_supported=p['supported'])
+    if p['mode'] == 'monitor' and 'commit_limit_bytes' in p:
+        # Prior monitor snapshots included this observation in their digest.
+        expected.pop('policy_fingerprint')
+        expected['commit_limit_bytes'] = _integer(p['commit_limit_bytes'], 'commit_limit_bytes', True)
+        expected['policy_fingerprint'] = _digest(expected)
     if p!=expected:raise ValueError('HOST_RAM_POLICY_SNAPSHOT_INVALID')
     return p
 

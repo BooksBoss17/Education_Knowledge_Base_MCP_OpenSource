@@ -102,7 +102,7 @@ def reusable_pixel_run(service, identity, package, template_sha):
         if root.name!=cache_id[:24]:
             raise ValueError('Screening cache identity collision or corruption')
         status=json.loads((root/'state.json').read_text('utf-8'))['status']
-        if status!='SUCCESS' and not (status in {'QUEUED','RUNNING'} and 'screen-'+cache_id in service.futures):
+        if status!='SUCCESS' and not (status in {'QUEUED','RUNNING'} and (root/'manager.json').is_file()):
             continue
         rows=json.loads((root/'manifest.json').read_text('utf-8'))['rows']
         if any(not Path(row['path']).resolve().is_relative_to(package.resolve()) for row in rows):
@@ -119,6 +119,7 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
     if type(offset) is not int or offset<0 or type(limit) is not int or not 1<=limit<=500:
         raise ValueError('Invalid screening window')
     if view not in {'all','candidates','triage'}:raise ValueError('Invalid screening view')
+    MANAGED['require_screening'](service)
     state,package,path,text=flow['current'](service,job_id)
     source_sha=state['source_sha256']
     if SIM['sha'](state['source'])!=source_sha:raise ValueError('Source changed before screening')
@@ -175,7 +176,7 @@ def request(service,job_id,flow,conversion_lock,*,offset=0,limit=100,view='all')
     if previous and previous['status']=='FAILED':return dict(**previous,cache_id=cache_id)
     if previous and not (run_root/'manager.json').is_file():
         MANAGED['screen_status'](service,run_root,run_id)
-    if previous and run_id not in service.futures and not (run_root/'manager.json').is_file():
+    if previous and not (run_root/'manager.json').is_file():
         return dict(status='INTERRUPTED',cache_id=cache_id,reason='Prior worker is no longer owned by this service; preserved for review')
     if not previous:
         run_root.mkdir(parents=True,exist_ok=False)

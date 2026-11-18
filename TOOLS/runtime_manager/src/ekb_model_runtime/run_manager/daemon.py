@@ -22,6 +22,14 @@ from .registry import ResourceAdapter, load_registry, requirement, verify_runtim
 from .storage import Store
 
 
+def policy_identity(policy):
+    identity = {key: value for key, value in policy.items()
+                if key not in {"commit_limit_bytes", "policy_fingerprint"}}
+    if identity.get("mode") == "auto" and "nominal_ram_cap_gib" in identity:
+        identity.pop("project_ram_cap_gib", None)
+    return identity
+
+
 class Manager:
     def __init__(self, root, registry):
         self.root, self.registry = Path(root), registry
@@ -30,6 +38,8 @@ class Manager:
         self.key = auth_key(root)
         self.active = {}
         self.active_lock = threading.RLock()
+        self.submission_lock = threading.Lock()
+        self.draining = False
         self.stop = threading.Event()
         self.events = RotatingLog(self.root / "manager.jsonl")
         self.identity = process_identity(os.getpid())
@@ -59,9 +69,12 @@ class Manager:
                 raise RunManagerError("INPUT_ROOT_NOT_DIRECTORY")
             return self.store.register_workspace(workspace, sorted(set(programs)), sorted(set(roots)))
         if operation == "submit":
-            return self.submit(**args)
+            with self.submission_lock:
+                if self.draining:
+                    raise RunManagerError("DAEMON_DRAINING")
+                return self.submit(**args)
         if operation == "status":
-            return self.store.status(args["job_id"])
+            return self.scoped_status(args)
         if operation == "lookup":
             return self.store.lookup(args["program_id"], str(Path(args["workspace"]).resolve()), args["public_id"])
         if operation == "find_scope":
@@ -71,14 +84,17 @@ class Manager:
             if states is not None and (not isinstance(states, list) or set(states) - set(ACTIVE) - {"SUCCEEDED", "FAILED", "CANCELLED", "INTERRUPTED", "CAPACITY_INSUFFICIENT", "WAIT_EXPIRED"}):
                 raise RunManagerError("INVALID_STATE_FILTER")
             limit = int(bounded_number(args.get("limit", 20), "limit", 20))
-            return self.store.list(states, limit=limit)
+            workspace = args.get("workspace")
+            return self.store.list(states, limit=limit,
+                                   workspace=str(Path(workspace).resolve()) if workspace is not None else None)
         if operation == "adopt":
+            self.scoped_status(args)
             return self.store.adopt(args["job_id"], args["client_id"])
         if operation == "cancel":
-            job = self.store.status(args["job_id"])
             reason = str(args.get("reason", "user"))[:500]
+            job = self.scoped_status(args)
             if job["state"] in ("QUEUED", "WAITING_RESOURCES"):
-                return self.store.transition(job["job_id"], "CANCELLED", error={"code": "USER_CANCELLED", "reason": reason}, expected=("QUEUED", "WAITING_RESOURCES"))
+                job = self.store.transition(job["job_id"], "CANCELLED", error={"code": "USER_CANCELLED", "reason": reason}, expected=("QUEUED", "WAITING_RESOURCES"))
             if job["state"] in ("STARTING", "RUNNING", "CANCEL_REQUESTED"):
                 return self.store.transition(job["job_id"], "CANCEL_REQUESTED", error={"code": "USER_CANCELLED", "reason": reason}, expected=("STARTING", "RUNNING", "CANCEL_REQUESTED"))
             return job
@@ -89,11 +105,21 @@ class Manager:
             return {"owned": proof, "job_id": args["job_id"], "pid": args["pid"], "created": args["created"],
                     "proof": "LIVE_WINDOWS_JOB_MEMBERSHIP_AND_CREATION_TIME" if proof else "NOT_PROVEN"}
         if operation == "shutdown":
-            if self.store.list(ACTIVE, limit=1):
-                raise RunManagerError("DAEMON_HAS_ACTIVE_TASKS")
-            threading.Thread(target=self.server.shutdown, daemon=True).start()
-            return {"shutdown_requested": True}
+            with self.submission_lock, self.active_lock:
+                if self.active or self.store.list(ACTIVE, limit=1):
+                    raise RunManagerError("DAEMON_HAS_ACTIVE_TASKS")
+                if not self.draining:
+                    self.draining = True
+                    threading.Thread(target=self.server.shutdown, daemon=True).start()
+                return {"shutdown_requested": True}
         raise RunManagerError("UNKNOWN_OPERATION")
+
+    def scoped_status(self, args):
+        job = self.store.status(args["job_id"])
+        workspace = args.get("workspace")
+        if workspace is not None and Path(workspace).resolve() != Path(job["workspace"]):
+            raise RunManagerError("UNKNOWN_JOB")
+        return job
 
     def submit(self, program_id, workspace, payload, *, scope_key=None, requirement=None, policy=None,
                wait_timeout=900, retry_of=None, config_fingerprint=None, run_timeout=None):
@@ -115,6 +141,15 @@ class Manager:
                     check(child)
         check(payload)
         payload = json.loads(canonical(payload))
+        if program_id == "education-convert" and "input_roots" in payload:
+            requested_roots = payload["input_roots"]
+            if not isinstance(requested_roots, list) or not all(isinstance(root, str) for root in requested_roots):
+                raise RunManagerError("INVALID_INPUT_ROOTS")
+            allowed = {Path(root) for root in registered["input_roots"]}
+            requested = {Path(root).resolve(strict=True) for root in requested_roots} | {Path(workspace)}
+            if not requested.issubset(allowed):
+                raise RunManagerError("INPUT_ROOT_OUTSIDE_REGISTRATION")
+            payload["input_roots"] = sorted(map(str, requested), key=str.casefold)
         extra_sources = payload.get("additional_sources", [])
         if not isinstance(extra_sources, list) or len(extra_sources) > 31:
             raise RunManagerError("INVALID_ADDITIONAL_SOURCES")
@@ -125,7 +160,8 @@ class Manager:
             if not isinstance(binding, dict) or not isinstance(binding.get('source'), str):
                 raise RunManagerError("INVALID_ADDITIONAL_SOURCES")
             source = Path(binding["source"]).resolve(strict=True)
-            if not source.is_file() or not any(source.is_relative_to(Path(root)) for root in registered["input_roots"]):
+            roots = payload.get("input_roots", registered["input_roots"]) if program_id == "education-convert" else registered["input_roots"]
+            if not source.is_file() or not any(source.is_relative_to(Path(root)) for root in roots):
                 raise RunManagerError("SOURCE_OUTSIDE_REGISTERED_ROOTS")
             actual = file_sha(source)
             if binding.get("source_sha256") and binding["source_sha256"] != actual:
@@ -210,6 +246,7 @@ class Manager:
                 self.finish(job, "FAILED", {"code": "RESOURCE_OBSERVATION_FAILED", "message": str(error)})
         # Conservative initial scheduler: one controlled heavy task globally,
         # including CPU test workers. No two workspaces can both reserve GPU0.
+        self.store.expire_waiting(time.time())
         with self.active_lock:
             occupied = bool(self.active)
         queued = self.store.list(("QUEUED", "WAITING_RESOURCES"), limit=1000)
@@ -223,7 +260,7 @@ class Manager:
                 observed = self.adapter.sample()
                 observed.update(WindowsJob.sample_memory(None, pids=[os.getpid()]))
                 resolved = self.adapter.policy(observed)
-                if job.get("policy") is not None and resolved != job["policy"]:
+                if job.get("policy") is not None and policy_identity(resolved) != policy_identity(job["policy"]):
                     raise RunManagerError("DEVICE_POLICY_CHANGED_AFTER_REGISTRATION")
                 decision = self.adapter.admit(resolved, observed, job["requirement"])
             except Exception as error:

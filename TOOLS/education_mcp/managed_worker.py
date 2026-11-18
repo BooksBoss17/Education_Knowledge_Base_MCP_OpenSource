@@ -29,6 +29,9 @@ def main():
         if payload['operation'] == 'convert':
             if helpers['sha'](payload['source']) != payload['source_sha256']:
                 raise ValueError('Source changed after submission')
+            if 'derivation' in payload:
+                server['IMAGE_REVIEW']['verify_derivation'](service, payload)
+                service._derivation = payload['derivation']
             service.start(payload['source'], payload.get('material_type'), payload.get('book_title'))
             state = service.state(args.manager_job_id)
             if state['status'] != 'SUCCEEDED':

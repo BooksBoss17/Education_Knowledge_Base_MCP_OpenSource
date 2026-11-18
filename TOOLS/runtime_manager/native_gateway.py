@@ -22,9 +22,15 @@ def _gateway(tool, argv=None):
     helpers = runpy.run_path(str(root / 'TOOLS/runtime_manager/bootstrap.py'))
     if helpers['trusted_context'](root):
         return module['main'](argv)
-    core_options=json.loads(args.core_options)
-    allowed={'formula_ocr','mtef_cache','mtef_cache_dir','replace','config_path','models_root','continue_on_error','reuse_formula_model'}
-    if not isinstance(core_options,dict) or set(core_options)-allowed:raise ValueError('UNKNOWN_CORE_OPTIONS')
+    if 'parse_core_options' in module:
+        core_options = module['parse_core_options'](args.core_options)
+    else:
+        # Older native routes use these options in their isolated worker.
+        core_options = json.loads(args.core_options)
+        allowed = {'formula_ocr', 'mtef_cache', 'mtef_cache_dir', 'replace',
+                   'config_path', 'models_root', 'continue_on_error', 'reuse_formula_model'}
+        if not isinstance(core_options, dict) or core_options.keys() - allowed:
+            raise ValueError('UNKNOWN_CORE_OPTIONS')
     source = Path(args.source).resolve(strict=True)
     extra_sources = [Path(value).resolve(strict=True) for value in getattr(args, 'batch_source', [])]
     if len(extra_sources) > 31 or len({source, *extra_sources}) != len(extra_sources) + 1:
