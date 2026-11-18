@@ -69,6 +69,30 @@ return durable SQLite records without scanning the client's recent-task list.
 confuse observing an old completion with requesting a new run. `shutdown()` is
 drain-only administration and refuses while registered tasks are active.
 
+The MCP launcher selects one workspace. Its `runtime_jobs` calls send that
+workspace to the manager for list, status, adopt and cancel. The manager filters
+before applying the list limit and returns UNKNOWN_JOB for IDs in other
+workspaces. The local administrator using the same Windows account and manager
+IPC credentials can still use the unscoped RunManagerClient API.
+
+## Environment credential rotation
+
+The manager snapshots its launch environment. Workers inherit that environment
+until the manager exits. In a local administration shell, while submissions are
+paused and active jobs have finished, run the installed runtime command below.
+Use the existing manager home when this deployment sets EKB_RUN_MANAGER_HOME.
+
+```powershell
+$env:PYTHONPATH = '<MCP_ROOT>/TOOLS/runtime_manager/src'
+python -m ekb_model_runtime.cli drain-manager
+```
+
+A busy manager rejects drain. A successful response confirms the previous
+process has exited. Update the credential through the launcher's existing
+environment configuration, then reopen the MCP session or run the normal
+managed CLI with the new environment. The next start creates a manager that
+inherits the new value. Task records and rotation output omit credential values.
+
 ## Atomic job identity and worker context
 
 `submit` first uses `BEGIN IMMEDIATE` plus a partial unique SQLite index. No

@@ -2,7 +2,7 @@
 
 转换入口使用 BeMarkdown 0.4 本地 API 线路。保留 PDF、DOCX、独立图片、持久任务查询、原文/资源查看、精确修订和教材分章能力。转换时不自动运行旧图片分类；显式筛选接口和旧转换包的审阅兼容仍保留。
 
-首次连接先完成 `bemarkdown_vision` 的六符号图片验证。调用 `bemarkdown_convert` 后轮询同一个 job；断开连接不会取消持久作业。`runtime_jobs` 可查队列、状态和显式取消，提交前先检查是否已有任务。
+首次连接先完成 `bemarkdown_vision` 的六符号图片验证。调用 `bemarkdown_convert` 后轮询同一个 job；断开连接不会取消持久作业。`runtime_jobs` 可在当前工作区查队列、认领和显式取消，提交前先检查是否已有任务。
 
 使用 `bemarkdown_read(kind="original"/"report"/"handoff_summary")` 查看结果。新线路没有三模型分歧候选，零候选不表示没有识别错误。通过 `bemarkdown_source` 查看原 PDF 页、原图片或 Word 的嵌入图片；新线路使用原图直接转录，不生成 Office 分页副本，`source_view="pagination"` 仅用于确有该证据的旧包。
 

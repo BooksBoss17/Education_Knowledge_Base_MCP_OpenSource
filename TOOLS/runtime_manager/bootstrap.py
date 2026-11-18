@@ -28,6 +28,11 @@ def runtime(mcp_root):
     return root, installed, RunManagerClient, ensure_daemon, process_identity
 
 
+def screening_available(mcp_root):
+    root = Path(mcp_root)
+    return (root / 'TOOLS/education_mcp/managed_worker.py').is_file() and not (root / '.local/model-api.json').is_file()
+
+
 def registry(mcp_root, python):
     root, installed, *_ = runtime(mcp_root)
     import runpy, subprocess
@@ -95,7 +100,8 @@ def registry(mcp_root, python):
             programs[name]['resource_kind']='cpu'
             programs[name]['gpu_key']='EXTERNAL_API'
             programs[name]['requirement']=dict(extra_private_bytes=512*1024**2,extra_physical_bytes=512*1024**2,extra_gpu_mib=0)
-        programs.pop('education-screen',None)
+    if not screening_available(root):
+        programs.pop('education-screen', None)
     value = dict(schema='ekb-run-manager-registry-v1', programs=programs,
                  resource_policy=dict(module_path=str(policy), sha256=sha(policy), gpu_index=0, mode=mode))
     encoded = json.dumps(value, sort_keys=True, ensure_ascii=False, indent=2).encode('utf-8')

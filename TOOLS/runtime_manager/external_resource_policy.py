@@ -22,7 +22,7 @@ def resolve_device_policy(total_physical_bytes,commit_limit_bytes,gpu_total_byte
     p={'schema':'public-external-api-ram-v1','project_ram_cap_gib':None,
        'ram_reserve':0,'commit_reserve':0,
        'gpu_uuid':'EXTERNAL_API','gpu_total_bytes':0,'mode':'monitor','supported':True,
-       'total_physical_bytes':total_physical_bytes,'commit_limit_bytes':commit_limit_bytes}
+       'total_physical_bytes':total_physical_bytes}
     p['policy_fingerprint']=hashlib.sha256(json.dumps(p,sort_keys=True).encode()).hexdigest()
     return p
 

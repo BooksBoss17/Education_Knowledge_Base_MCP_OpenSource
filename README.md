@@ -2,7 +2,7 @@
 
 将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 无需下载本项目过去的固定模型组合。默认不安装模型权重，不启用图片分类或 Semantic Retention。
 
-核心版本 **0.4.6+localapi.8**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
+核心版本 **0.4.6+localapi.8.review.1**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
 
 ## 转换流程
 
@@ -81,3 +81,8 @@ Word矩形图片按裁剪、翻转、旋转和普通非重叠图片组合的可�
 当前采用monitor资源策略，记录客户端内存和受管进程用量，应用层RAM/VRAM档位与自动上限停用。联网API服务端的资源由服务提供方管理，本地外部模型服务由使用者部署。通过config中的四角色接口配置选用自己的模型。
 
 复杂遮罩、重叠图片组合仍保图待核。两个已调查的公式填空标签与截断边框样例本轮未增加修复，内容准确率须按实际资料复核。
+
+
+## MCP 调度与连接
+
+单图补转由持久作业管理器执行，重连后查询同一作业。`runtime_jobs` 面向当前工作区。API-only 安装的筛图使用规则模式。凭据轮换步骤见[运行管理器说明](TOOLS/runtime_manager/src/ekb_model_runtime/run_manager/README.md)。
