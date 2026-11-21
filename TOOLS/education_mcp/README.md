@@ -1,16 +1,10 @@
-# Education Knowledge Base MCP 0.6
+# Education Knowledge Base MCP 0.7
 
-转换入口使用 BeMarkdown 0.4 本地 API 线路。保留 PDF、DOCX、独立图片、持久任务查询、原文/资源查看、精确修订和教材分章能力。转换时不自动运行旧图片分类；显式筛选接口和旧转换包的审阅兼容仍保留。
+正式转换使用 BeMarkdown 本地 API。支持 PDF、DOCX 与单帧图片，结果绑定原文件哈希。先完成 bemarkdown_vision 图片验证，再提交转换并轮询同一作业。通过 bemarkdown_source 查看 PDF 原页、Word 嵌图和独立原图。转换报告和 handoff_summary 记录待核内容。使用 bemarkdown_review 时提供当前 SHA、唯一替换和已观察的来源依据。
 
-首次连接先完成 `bemarkdown_vision` 的六符号图片验证。调用 `bemarkdown_convert` 后轮询同一个 job；断开连接不会取消持久作业。`runtime_jobs` 可在当前工作区查队列、认领和显式取消，提交前先检查是否已有任务。
+教材导入调用 textbook_import，按 [现行教材说明](TEXTBOOK_IMPORT.md)完成准备、逐项原页复核、预览、批准和发布。
 
-使用 `bemarkdown_read(kind="original"/"report"/"handoff_summary")` 查看结果。新线路没有三模型分歧候选，零候选不表示没有识别错误。通过 `bemarkdown_source` 查看原 PDF 页、原图片或 Word 的嵌入图片；新线路使用原图直接转录，不生成 Office 分页副本，`source_view="pagination"` 仅用于确有该证据的旧包。
-
-`bemarkdown_review` 基于当前 SHA、唯一文本片段及具体来源依据安全修订。扫描表格、空识别及不支持的 Word 图片外观保留资源并明确待核；包校验成功不等于内容准确率认证。
-
-教材导入使用 `textbook_import` 和随包提供的教材 Skill。可用已完成转录包建立候选，查看原页与待审项，审查后按版本执行 preview、approve 和 publish。旧的 `textbook_organize` 入口继续可用。[教材导入 Skill](../../SKILLS/textbook-import/SKILL.md)
-
-安装或迁移时先按 `../bemarkdown/README.md` 激活环境，再运行 `launch.py --mcp-root <MCP目录> --workspace <业务工作区> --input-root <允许的输入目录>`。启动器依据安装收据选择环境，不依赖开发目录。部署更新后新连接使用当前版本；已有连接的内存信息可能仍显示旧适配器版本。
+安装和迁移按 [BeMarkdown 说明](../bemarkdown/README.md)配置环境。使用 launch.py 并显式设置 MCP 根、业务工作区和允许的输入根。新连接使用当前接口。
 
 ## 全程资源监控
 
@@ -24,4 +18,4 @@
 
 ## 按任务统一收尾
 
-runtime_jobs 支持 begin、inspect、end、resume。主会话预先生成并保存 task_run_id（32 位小写十六进制），begin 启用持久登记和工作区采集。在每次业务调用中传该 ID，子 agent 使用相同 ID。end 的 outcome 为 complete、pause 或 cancel，返回 CLOSING 时后台管理器继续排空；inspect 返回任务状态、作业、在途调用数量与终态回执。pause 等待在途工作自然完成，resume 开启新的采样段。取消独占作业通过管理器已有的作业取消路径执行。多个任务共用的工作区采集由最后一个持有者释放；开始任务之前已存在的外部采集归其原发起者。宿主进程和原生子 agent 由其宿主管理。未传任务 ID 的旧调用仍走原有路径。
+runtime_jobs 支持 begin、inspect、end、resume。主会话预先生成并保存 task_run_id（32 位小写十六进制），begin 启用持久登记和工作区采集。在每次业务调用中传该 ID，子 agent 使用相同 ID。end 的 outcome 为 complete、pause 或 cancel，返回 CLOSING 时后台管理器继续排空；inspect 返回任务状态、作业、在途调用数量与终态回执。pause 等待在途工作自然完成，resume 开启新的采样段。取消独占作业通过管理器已有的作业取消路径执行。多个任务共用的工作区采集由最后一个持有者释放；开始任务之前已存在的外部采集归其原发起者。宿主进程和原生子 agent 由其宿主管理。单次业务调用可独立运行；整任务使用 task_run_id 登记。

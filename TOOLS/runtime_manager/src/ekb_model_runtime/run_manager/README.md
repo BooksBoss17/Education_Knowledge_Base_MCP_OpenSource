@@ -192,5 +192,5 @@ nested Job ownership/cancel, manager crash, interrupted retries, resource wait/
 capacity/cancel/stop, bounded logs, source changes, authenticated JSON rejection,
 Windows sharing conflicts, permitted client-Job breakaway and denied breakaway.
 It does not load models or repeat the frozen 434-item evaluation. Real MCP/CLI/
-WeMM/Semantic bridges and hardware-policy/model validation belong to host
+Hardware policy and model validation belong to host
 integration acceptance; arbitrary manually started scripts are not managed.

@@ -74,27 +74,12 @@ def convert_text_image(service, job_id, asset_name, retry, atomic_json):
         retry_of = managed['job_id']
 
     manifest = root / 'derivation.json'
-    legacy = root / 'conversion.json'
-    recorded = manifest if manifest.is_file() else legacy
     pdf = root / 'paragraph.pdf'
     root.mkdir(parents=True, exist_ok=True)
-    if recorded.is_file():
-        saved = json.loads(recorded.read_text(encoding='utf-8'))
+    if manifest.is_file():
+        saved = json.loads(manifest.read_text(encoding='utf-8'))
         if any(saved.get(k) != v for k, v in identity.items()):
             raise ValueError('Derived-image identity collision')
-        if recorded == legacy and not managed:
-            prior = service.state(saved['job_id'])
-            if prior['status'] in {'QUEUED', 'RUNNING'}:
-                pid = prior.get('server_pid')
-                boot = MANAGED['bootstrap'](service)
-                owner = boot['runtime'](service.mcp_root)[-1](pid) if type(pid) is int else None
-                if prior['status'] == 'QUEUED' and type(pid) is int and owner is None:
-                    prior = dict(prior, status='INTERRUPTED',
-                                 observation='Legacy queued job has no owner. Explicit retry can submit a managed replacement.')
-                else:
-                    prior = dict(prior, observation='Check the legacy conversion and its worker before retrying.')
-            if prior['status'] not in RETRYABLE or not retry:
-                return dict(prior, reused=True, next_step=NEXT_STEP)
         digest = hashlib.sha256(pdf.read_bytes()).hexdigest()
         if digest != saved['derived_source_sha256']:
             raise ValueError('Derived paragraph PDF changed')

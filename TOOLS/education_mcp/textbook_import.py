@@ -8,11 +8,50 @@ import re
 import runpy
 import shutil
 import tempfile
+import uuid
 
 FMT=runpy.run_path(str(Path(__file__).with_name('textbook_format.py')))
 sha=FMT['sha']
 read=lambda p:json.loads(Path(p).read_text('utf-8-sig'))
 atomic=runpy.run_path(str(Path(__file__).with_name('atomic_files.py')))['atomic_json']
+
+
+def slug(value):
+    if not isinstance(value, str) or not value.strip() or len(value) > 160:
+        raise ValueError('Expected a nonempty title of at most 160 characters')
+    result = re.sub(r'[<>:"/\\|?*\x00-\x1f]', '-', value).strip(' .')[:90]
+    if not result or result.upper() in {'CON', 'PRN', 'AUX', 'NUL', *(f'COM{i}' for i in range(1,10)), *(f'LPT{i}' for i in range(1,10))}:
+        raise ValueError('Invalid filesystem title')
+    return result
+
+
+def backup(service, source):
+    """Copy before conversion; preserve same-named editions under content IDs."""
+    identity = sha(source)
+    folder = service.workspace_manager.safe_path('Original_Backup/TEXTBOOKS')
+    folder.mkdir(parents=True, exist_ok=True)
+    target = folder / (slug(source.stem) + '__' + identity[:12] + source.suffix.lower())
+    if target.exists():
+        if sha(target) != identity:
+            raise ValueError('Textbook backup collision; existing source is preserved')
+    else:
+        temporary = folder / ('.' + uuid.uuid4().hex + '.copying')
+        shutil.copyfile(source, temporary)
+        if sha(temporary) != identity or sha(source) != identity:
+            raise ValueError('Source changed while creating textbook backup')
+        # A concurrent identical import may already have created this target.
+        if target.exists() and sha(target) != identity:
+            raise ValueError('Textbook backup collision')
+        os.replace(temporary, target)
+    return target, identity
+
+
+def skill(service):
+    for name in ('textbook-import',):
+        path = service.mcp_root / 'SKILLS' / name / 'SKILL.md'
+        if path.is_file():
+            return dict(name=name, path=str(path), content=path.read_text(encoding='utf-8'))
+    raise RuntimeError('TEXTBOOK_INSTRUCTIONS_NOT_INSTALLED')
 
 
 def digest(data):

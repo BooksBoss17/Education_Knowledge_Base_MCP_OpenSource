@@ -1,8 +1,8 @@
 # Education Knowledge Base MCP · BeMarkdown API 版
 
-将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 无需下载本项目过去的固定模型组合。默认不安装模型权重，不启用图片分类或 Semantic Retention。
+将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 安装包只提供转换和调度所需的软件，模型由使用者配置。
 
-核心版本 **0.4.6+localapi.8.review.1**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
+核心版本 **0.4.6+localapi.8.review.1**；MCP 适配器 **0.7.0**。
 
 ## 整批任务与资源监控
 
@@ -89,4 +89,4 @@ Word矩形图片按裁剪、翻转、旋转和普通非重叠图片组合的可�
 
 ## MCP 调度与连接
 
-单图补转由持久作业管理器执行，重连后查询同一作业。`runtime_jobs` 面向当前工作区。API-only 安装的筛图使用规则模式。凭据轮换步骤见[运行管理器说明](TOOLS/runtime_manager/src/ekb_model_runtime/run_manager/README.md)。
+单图补转由持久作业管理器执行，重连后查询同一作业。`runtime_jobs` 面向当前工作区。升级后重连客户端，教材导入使用随包 Skill。使用源码 ZIP 安装时，请解压到新目录再配置。凭据轮换步骤见[运行管理器说明](TOOLS/runtime_manager/src/ekb_model_runtime/run_manager/README.md)。

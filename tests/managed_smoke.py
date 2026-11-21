@@ -45,12 +45,12 @@ def main():
                 # MCP transport initialization/listing needs no vision challenge.
                 proc=subprocess.Popen([sys.executable,'-I','-X','utf8',str(ROOT/'TOOLS/education_mcp/launch.py'),'--mcp-root',str(ROOT),'--workspace',str(tmp/'workspace')],env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf8')
                 jobs = []
-                def rpc(method, **params):
+                def rpc(method, *, expect_error=False, **params):
                     request = {'jsonrpc':'2.0','id':1,'method':method,'params':params}
                     proc.stdin.write(json.dumps(request)+'\n')
                     proc.stdin.flush()
                     response = json.loads(proc.stdout.readline())['result']
-                    assert not response.get('isError'), response
+                    assert bool(response.get('isError')) == expect_error, response
                     return response
 
                 def run_action(action, task, **fields):
@@ -67,9 +67,34 @@ def main():
                     return result
 
                 try:
-                    rpc('initialize',protocolVersion='2025-11-25',capabilities={},clientInfo={'name':'public-smoke','version':'1'})
-                    tools = {t['name'] for t in rpc('tools/list')['tools']}
-                    assert {'bemarkdown_convert','runtime_jobs','runtime_monitor','textbook_import'} <= tools
+                    initialization = rpc('initialize',protocolVersion='2025-11-25',capabilities={},clientInfo={'name':'public-smoke','version':'1'})
+                    assert initialization['serverInfo']['version'] == '0.7.0'
+                    tools = {t['name']: t for t in rpc('tools/list')['tools']}
+                    assert set(tools) == {
+                        'bemarkdown_convert',
+                        'bemarkdown_convert_image',
+                        'bemarkdown_info',
+                        'bemarkdown_read',
+                        'bemarkdown_review',
+                        'bemarkdown_source',
+                        'bemarkdown_status',
+                        'bemarkdown_vision',
+                        'knowledge_workspace',
+                        'runtime_jobs',
+                        'runtime_monitor',
+                        'textbook_import',
+                    }
+                    for retired in ('textbook_organize', 'bemarkdown_review_context'):
+                        response = rpc('tools/call', expect_error=True, name=retired, arguments={})
+                        assert 'Unknown tool' in response['content'][0]['text']
+                    assert 'source_view' not in tools['bemarkdown_source']['inputSchema']['properties']
+                    assert 'issues' not in tools['bemarkdown_read']['inputSchema']['properties']['kind']['enum']
+                    replacements = tools['bemarkdown_review']['inputSchema']['properties']['replacements']
+                    assert set(replacements['items']['properties']) == {'old', 'new', 'source_evidence'}
+                    bootstrap = runpy.run_path(str(ROOT/'TOOLS/runtime_manager/bootstrap.py'))
+                    _, programs = bootstrap['registry'](ROOT, sys.executable)
+                    assert set(programs) == {'education-convert', 'native-convert'}
+                    assert all(row['gpu_key'] == 'EXTERNAL_API' for row in programs.values())
                     a, b = uuid.uuid4().hex, uuid.uuid4().hex
                     for task in (a,b):
                         jobs.append(task)

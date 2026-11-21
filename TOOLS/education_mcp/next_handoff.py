@@ -1,4 +1,5 @@
 """Source-bound review handoff for a single-recognizer API route."""
+import copy
 import hashlib
 import json
 
@@ -19,3 +20,33 @@ def build_handoff(source, markdown, report):
         model_roles=report.get('visual_serial', {}).get('stage_identities', {}),
         native_image_sources=report.get('image_content', {}).get('sources', []),
         formula_fallback=report.get('formula_ocr', {}))
+
+
+def summarize_handoff(handoff):
+    """Keep every review item and source request; fold pixel-level boundary logs."""
+    result = copy.deepcopy(handoff)
+    result['schema'] = 'education-mcp-residual-ocr-handoff-summary-v1'
+    result['full_evidence_view'] = 'handoff'
+    result['summary_scope'] = 'All current review items and source references are retained. Only pixel-level boundary diagnostics are folded; use handoff for those details.'
+    for row in result.get('image_region_reviews', []):
+        details = row.pop('boundary_evidence', None)
+        if details is None:
+            continue
+        methods = []
+        def visit(value):
+            if isinstance(value, dict):
+                if value.get('schema'):
+                    summary = {key:child for key,child in value.items()
+                               if key in {'schema','status'} or isinstance(child, bool)}
+                    if 'blocking_regions' in value:
+                        summary['blocking_regions'] = value['blocking_regions']
+                    if summary not in methods:
+                        methods.append(summary)
+                for child in value.values():
+                    visit(child)
+            elif isinstance(value, list):
+                for child in value:
+                    visit(child)
+        visit(details)
+        row['boundary_summary'] = dict(methods=methods, pixel_diagnostics_view='handoff')
+    return result

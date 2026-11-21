@@ -46,23 +46,7 @@ def submit_paragraph(service, source, source_sha256, derivation, scope_key, retr
 
 def status(service, job_id):
     path = service.state_path(job_id)
-    if path.is_file():
-        legacy = json.loads(path.read_text(encoding='utf-8'))
-        if legacy.get('runtime_management') != 'PERSISTENT_MANAGER':
-            legacy['runtime_management'] = 'LEGACY_UNMANAGED'
-            if legacy.get('status') in {'QUEUED','RUNNING'}:
-                legacy['observation'] = 'Legacy process identity must be checked before retry; no automatic restart.'
-            return legacy
-    try:
-        observed = bootstrap(service)['existing_client'](service.mcp_root).status(job_id)
-    except Exception as exc:
-        if path.is_file() and 'UNKNOWN_JOB' in str(exc):
-            legacy = json.loads(path.read_text(encoding='utf-8'))
-            legacy['runtime_management'] = 'LEGACY_UNMANAGED'
-            if legacy.get('status') in {'QUEUED', 'RUNNING'}:
-                legacy['observation'] = 'Legacy process identity must be checked before retry; no automatic restart.'
-            return legacy
-        raise
+    observed = bootstrap(service)['existing_client'](service.mcp_root).status(job_id)
     if Path(observed['workspace']).resolve() != service.workspace:
         raise ValueError('Managed job belongs to a different workspace')
     state = json.loads(path.read_text(encoding='utf-8')) if path.is_file() else dict(
@@ -103,34 +87,3 @@ def call(service, action='list', job_id=None, reason=None, task_run_id=None, out
             raise ValueError('For task-scoped cancellation use end with outcome=cancel')
         return client.cancel(job_id, reason or 'Explicit user cancellation', wait_seconds=5, workspace=service.workspace)
     raise ValueError('Unknown runtime action')
-
-
-def submit_screen(service, run_id, run_root, manifest, model_path, profile):
-    helpers = bootstrap(service)
-    result = manager(service).submit('education-screen', service.workspace,
-        dict(operation='screen', run_id=run_id, run_root=str(run_root), manifest=str(manifest),
-             manifest_sha256=helpers['sha'](manifest), model_path=str(model_path), profile=profile),
-        scope_key=run_id, config_fingerprint=helpers['installation_fingerprint'](service.mcp_root),
-        run_timeout=7500, **task_binding(service))
-    runpy.run_path(str(Path(__file__).with_name('atomic_files.py')))['atomic_json'](
-        run_root / 'manager.json', dict(job_id=result['job_id']))
-    return result
-
-
-def require_screening(service):
-    if not bootstrap(service)['screening_available'](service.mcp_root):
-        raise ValueError('WEMM_SCREENING_UNAVAILABLE_IN_API_ONLY_INSTALLATION')
-
-
-def screen_status(service, run_root, run_id=None):
-    link = run_root / 'manager.json'
-    if not link.is_file():
-        if not run_id:
-            return None
-        client=bootstrap(service)['existing_client'](service.mcp_root)
-        match=client.find_scope('education-screen',service.workspace,run_id)
-        if not match:
-            return None
-        runpy.run_path(str(Path(__file__).with_name('atomic_files.py')))['atomic_json'](
-            link,dict(job_id=match['job_id']))
-    return bootstrap(service)['existing_client'](service.mcp_root).status(json.loads(link.read_text(encoding='utf-8'))['job_id'])

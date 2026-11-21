@@ -28,9 +28,6 @@ def runtime(mcp_root):
     return root, installed, RunManagerClient, ensure_daemon, process_identity
 
 
-def screening_available(mcp_root):
-    root = Path(mcp_root)
-    return (root / 'TOOLS/education_mcp/managed_worker.py').is_file() and not (root / '.local/model-api.json').is_file()
 
 
 def registry(mcp_root, python):
@@ -46,30 +43,15 @@ def registry(mcp_root, python):
     mode = json.loads(configuration.read_text(encoding='utf-8')).get('mode', 'auto')
     local = Path(os.environ.get('LOCALAPPDATA', Path.home()))
     manifest = json.loads((root/'TOOLS/bemarkdown/TOOL_MANIFEST.json').read_text(encoding='utf-8'))
-    # conversion_python is resolved from the activation receipt above.
-    semantic_python = None
-    semantic_scheme = root/'TOOLS/semantic_retention/SCHEME.json'
-    if semantic_scheme.is_file():
-        scheme=json.loads(semantic_scheme.read_text(encoding='utf-8'))
-        receipt=local/'BeMarkdownSemanticRetention/runtimes'/scheme['runtime_id']/'runtime.json'
-        if receipt.is_file():
-            semantic=json.loads(receipt.read_text(encoding='utf-8'))
-            if semantic.get('status')=='VERIFIED_HOST_RUNTIME':
-                semantic_python=Path(semantic['source_python']).resolve(strict=True)
     programs = {}
     for name, relative in {
         'education-convert': 'education_mcp/managed_worker.py',
-        'education-screen': 'education_mcp/managed_worker.py',
         'native-convert': 'runtime_manager/native_worker.py',
-        'semantic-retention': 'semantic_retention/managed_worker.py',
     }.items():
         script = root / 'TOOLS' / relative
         if not script.is_file():
             continue
-        if name=='semantic-retention' and semantic_python is None:
-            continue
-        program_python=semantic_python if name=='semantic-retention' else conversion_python
-        programs[name] = dict(python=str(program_python), script=str(script),
+        programs[name] = dict(python=str(conversion_python), script=str(script),
                               script_sha256=sha(script), installed_root=str(root),
                               arguments=['--manager-job-id', '{job_id}', '--manager-request', '{request_path}'],
                               resource_kind='gpu', gpu_key='GPU:0',
@@ -81,15 +63,7 @@ def registry(mcp_root, python):
             bound += list((root/'TOOLS/education_mcp').glob('*.py'))
             bound += [p for p in (root/'TOOLS/bemarkdown/config/local-model-server.json', root/'.local/model-api.json') if p.is_file()]
             programs[name]['runtime_files'] = {str(p.resolve()): sha(p) for p in sorted(bound)}
-        if name == 'semantic-retention':
-            programs[name]['requirement'] = dict(extra_private_bytes=int(5.9*1024**3)+128*1024**2,
-                extra_physical_bytes=int(4.9*1024**3)+128*1024**2, extra_gpu_mib=5.6*1024)
-        elif name == 'education-screen':
-            # Conservative admission for the fixed BF16 4B worker; the worker
-            # retains its existing dynamic GPU/CPU placement within these guards.
-            programs[name]['requirement'] = dict(extra_private_bytes=11*1024**3,
-                extra_physical_bytes=8*1024**3,extra_gpu_mib=3*1024)
-        elif manifest.get('runtime_route') == 'LOCAL_MODEL_API_V1':
+        if manifest.get('runtime_route') == 'LOCAL_MODEL_API_V1':
             # One owned job includes the controller, API listener and sequential
             # model subprocesses. Do not enqueue a nested GPU job for each role.
             programs[name]['requirement'] = dict(extra_private_bytes=8*1024**3,
@@ -100,8 +74,6 @@ def registry(mcp_root, python):
             programs[name]['resource_kind']='cpu'
             programs[name]['gpu_key']='EXTERNAL_API'
             programs[name]['requirement']=dict(extra_private_bytes=512*1024**2,extra_physical_bytes=512*1024**2,extra_gpu_mib=0)
-    if not screening_available(root):
-        programs.pop('education-screen', None)
     value = dict(schema='ekb-run-manager-registry-v1', programs=programs,
                  resource_policy=dict(module_path=str(policy), sha256=sha(policy), gpu_index=0, mode=mode))
     encoded = json.dumps(value, sort_keys=True, ensure_ascii=False, indent=2).encode('utf-8')

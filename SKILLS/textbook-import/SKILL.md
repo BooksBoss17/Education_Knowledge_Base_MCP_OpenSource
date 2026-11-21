@@ -20,5 +20,5 @@ description: 将教材 PDF 或已完成的 BeMarkdown 转录包整理成分章 M
 1. 在当前 MCP 连接先完成 bemarkdown_vision 的真实图片 challenge/verify。找到已选附件的实际路径；受管附件使用本次附件的真实文件和原名。调用 textbook_import(action=prepare, source=PDF)，有转录包时也可提供 package_path。收到 CONVERSION_REQUIRED 时才用 bemarkdown_convert(material_type=textbook)，轮询同一 job，成功后用该 job_id 或返回的包路径重新 prepare。
 2. 保存 import_id、revision，inspect 核对提议的章界。按 [格式规范](references/FORMAT.md) 检查封面与目录、原章序、独立部件、后记及图文归属。使用 preview 查看程序生成的文件集。读取 pending 的小页结果，往后翻页；解决一批后从当前队首续接。
 3. evidence(page, region 可选) 返回该物理页实际原图与现文。整页太小就裁关键区域。每批最多四张原图，以独立上下文复核。依据原页对同页相关事项调用 resolve，提供最新 revision、issue_ids、page、decision 和具体 source_evidence；correct 还提供唯一 old/new 覆盖该页的局部修订或经核实的 parts 列表。保图、模型共识和历史“已修”文字都不能代替来源判断。识别到额外问题用 flag 登记。任何无法判读的必要内容留在暂存稿。保留原件自身遮挡须说明可见内容及来源限制。
-4. 全部定案后重新 preview，核对章节、原页范围、数学/表格结构、关键题干和实际图片。调用 approve 时传入当前 revision 和 source_evidence，在 source_evidence 写明最终审查范围和依据，再用 publish 整本提交。相同成品重试复用输出；目标已有其他版本时报告冲突。不要手工写知识库或用旧 organize 发布绕过待核。
+4. 全部定案后重新 preview，核对章节、原页范围、数学/表格结构、关键题干和实际图片。调用 approve 时传入当前 revision 和 source_evidence，在 source_evidence 写明最终审查范围和依据，再用 publish 整本提交。相同成品重试复用输出；目标已有其他版本时报告冲突。所有成品通过本步骤的 publish 提交。
 5. 对用户给出真实成品路径、覆盖情况及剩余限制。中断后用原 import_id 续接。分别记录转换、整理和局部审查的开销；正常整理无需再运行本地校对模型。
