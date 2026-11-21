@@ -37,10 +37,14 @@ class RunManagerClient:
                           program_ids=list(program_ids), input_roots=[str(Path(path).resolve()) for path in (input_roots or [])])
 
     def submit(self, program_id, workspace, payload, *, scope_key=None, requirement=None,
-               policy=None, wait_timeout=900, retry_of=None, config_fingerprint=None, run_timeout=None):
+               policy=None, wait_timeout=900, retry_of=None, config_fingerprint=None, run_timeout=None, task_run_id=None):
         return self._call("submit", program_id=program_id, workspace=str(Path(workspace).resolve()), payload=payload,
                           scope_key=scope_key, requirement=requirement or {}, policy=policy, wait_timeout=wait_timeout,
-                          retry_of=retry_of, config_fingerprint=config_fingerprint, run_timeout=run_timeout)
+                          retry_of=retry_of, config_fingerprint=config_fingerprint, run_timeout=run_timeout,
+                          **({"task_run_id":task_run_id} if task_run_id is not None else {}))
+
+    def task_run(self, action, workspace, task_run_id, **fields):
+        return self._call("task_run",action=action,workspace=str(Path(workspace).resolve()),task_run_id=task_run_id,**fields)
 
     def status(self, job_id, *, workspace=None):
         return self._call("status", job_id=job_id, workspace=str(workspace) if workspace is not None else None)

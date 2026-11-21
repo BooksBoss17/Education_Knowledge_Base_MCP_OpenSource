@@ -4,6 +4,10 @@
 
 核心版本 **0.4.6+localapi.8.review.1**；MCP 适配器 **0.6.0**。完整旧线路独立保留在 [BeMarkdown Classic](https://github.com/BooksBoss17/BeMarkdown-Classic)。本仓库历史标签仍可访问旧版本。
 
+## 整批任务与资源监控
+
+主会话用 `runtime_jobs` 登记任务，在调用业务工具时传递同一个 `task_run_id`。完成、暂停和取消可统一收尾，管理器记录退出结果。使用 `runtime_monitor` 查看工具响应时间、模型请求及本机资源。教材导入使用随包提供的 Skill。[MCP 调用说明](TOOLS/education_mcp/README.md) · [教材导入 Skill](SKILLS/textbook-import/SKILL.md)
+
 ## 转换流程
 
 ```text

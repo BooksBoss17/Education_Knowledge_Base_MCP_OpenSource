@@ -1,6 +1,6 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "bemarkdown-mcp-runtime-20261118-v9",
+  "release_id": "mcp-task-closeout-20261121",
   "bemarkdown_wheel_sha256": "e68c3f4a9bdd4fb5357fc3efa7a6f8e7c9ea42e31ce1ebe81479cd52d59f79f3",
   "files": {
     "bootstrap.py": "1859d8647ab73e3889fdec0c599896ed66a0c943fb83be62fc925f4dc25be88f",
@@ -21,14 +21,15 @@
     "src/ekb_model_runtime/path_security.py": "7b63648d7b5786290bf9be10f0da63b122f368af9f4bbc08b8beda4f1769fc09",
     "src/ekb_model_runtime/resolver.py": "c65696493a5aa4c18bed23cabaea1fb185e5ee3aa1b393ab4e2ae27bea891a94",
     "src/ekb_model_runtime/run_manager/__init__.py": "fef446a566aa67fe3afe1517afaa41897fd2f16ea5f9a10bb98ecbb43bcf0065",
-    "src/ekb_model_runtime/run_manager/client.py": "dfdee10e5f637bb40b739b00ad23f1446684d658cf0d630f26642f4fadbfb95a",
+    "src/ekb_model_runtime/run_manager/client.py": "5b6076b7dbfc8935b0f2698bd058e446f19fd71384d9ef0389ed3ef0816534c1",
     "src/ekb_model_runtime/run_manager/common.py": "1dada5b76f752661a01e3137c7c93062cb221b9e73edd048e4ee16248c6d2f57",
-    "src/ekb_model_runtime/run_manager/daemon.py": "4921c0f0ed3020a053da826c836029b06a69ca111d76cbc52d09eb5738c4206f",
+    "src/ekb_model_runtime/run_manager/daemon.py": "f91a189fd2eb8797c2beb1fb11efb267a06371c3c47d1ed25ae8985a9f941c33",
     "src/ekb_model_runtime/run_manager/ipc.py": "dc40cde930c4f89bac3f22f2a5dfe2e894328e4c4b4e4d906b7e99a797f79945",
     "src/ekb_model_runtime/run_manager/process.py": "60be514185b3d17d1f9f2934d3e2350aa72c6c5631dc0250fc41e444ac468ed9",
     "src/ekb_model_runtime/run_manager/README.md": "1d3c2bb463c07bedfaa69500c200a7169cedf14d4843b17f8205a6fba3434695",
     "src/ekb_model_runtime/run_manager/registry.py": "597e1089bb9b0e7c849b4871dec1c5a29abeb10588416e06db27ae56dbfec79d",
-    "src/ekb_model_runtime/run_manager/storage.py": "dfa1e3ee1b36dfe72e03cd2d0d2f634c85e68925dbb7c22b2f468f27bf782375",
+    "src/ekb_model_runtime/run_manager/storage.py": "b15852925ac6c715ce3aca0dac7804b062ebb8ce02f71945ef24af7fadab38eb",
+    "src/ekb_model_runtime/run_manager/task_runs.py": "b0aef69f8c888de21fb30f3487f0af78046b34faf075ff565fdb59356d532e4b",
     "src/ekb_model_runtime/runtime_registry.py": "72bddf4bdbb05b06c30405d637e34a9321029fd42c1c8f2bbf6af19eb02a5f07",
     "src/ekb_model_runtime/worker_contract.py": "5947ce9655f4f7fa475ad5fdf8c85b5f421d9b707dd8fbec514132ea2dbcc1ed"
   }

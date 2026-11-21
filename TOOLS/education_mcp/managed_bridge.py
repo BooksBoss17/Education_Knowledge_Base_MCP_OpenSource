@@ -13,6 +13,12 @@ def manager(service):
     return bootstrap(service)['client'](service.mcp_root, service.python, service.workspace, service.allowed)
 
 
+def task_binding(service):
+    slot=getattr(service,'_task_run',None)
+    task=slot.get() if slot else None
+    return {'task_run_id':task} if task else {}
+
+
 def submit_conversion(service, source, material_type, book_title, source_sha256, retry_job_id=None):
     helpers = bootstrap(service)
     result = manager(service).submit('education-convert', service.workspace,
@@ -20,7 +26,7 @@ def submit_conversion(service, source, material_type, book_title, source_sha256,
              material_type=material_type, book_title=book_title,
              input_roots=[str(p) for p in service.allowed]),
         config_fingerprint=helpers['installation_fingerprint'](service.mcp_root), run_timeout=24*3600,
-        retry_of=retry_job_id)
+        retry_of=retry_job_id, **task_binding(service))
     return status(service, result['job_id'])
 
 
@@ -34,7 +40,7 @@ def submit_paragraph(service, source, source_sha256, derivation, scope_key, retr
         dict(operation='convert', source=str(source), source_sha256=source_sha256,
              derivation=derivation, input_roots=[str(service.workspace)]),
         scope_key=scope_key, config_fingerprint=helpers['installation_fingerprint'](service.mcp_root),
-        run_timeout=24*3600, retry_of=retry_of)
+        run_timeout=24*3600, retry_of=retry_of, **task_binding(service))
     return status(service, result['job_id'])
 
 
@@ -79,7 +85,10 @@ def status(service, job_id):
     return state
 
 
-def call(service, action='list', job_id=None, reason=None):
+def call(service, action='list', job_id=None, reason=None, task_run_id=None, outcome=None):
+    if action in ('begin','resume','inspect','end'):
+        client=manager(service) if action in ('begin','resume') else bootstrap(service)['existing_client'](service.mcp_root)
+        return client.task_run(action,service.workspace,task_run_id,**({'outcome':outcome} if action=='end' else {}))
     client = bootstrap(service)['existing_client'](service.mcp_root)
     if action == 'list':
         return client.list(limit=20, workspace=service.workspace)
@@ -90,6 +99,8 @@ def call(service, action='list', job_id=None, reason=None):
     if action == 'adopt':
         return client.adopt(job_id, 'education-mcp', workspace=service.workspace)
     if action == 'cancel':
+        if task_run_id:
+            raise ValueError('For task-scoped cancellation use end with outcome=cancel')
         return client.cancel(job_id, reason or 'Explicit user cancellation', wait_seconds=5, workspace=service.workspace)
     raise ValueError('Unknown runtime action')
 
@@ -100,7 +111,7 @@ def submit_screen(service, run_id, run_root, manifest, model_path, profile):
         dict(operation='screen', run_id=run_id, run_root=str(run_root), manifest=str(manifest),
              manifest_sha256=helpers['sha'](manifest), model_path=str(model_path), profile=profile),
         scope_key=run_id, config_fingerprint=helpers['installation_fingerprint'](service.mcp_root),
-        run_timeout=7500)
+        run_timeout=7500, **task_binding(service))
     runpy.run_path(str(Path(__file__).with_name('atomic_files.py')))['atomic_json'](
         run_root / 'manager.json', dict(job_id=result['job_id']))
     return result

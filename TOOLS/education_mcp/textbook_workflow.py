@@ -84,9 +84,9 @@ def backup(service, source):
     return target, identity
 
 def skill(service):
-    path = service.mcp_root / 'TOOLS/education_mcp/TEXTBOOK_IMPORT.md'
+    path = service.mcp_root / 'SKILLS/textbook-import/SKILL.md'
     if not path.is_file():
-        path = service.mcp_root / 'SKILLS/textbook-import/SKILL.md'
+        path = service.mcp_root / 'TOOLS/education_mcp/TEXTBOOK_IMPORT.md'
     if not path.is_file():
         raise RuntimeError('TEXTBOOK_INSTRUCTIONS_NOT_INSTALLED')
     return dict(name='textbook-import', path=str(path), content=path.read_text(encoding='utf-8'))

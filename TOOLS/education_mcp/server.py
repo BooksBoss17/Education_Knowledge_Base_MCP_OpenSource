@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import base64
 from contextlib import contextmanager
+from contextvars import ContextVar
 import hashlib
 import json
 import os
@@ -108,8 +109,19 @@ def schema(properties, required=()):
 
 STRING = {"type": "string"}
 JOB = {"type": "string", "pattern": "^[a-f0-9]{32}$"}
+MONITOR = runpy.run_path(str(Path(__file__).with_name("runtime_monitor.py")))
 TOOLS = [
-    {"name": "runtime_jobs", "description": "List, inspect, adopt or explicitly cancel persistent managed tasks in this MCP workspace. Reconnect to the same workspace to resume observation. Check the registry before submitting a duplicate.", "inputSchema": schema({"action": {"type": "string", "enum": ["list", "status", "adopt", "cancel"]}, "job_id": JOB, "reason": STRING}, ["action"])},
+    MONITOR["SCHEMA"],
+    {"name":"textbook_import","description":"Prepare a source-bound BeMarkdown textbook package; inspect the outline, page evidence and review queue, resolve issues, preview, approve and atomically publish the reviewed revision.", "inputSchema":schema({
+        "action":{"type":"string","enum":["prepare","inspect","pending","evidence","flag","resolve","preview","approve","publish"]},
+        "source":STRING,"package_path":STRING,"job_id":JOB,"import_id":STRING,"revision":STRING,
+        "page":{"type":"integer","minimum":1},"offset":{"type":"integer","minimum":0},"limit":{"type":"integer","minimum":1,"maximum":50},
+        "region":{"type":"array","minItems":4,"maxItems":4,"items":{"type":"number","minimum":0,"maximum":1}},
+        "issue_ids":{"type":"array","items":{"type":"integer","minimum":1}},"source_evidence":STRING,
+        "decision":{"enum":["keep","correct"]},"replacements":{"type":"array","items":schema({"old":STRING,"new":STRING},["old","new"])},
+        "parts":{"type":"array","items":schema({"page":{"type":"integer"},"line":{"type":"integer"},"title":STRING,"kind":STRING},["page","line","title","kind"])}
+    },["action"])},
+    {"name": "runtime_jobs", "description": "List, inspect, adopt or explicitly cancel persistent managed tasks in this MCP workspace. begin with a saved 32-hex task_run_id before dispatch. Pass it on business calls. end with outcome complete/pause/cancel drains registered work, releases monitoring and records a durable receipt; inspect until terminal. resume reopens a paused task. Reconnect to the same workspace to resume observation. Check the registry before submitting a duplicate.", "inputSchema": schema({"action": {"type": "string", "enum": ["list", "status", "adopt", "cancel", "begin", "inspect", "resume", "end"]}, "job_id": JOB, "reason": STRING, "outcome":{"enum":["complete","pause","cancel"]}}, ["action"])},
     {"name":"bemarkdown_vision", "description":"Required first step: this MCP supports only image-capable models. Request action=challenge, visually read the six symbols in the returned image, then verify with challenge_id and answer. Do not guess, use filenames, or read server internals. Text-only callers cannot use conversion/review/textbook tools. Repeat after changing model, reconnecting or 30 minutes idle.", "inputSchema":schema({"action":{"type":"string","enum":["challenge","verify","status"]},"challenge_id":STRING,"answer":STRING},["action"])},
     {"name": "knowledge_workspace", "description": "Inspect the automatically initialized knowledge workspace. Default inspect only reports missing folders. inventory lists file names, extensions and counts with pagination. Use repair only for directories the user explicitly asks to create; configure replaces the default directory framework without moving/deleting existing content or creating missing directories. Agent only triggers actions and reports results.", "inputSchema": schema({"action": {"type": "string", "enum": ["inspect", "inventory", "repair", "configure"]}, "directories": {"type": "array", "maxItems": 1000, "items": STRING}, "prefix": STRING, "offset": {"type": "integer", "minimum": 0}, "limit": {"type": "integer", "minimum": 1, "maximum": 1000}})},
     {"name": "bemarkdown_info", "description": "Describe local conversion and source-based review workflow. No accuracy score is inferred from successful execution.", "inputSchema": schema({})},
@@ -122,6 +134,12 @@ TOOLS = [
     {"name": "bemarkdown_review", "description": "Apply exact replacements to reviewed Markdown, preserving original. Default source_evidence cites the source. For flagged prose, first request bemarkdown_review_context, then supply method=context_semantic, task_id, context_sha256 and source_evidence explaining the semantic rationale. Replace the full target paragraph with at most plus/minus one non-whitespace character. Context-based inference is not source verification. Submit semantic edits sequentially with fresh context.", "inputSchema": schema({"job_id": JOB, "base_sha256": STRING, "replacements": {"type": "array", "minItems": 1, "maxItems": 100, "items": schema({"old": STRING, "new": STRING, "source_evidence": STRING, "method": {"type": "string", "enum": ["context_semantic"]}, "task_id": STRING, "context_sha256": STRING}, ["old", "new", "source_evidence"])}}, ["job_id", "base_sha256", "replacements"])},
     {"name":"textbook_organize", "description":"Organize an explicitly imported textbook after source-based review. inspect lists section candidates and images tied to the reviewed SHA; lines reads numbered Markdown; contact_sheet returns output-image thumbnails; screen_images groups identical assets; screening_view=triage retains rules/WeMM flags despite protection, for prioritized source review, never deletion permission. contact_sheet accepts selected image_ids plus current base_sha256; review_images records explicit source-bound decoration approvals for automatic reuse in preview/publish. preview validates a source-evidenced plan and stages chapters. publish preserves all text except explicit image actions and stores chapters plus local diagram references in KNOWLEDGE_BASE/TEXTBOOKS. revise replaces a previously published book after checking expected_import_sha256 and retaining rollback backups. Read the returned textbook-import skill and plan reference first. Never remove diagrams, meaningful photos or unread text as decoration.", "inputSchema":schema({"job_id":JOB,"action":{"type":"string","enum":["inspect","lines","contact_sheet","screen_images","review_images","preview","publish","revise"]},"base_sha256":STRING,"expected_import_sha256":STRING,"plan":{"type":"object"},"screening_model":{"type":"string","enum":["rules","wemm"]},"screening_view":{"type":"string","enum":["all","candidates","triage"]},"image_ids":{"type":"array","minItems":1,"maxItems":24,"uniqueItems":True,"items":{"type":"string"}},"image_reviews":{"type":"array","minItems":1,"maxItems":100,"items":{"type":"object"}},"offset":{"type":"integer","minimum":0},"limit":{"type":"integer","minimum":1,"maximum":500}},["job_id","action"])},
 ]
+
+
+# Optional on business calls so old clients can continue submitting single jobs.
+for _tool in TOOLS:
+    if _tool["name"] != "runtime_monitor":
+        _tool["inputSchema"]["properties"]["task_run_id"] = JOB
 
 
 @contextmanager
@@ -177,6 +195,7 @@ class Service:
         self.processes = {}
         self.runtime_identity = None
         self.vision = VISION_GATE()
+        self._task_run=ContextVar("task_run",default=None)
 
     def info(self):
         manifest = json.loads((self.mcp_root / "TOOLS/bemarkdown/TOOL_MANIFEST.json").read_text(encoding="utf-8"))
@@ -188,7 +207,7 @@ class Service:
                     installed_runtime=self.runtime_identity,
                     visual_model_requirement=self.vision.status(),
                     workflow="convert -> status -> read + original source -> evidence-based review",
-                    constraints="Generic conversion produces intermediate Markdown. Explicit textbook imports back up originals; textbook_organize publishes reviewed chapters. Retained formula/table images are source evidence, not proof of recognition failure or accuracy; consult the conversion report for recognition and review status.")
+                    constraints="Generic conversion produces intermediate Markdown. Explicit textbook imports back up originals; textbook_import publishes reviewed textbook revisions. textbook_organize retains the legacy organizer. Retained formula/table images are source evidence, not proof of recognition failure or accuracy; consult the conversion report for recognition and review status.")
 
     def state_path(self, job_id):
         if not isinstance(job_id, str) or not re.fullmatch(r"[a-f0-9]{32}", job_id):
@@ -662,6 +681,28 @@ class Service:
                     accuracy="Not independently scored; semantic inference is identified by method in the journal")
 
     def call(self, name, args):
+        if name == "runtime_monitor":
+            return text_result(MONITOR["command"](self, **args))
+        database = self.workspace_manager.safe_path("tmp/runtime-monitor") / "captures.sqlite3"
+        task=args.get("task_run_id")
+        if not task or name=="runtime_jobs":
+            return MONITOR["observed_call"](database,name,args,lambda: self._dispatch(name,args))
+        bridge=runpy.run_path(str(Path(__file__).with_name("managed_bridge.py")))
+        helpers=bridge["bootstrap"](self)
+        client=helpers["existing_client"](self.mcp_root)
+        identity=helpers["runtime"](self.mcp_root)[4](os.getpid())
+        call_id=uuid.uuid4().hex
+        fields=dict(call_id=call_id,identity=identity)
+        business_args={k:v for k,v in args.items() if k!="task_run_id"}
+        token=self._task_run.set(task)
+        try:
+            client.task_run("enter",self.workspace,task,**fields)
+            return MONITOR["observed_call"](database,name,business_args,lambda:self._dispatch(name,business_args))
+        finally:
+            self._task_run.reset(token)
+            client.task_run("leave",self.workspace,task,**fields)
+
+    def _dispatch(self, name, args):
         if name == 'runtime_jobs':
             bridge = runpy.run_path(str(Path(__file__).with_name('managed_bridge.py')))
             return text_result(bridge['call'](self, **args))
@@ -678,6 +719,10 @@ class Service:
         functions = {"knowledge_workspace": self.workspace_manager.call,
                      "bemarkdown_info": self.info, "bemarkdown_convert": self.start,
                      "bemarkdown_status": self.status, "bemarkdown_read": self.read, "bemarkdown_review": self.review, "bemarkdown_review_context": self.review_context, "bemarkdown_convert_image": self.convert_text_image}
+        if name == 'textbook_import':
+            module = runpy.run_path(str(Path(__file__).with_name('textbook_import.py')))
+            result = module['call'](self, conversion_lock, **args)
+            return result if 'content' in result else text_result(result)
         if name == 'textbook_organize':
             if args.get('action') == 'contact_sheet':
                 metadata, data = TEXTBOOK['contact_sheet'](self, args['job_id'], args.get('offset',0), args.get('limit',12), image_ids=args.get('image_ids'), base_sha256=args.get('base_sha256'))

@@ -20,6 +20,7 @@ from .ipc import auth_key, mac, receive, secure_root, send
 from .process import NamedMutex, OwnedProcess, WindowsJob, in_any_job, mutex_name, process_identity
 from .registry import ResourceAdapter, load_registry, requirement, verify_runtime_files
 from .storage import Store
+from .task_runs import TaskRuns
 
 
 def policy_identity(policy):
@@ -44,6 +45,7 @@ class Manager:
         self.events = RotatingLog(self.root / "manager.jsonl")
         self.identity = process_identity(os.getpid())
         self.server = None
+        self.tasks = TaskRuns(self)
         self.endpoint = {"schema": "ekb-run-manager-endpoint-v1", "host": "127.0.0.1", "identity": self.identity,
                          "code_fingerprint": code_fingerprint(), "registry_fingerprint": registry["registry_fingerprint"],
                          "independent_of_client_job": True, "host_job_observed": in_any_job(),
@@ -68,6 +70,11 @@ class Manager:
             if any(not Path(path).is_dir() for path in roots):
                 raise RunManagerError("INPUT_ROOT_NOT_DIRECTORY")
             return self.store.register_workspace(workspace, sorted(set(programs)), sorted(set(roots)))
+        if operation == "task_run":
+            with self.submission_lock:
+                if self.draining:
+                    raise RunManagerError("DAEMON_DRAINING")
+                return self.tasks.operation(**args)
         if operation == "submit":
             with self.submission_lock:
                 if self.draining:
@@ -106,7 +113,7 @@ class Manager:
                     "proof": "LIVE_WINDOWS_JOB_MEMBERSHIP_AND_CREATION_TIME" if proof else "NOT_PROVEN"}
         if operation == "shutdown":
             with self.submission_lock, self.active_lock:
-                if self.active or self.store.list(ACTIVE, limit=1):
+                if self.active or self.store.list(ACTIVE, limit=1) or self.tasks.busy():
                     raise RunManagerError("DAEMON_HAS_ACTIVE_TASKS")
                 if not self.draining:
                     self.draining = True
@@ -122,7 +129,7 @@ class Manager:
         return job
 
     def submit(self, program_id, workspace, payload, *, scope_key=None, requirement=None, policy=None,
-               wait_timeout=900, retry_of=None, config_fingerprint=None, run_timeout=None):
+               wait_timeout=900, retry_of=None, config_fingerprint=None, run_timeout=None, task_run_id=None):
         workspace = str(Path(workspace).resolve(strict=True))
         registered = self.store.workspace(workspace)
         if program_id not in registered["program_ids"] or program_id not in self.registry["programs"]:
@@ -190,6 +197,8 @@ class Manager:
                 "policy_fingerprint": fingerprint(self.registry["resource_policy"]), "policy": effective_policy,
                 "requirement": requested, "resource_kind": program["resource_kind"], "gpu_key": program["gpu_key"],
                 "run_timeout_seconds": runtime}
+        if task_run_id is not None:
+            data["task_run_id"]=task_run_id
         return self.store.submit(data, wait_timeout, retry_of)
 
     def finish(self, job, state, error=None):
@@ -335,6 +344,7 @@ class Manager:
         try:
             while not self.stop.wait(.25):
                 self.step()
+                self.tasks.tick()
         except BaseException as error:
             self.events.event({"event": "scheduler_failed", "error_type": type(error).__name__, "message": str(error)})
             self.server.shutdown()

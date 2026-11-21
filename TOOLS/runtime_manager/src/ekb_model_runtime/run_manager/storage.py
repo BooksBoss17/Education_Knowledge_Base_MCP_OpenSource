@@ -8,6 +8,7 @@ import sqlite3
 import time
 import uuid
 
+from .task_runs import DDL as TASK_DDL, link_job
 from .common import ACTIVE, RunManagerError, canonical, fingerprint
 
 
@@ -30,6 +31,7 @@ class Store:
               PRIMARY KEY(job_id,client_id));
             CREATE TABLE IF NOT EXISTS events(seq INTEGER PRIMARY KEY AUTOINCREMENT,job_id TEXT,at REAL,event TEXT);
             """)
+            database.executescript(TASK_DDL)
             columns = {row["name"] for row in database.execute("PRAGMA table_info(jobs)")}
             if "scope_key" not in columns:
                 database.execute("ALTER TABLE jobs ADD COLUMN scope_key TEXT")
@@ -135,8 +137,16 @@ class Store:
         dedupe = fingerprint({key: data.get(key) for key in ("program_id", "workspace", "scope_key", "payload", "config_fingerprint", "program_fingerprint", "policy_fingerprint", "requirement", "run_timeout_seconds")})
         with self.connect() as database:
             database.execute("BEGIN IMMEDIATE")
+            task=data.get("task_run_id")
+            if task is not None:
+                registered=database.execute("SELECT state FROM task_runs WHERE id=? AND workspace=?",(task,data["workspace"])).fetchone()
+                if not registered or registered["state"]!="OPEN":
+                    raise RunManagerError("TASK_RUN_NOT_OPEN")
             old = database.execute("SELECT * FROM jobs WHERE dedupe_key=? ORDER BY created DESC LIMIT 1", (dedupe,)).fetchone()
             if old and (old["state"] in ACTIVE or old["state"] == "INTERRUPTED" and retry_of != old["job_id"]):
+                if task and old["state"]=="CANCEL_REQUESTED":
+                    raise RunManagerError("JOB_CANCEL_IN_PROGRESS")
+                link_job(database,old["job_id"],task,True)
                 result = self._snapshot(old)
                 result.update(deduplicated=True, retry_required=old["state"] == "INTERRUPTED")
                 return result
@@ -148,6 +158,7 @@ class Store:
                       "dedupe_fingerprint": dedupe, "job_folder": str(self.root / "jobs" / identifier)}
             database.execute("INSERT INTO jobs(job_id,dedupe_key,state,program_id,workspace,data,created,updated,wait_deadline,scope_key) VALUES(?,?,?,?,?,?,?,?,?,?)",
                              (identifier, dedupe, "QUEUED", data["program_id"], data["workspace"], canonical(record), now, now, now + wait_timeout, data.get("scope_key")))
+            link_job(database,identifier,task,False)
         result = self.status(identifier)
         result["deduplicated"] = False
         return result

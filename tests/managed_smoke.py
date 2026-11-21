@@ -1,7 +1,7 @@
 """Windows managed CLI smoke with synthetic inputs and a loopback model fixture."""
 from pathlib import Path
 from io import BytesIO
-import importlib.util,json,os,runpy,subprocess,sys,tempfile,threading,time,zipfile
+import importlib.util,json,os,runpy,subprocess,sys,tempfile,threading,time,uuid,zipfile
 from PIL import Image
 import fitz
 from bemarkdown.local_model_server import create_server
@@ -44,11 +44,55 @@ def main():
                     value=json.loads(result.stdout);assert value['success'],value
                 # MCP transport initialization/listing needs no vision challenge.
                 proc=subprocess.Popen([sys.executable,'-I','-X','utf8',str(ROOT/'TOOLS/education_mcp/launch.py'),'--mcp-root',str(ROOT),'--workspace',str(tmp/'workspace')],env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,encoding='utf8')
-                messages='\n'.join(json.dumps({'jsonrpc':'2.0','id':i,'method':method,'params':params}) for i,method,params in [(1,'initialize',{'protocolVersion':'2025-11-25','clientInfo':{'name':'public-smoke','version':'1'}}),(2,'tools/list',{})])+'\n'
-                stdout,stderr=proc.communicate(messages,timeout=30);assert proc.returncode==0,stderr
-                replies=[json.loads(line) for line in stdout.splitlines()];assert len(replies)==2 and all('result' in x for x in replies),replies
-                names={t['name'] for t in replies[1]['result']['tools']};assert 'bemarkdown_convert' in names and not any(n.startswith('semantic_retention') for n in names)
-                print(json.dumps({'managed_inputs':4,'mcp_initialize_and_tools':True,'local_gpu_required':False,'model_fixture_only':True}))
+                jobs = []
+                def rpc(method, **params):
+                    request = {'jsonrpc':'2.0','id':1,'method':method,'params':params}
+                    proc.stdin.write(json.dumps(request)+'\n')
+                    proc.stdin.flush()
+                    response = json.loads(proc.stdout.readline())['result']
+                    assert not response.get('isError'), response
+                    return response
+
+                def run_action(action, task, **fields):
+                    result = rpc('tools/call',name='runtime_jobs',arguments=dict(action=action,task_run_id=task,**fields))
+                    return json.loads(result['content'][0]['text'])
+
+                def finish(task, outcome):
+                    result = run_action('end',task,outcome=outcome)
+                    deadline = time.monotonic()+15
+                    while result['state'] == 'CLOSING':
+                        assert time.monotonic()<deadline
+                        time.sleep(.25)
+                        result = run_action('inspect',task)
+                    return result
+
+                try:
+                    rpc('initialize',protocolVersion='2025-11-25',capabilities={},clientInfo={'name':'public-smoke','version':'1'})
+                    tools = {t['name'] for t in rpc('tools/list')['tools']}
+                    assert {'bemarkdown_convert','runtime_jobs','runtime_monitor','textbook_import'} <= tools
+                    a, b = uuid.uuid4().hex, uuid.uuid4().hex
+                    for task in (a,b):
+                        jobs.append(task)
+                        assert run_action('begin',task)['state'] == 'OPEN'
+                    capture = run_action('inspect',a)['capture_id']
+                    assert capture == run_action('inspect',b)['capture_id']
+                    rpc('tools/call',name='knowledge_workspace',arguments={'action':'inspect','task_run_id':a})
+                    first = finish(a,'complete')
+                    assert first['state']=='COMPLETED' and not first['receipt']['monitor']['released_here']
+                    second = finish(b,'pause')
+                    assert second['state']=='PAUSED' and second['receipt']['monitor']['released_here']
+                    assert run_action('resume',b)['capture_id'] != capture
+                    assert finish(b,'complete')['state']=='COMPLETED'
+                finally:
+                    try:
+                        for task in jobs:
+                            if run_action('inspect',task)['state']=='OPEN':
+                                finish(task,'cancel')
+                    finally:
+                        proc.stdin.close()
+                        assert proc.wait(timeout=30)==0, proc.stderr.read()
+                print(json.dumps({'managed_inputs':4,'mcp_initialize_and_tools':True,'shared_task_monitor_and_closeout':True,
+                                  'local_gpu_required':False,'model_fixture_only':True}))
             finally:
                 boot=runpy.run_path(str(ROOT/'TOOLS/runtime_manager/bootstrap.py'));_,_,Client,_,identity=boot['runtime'](ROOT)
                 client=Client(tmp/'manager')
