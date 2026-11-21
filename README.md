@@ -2,7 +2,13 @@
 
 将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 安装包只提供转换和调度所需的软件，模型由使用者配置。
 
-核心版本 **0.4.6+localapi.8.review.1**；MCP 适配器 **0.7.0**。
+核心版本 **0.4.6+localapi.8.review.1**；MCP 适配器 **0.7.0**，发行版 **0.7.1**。
+
+## 课标与教研资料导入
+
+从 [主会话调度](SKILLS/education-import-orchestrator/SKILL.md)开始，按 [课标与教研资料导入 Skill](SKILLS/curriculum-research-import/SKILL.md)执行。支持 PDF 课标、考试评价与教学研究资料。助手可直接读取随包 SKILL.md。需要注册客户端技能时，将两个技能目录连同随附脚本放入该客户端识别的目录，并继续使用同一 MCP 业务工作区。
+
+发布时每份资料独立存放于知识库的课程标准与教研分类，输出索引、正文模块与清单，插图存放在资料自己的 DIAGRAMS 目录。审查确认后的跨页续句合并，出版信息保留来源页。主会话用 runtime_jobs 与 runtime_monitor 记录从转换到发布的资源采样。
 
 ## 整批任务与资源监控
 

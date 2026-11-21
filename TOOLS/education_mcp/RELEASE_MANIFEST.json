@@ -1,6 +1,6 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "mcp-v0.7.0",
+  "release_id": "mcp-v0.7.1",
   "bemarkdown_wheel_sha256": "e68c3f4a9bdd4fb5357fc3efa7a6f8e7c9ea42e31ce1ebe81479cd52d59f79f3",
   "files": {
     "atomic_files.py": "b25301470331a273020c5899c4e2f135c179e6b1213becdbcb792c646f916b7d",
@@ -19,6 +19,6 @@
     "textbook_import.py": "abba8dd7e43e41765654e92439e2879e4a85c8bf38cddcee16b4d043946abb69",
     "vision_gate.py": "1f1bfbbf3e47cb5e53e31e06137a38f3dc6febf8c07fd88df1f418387e19c7d8",
     "workspace_manager.py": "1c40d05c1f4cbe9d61e7377a7d0c21ae3d655b611e4892ea28685a0fa4018977",
-    "workspace_template.json": "48e33974a49a16bddbc58f20601c6fc3714ecd1f5f8aa59929080847ed4c67a5"
+    "workspace_template.json": "1a61ac5507f0df3188b6f14db8d2ad222836fb5998cacac9e4a5702691bac042"
   }
 }

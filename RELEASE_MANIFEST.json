@@ -1,6 +1,6 @@
 {
   "schema": "public-api-first-release-v1",
-  "release_id": "mcp-v0.7.0",
+  "release_id": "mcp-v0.7.1",
   "core_version": "0.4.6+localapi.8.review.1",
   "full_book_quality_certified": false,
   "model_weights_bundled": false,
@@ -19,12 +19,15 @@
     "licenses/KaTeX-fonts-MIT.txt": "a7bd44abd8419bf78185be51f34216356af1adb0806ce39d6a9ca0940bd49b70",
     "licenses/runtime-components.json": "19193cf94f3c2dca0034079ffb103cdf86c90110e4bf3381faadee886c0c64de",
     "MODELS/README.md": "14212c9355691d286bbff888924385520cf9cf53b6372db0f1b01651deff5f38",
-    "README.md": "a43bfdec9961cf6f395ef60131fa439589126da683901e1fa7b8df70869aa935",
+    "README.md": "9b2464838efec8800752ed3ac38cfe35eb2f873ed98448420421dd916bb9a498",
     "scripts/api_gateway.py": "2a95c4800ad8b2e4932972492924d18d9996da52577da7db0aa120c25ec8dac6",
     "scripts/requirements-core.txt": "65f27599075c8da809d728fffd22596b6c68a4327537b0e83120254607ff1b7d",
     "scripts/setup.py": "39a70992e28e8b4370a0402e7425e900bd23682991dc90f07d3d20dfcf0b603e",
     "scripts/verify_release.py": "8ff39da5cc9f79d6ba79dd97caee236168b08ee102da1770f30a6d7fe2aaf972",
     "setup.ps1": "ef687dcd3bbcd628f20b36c14f91a8bf6b19acaa10ea4d119afd2b996148b03e",
+    "SKILLS/curriculum-research-import/scripts/organize.py": "a508e686c5d1c864653fd3b3e89e1ca67a2515457a30d2b86dc203f874c955d2",
+    "SKILLS/curriculum-research-import/SKILL.md": "b24c0cf7a07c49c234dc45047444dd923da04ba81d0870b3e3831da19fb4a7da",
+    "SKILLS/education-import-orchestrator/SKILL.md": "6c8ac6b48a672354ad5ebea070eb6804734a6e41f1054ffbf475446d2dcb426d",
     "SKILLS/textbook-import/references/FORMAT.md": "b60e70b1252cdb10e955d34b1e248ade640609e5b8e5b7a82fa784a9c9f136f0",
     "SKILLS/textbook-import/SKILL.md": "a91f8098410940421dcd48d4cc42cdc9dbc89fce5ccc2fda927afc59c222777e",
     "SOURCE/bemarkdown/__init__.py": "965e52e96da77c481964b1a1a0895bc80f3890f01bf2d1458376d474c42c19e1",
@@ -73,6 +76,7 @@
     "SOURCE/bemarkdown/wmf.py": "ec42fbb0297c943f2f6105c4f3a0592fa79dacdbe696f7726618ee04887fe849",
     "SOURCE/bemarkdown/wmf_renderer.py": "708777b14388a6f22583fa09253ab0cdca333031ba03ebc4e3917665ed90862d",
     "tests/managed_smoke.py": "736b285f79f84065c0a30636e43ce6f051af4d109e0c2ea7a9572bcf2c4b3b95",
+    "tests/test_curriculum_research_sections.py": "c1df9322b375dee99661b5e7cd284f43b329e8ccca1e442074764e863ce60305",
     "tests/test_fragment_filter.py": "062dd7e364690c2863335395d0f62fac267ea2d3925f02f508c9945a8e239c70",
     "tests/test_monitor_policy.py": "1503b218f48661ed7cb8f3286d9028bc5bd232d7346de179ae999ae9d54fd832",
     "tests/test_public_api.py": "4501ce53096e0809805b65559b2dd38b88feb2fbb4d23fd84ca9aec162b8596e",
@@ -106,7 +110,7 @@
     "TOOLS/education_mcp/textbook_import.py": "abba8dd7e43e41765654e92439e2879e4a85c8bf38cddcee16b4d043946abb69",
     "TOOLS/education_mcp/vision_gate.py": "1f1bfbbf3e47cb5e53e31e06137a38f3dc6febf8c07fd88df1f418387e19c7d8",
     "TOOLS/education_mcp/workspace_manager.py": "1c40d05c1f4cbe9d61e7377a7d0c21ae3d655b611e4892ea28685a0fa4018977",
-    "TOOLS/education_mcp/workspace_template.json": "48e33974a49a16bddbc58f20601c6fc3714ecd1f5f8aa59929080847ed4c67a5",
+    "TOOLS/education_mcp/workspace_template.json": "1a61ac5507f0df3188b6f14db8d2ad222836fb5998cacac9e4a5702691bac042",
     "TOOLS/runtime_manager/bootstrap.py": "ba379bc956f4a391a76d30f5c27b3dd0b41b33f28e251b8191bd05d66076fc64",
     "TOOLS/runtime_manager/external_resource_policy.py": "9ab0f8e1f87f078701b90a1ea6c32decf4308324f6ba7904b0f8a8d9f41a9b9b",
     "TOOLS/runtime_manager/native_gateway.py": "72099151f3671f5bc9f4d706d41dcca4ce522fe2922051d5e1422686799bdf8b",
@@ -136,7 +140,7 @@
     "TOOLS/runtime_manager/src/ekb_model_runtime/run_manager/task_runs.py": "b0aef69f8c888de21fb30f3487f0af78046b34faf075ff565fdb59356d532e4b",
     "TOOLS/runtime_manager/src/ekb_model_runtime/runtime_registry.py": "72bddf4bdbb05b06c30405d637e34a9321029fd42c1c8f2bbf6af19eb02a5f07",
     "TOOLS/runtime_manager/src/ekb_model_runtime/worker_contract.py": "5947ce9655f4f7fa475ad5fdf8c85b5f421d9b707dd8fbec514132ea2dbcc1ed",
-    "TOOLS/education_mcp/RELEASE_MANIFEST.json": "fab6a8ce4cbb1bed2552ae5fe5a5b9491039aceabb77db42bd3a6f50371349c2",
-    "TOOLS/runtime_manager/RELEASE_MANIFEST.json": "f9d66b783d016efe5c488ea4d714c5fd5300e87e44847bb5f0a83650cce17c67"
+    "TOOLS/education_mcp/RELEASE_MANIFEST.json": "31c0bbfa25d9a1fe014c8a98af1c63a981868e8ff097d7c979f9425e883994d7",
+    "TOOLS/runtime_manager/RELEASE_MANIFEST.json": "3fb5b4ca801be20fe7728f1f9f400b98323cb217b12b0d200e48144b1d34ab2e"
   }
 }
