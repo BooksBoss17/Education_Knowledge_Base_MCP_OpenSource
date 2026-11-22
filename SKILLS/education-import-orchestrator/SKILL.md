@@ -32,6 +32,7 @@ description: 主会话调度教育资料入库。接收单份或批量导入，�
 | 资料类型 | 主会话的工具与发布步骤 | 子 agent 的工作规范 |
 | --- | --- | --- |
 | PDF 课程标准、评价体系、教学与考试研究资料 | BeMarkdown 转录，按原件校对与预览，使用业务 Skill 随附整理程序发布 | [课标与教学研究资料导入](../curriculum-research-import/SKILL.md) |
+| 试卷、作业、讲义拆题入库 | BeMarkdown 转录各原件，exercise_import 暂存、对账和发布 | [题目导入](../exercise-import/SKILL.md) |
 | 教材 | 通过 textbook_import 完成审查、审批与发布 | [教材导入](../textbook-import/SKILL.md) |
 
 教学视频等待接入相应工具与业务 Skill。遇到尚未接入的类型，记录该项所缺的线路，继续处理同批已就绪的资料。新增类型时在表中登记其业务入口。业务入口说明支持的输入、可调用 API 或 MCP 工具、阶段依赖、可恢复作业标识、审查单位、成品位置和发布条件。

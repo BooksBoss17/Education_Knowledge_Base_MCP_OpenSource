@@ -2,7 +2,7 @@
 
 将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 安装包只提供转换和调度所需的软件，模型由使用者配置。
 
-核心版本 **0.4.6+localapi.8.review.2**；MCP 适配器 **0.8.0**，发行版 **0.8.0**。
+核心版本 **0.4.6+localapi.8.review.2**；MCP 适配器 **0.9.0**，发行版 **0.9.0**。
 
 ## 课标与教研资料导入
 
@@ -96,3 +96,7 @@ Word矩形图片按裁剪、翻转、旋转和普通非重叠图片组合的可�
 ## MCP 调度与连接
 
 单图补转由持久作业管理器执行，重连后查询同一作业。`runtime_jobs` 面向当前工作区。升级后重连客户端，教材导入使用随包 Skill。使用源码 ZIP 安装时，请解压到新目录再配置。凭据轮换步骤见[运行管理器说明](TOOLS/runtime_manager/src/ekb_model_runtime/run_manager/README.md)。
+
+## 物理题目导入
+
+[题目导入 Skill](SKILLS/exercise-import/SKILL.md) 配合 exercise_import 使用。支持题卷与答案卷配对、按章节拆题、Agent 赋标、缺答案或详解时补写并记录来源。发布后生成每份原件的 Markdown 和 SQLite 题库。

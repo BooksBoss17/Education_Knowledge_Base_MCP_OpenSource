@@ -23,7 +23,7 @@ import uuid
 import zipfile
 from urllib.parse import unquote
 
-VERSION = "0.8.0"
+VERSION = "0.9.0"
 RASTER_SUFFIXES = frozenset({'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'})
 IMAGE_REVIEW = runpy.run_path(str(Path(__file__).with_name("image_review.py")))
 WORKSPACE_MANAGER = runpy.run_path(str(Path(__file__).with_name("workspace_manager.py")))["WorkspaceManager"]
@@ -107,7 +107,9 @@ def schema(properties, required=()):
 STRING = {"type": "string"}
 JOB = {"type": "string", "pattern": "^[a-f0-9]{32}$"}
 MONITOR = runpy.run_path(str(Path(__file__).with_name("runtime_monitor.py")))
+EXERCISE = runpy.run_path(str(Path(__file__).with_name("exercise_import.py")))
 TOOLS = [
+    EXERCISE["SCHEMA"],
     MONITOR["SCHEMA"],
     {"name":"import_batch", "description":"Register all curriculum/research PDFs in one durable conversion batch. Begin runtime_jobs first; batch_id equals task_run_id. Agents claim up to four pages, submit source review notes, and attest organizer publication. Use events for resumable notifications.",
      "inputSchema":schema({"action":{"enum":["list","begin","status","events","pages","claim","reviewed","published","skip"]},
@@ -598,6 +600,8 @@ class Service:
             return self.vision.call(**args)
         if name in {tool['name'] for tool in TOOLS} - {'knowledge_workspace', 'bemarkdown_info'}:
             self.vision.require()
+        if name == "exercise_import":
+            return text_result(EXERCISE["run"](self.workspace,self.allowed,**args))
         if name == "import_batch":
             bridge = runpy.run_path(str(Path(__file__).with_name("managed_bridge.py")))
             fields = dict(args)

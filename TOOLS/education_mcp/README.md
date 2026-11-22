@@ -24,3 +24,7 @@ runtime_jobs 支持 begin、inspect、end、resume。主会话预先生成并保
 `import_batch` 支持课程标准及教研 PDF 的整批转换和审阅交接。先在目标工作区用 runtime_jobs(begin) 建立任务，再使用同一个 ID 登记输入。begin 的 sources 是按顺序排列的对象列表，每项包含 source 和 sha256，可附同一任务的既有 job_id。status 返回逐份状态、当前作业、审查页数、采集状态和发布收据 SHA；list 用于重新发现工作区批次。events 的 after 是上次读取的 seq。
 
 claim 需要 ordinal、claim_id；reviewed 用相同参数和 notes（物理页码到核查说明）。pages 按 ordinal、after 读回最多 100 页。published 传 ordinal 和 manifest_sha256。skip 仅供用户明确允许跳过的资料，传 ordinal 和 reason。Windows 默认尝试本机桌面提醒，begin 可传 notify_desktop=false。宿主可以消费 events 派工，资源不足、模型失败、等待 Agent 和用户暂停分别处理。
+
+## 物理题目导入
+
+[题目导入 Skill](../../SKILLS/exercise-import/SKILL.md) 配合 exercise_import 使用。支持题卷与答案卷配对、按章节拆题、Agent 赋标、缺答案或详解时补写并记录来源。发布后生成每份原件的 Markdown 和 SQLite 题库。
