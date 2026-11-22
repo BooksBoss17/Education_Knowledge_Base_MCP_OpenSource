@@ -19,3 +19,8 @@
 ## 按任务统一收尾
 
 runtime_jobs 支持 begin、inspect、end、resume。主会话预先生成并保存 task_run_id（32 位小写十六进制），begin 启用持久登记和工作区采集。在每次业务调用中传该 ID，子 agent 使用相同 ID。end 的 outcome 为 complete、pause 或 cancel，返回 CLOSING 时后台管理器继续排空；inspect 返回任务状态、作业、在途调用数量与终态回执。pause 等待在途工作自然完成，resume 开启新的采样段。取消独占作业通过管理器已有的作业取消路径执行。多个任务共用的工作区采集由最后一个持有者释放；开始任务之前已存在的外部采集归其原发起者。宿主进程和原生子 agent 由其宿主管理。单次业务调用可独立运行；整任务使用 task_run_id 登记。
+
+## 持久批次导入
+`import_batch` 支持课程标准及教研 PDF 的整批转换和审阅交接。先在目标工作区用 runtime_jobs(begin) 建立任务，再使用同一个 ID 登记输入。begin 的 sources 是按顺序排列的对象列表，每项包含 source 和 sha256，可附同一任务的既有 job_id。status 返回逐份状态、当前作业、审查页数、采集状态和发布收据 SHA；list 用于重新发现工作区批次。events 的 after 是上次读取的 seq。
+
+claim 需要 ordinal、claim_id；reviewed 用相同参数和 notes（物理页码到核查说明）。pages 按 ordinal、after 读回最多 100 页。published 传 ordinal 和 manifest_sha256。skip 仅供用户明确允许跳过的资料，传 ordinal 和 reason。Windows 默认尝试本机桌面提醒，begin 可传 notify_desktop=false。宿主可以消费 events 派工，资源不足、模型失败、等待 Agent 和用户暂停分别处理。

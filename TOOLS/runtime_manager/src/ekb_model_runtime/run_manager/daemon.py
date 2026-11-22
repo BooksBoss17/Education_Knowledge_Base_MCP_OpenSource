@@ -21,6 +21,7 @@ from .process import NamedMutex, OwnedProcess, WindowsJob, in_any_job, mutex_nam
 from .registry import ResourceAdapter, load_registry, requirement, verify_runtime_files
 from .storage import Store
 from .task_runs import TaskRuns
+from .import_batches import ImportBatches
 
 
 def policy_identity(policy):
@@ -46,6 +47,7 @@ class Manager:
         self.identity = process_identity(os.getpid())
         self.server = None
         self.tasks = TaskRuns(self)
+        self.batches = ImportBatches(self)
         self.endpoint = {"schema": "ekb-run-manager-endpoint-v1", "host": "127.0.0.1", "identity": self.identity,
                          "code_fingerprint": code_fingerprint(), "registry_fingerprint": registry["registry_fingerprint"],
                          "independent_of_client_job": True, "host_job_observed": in_any_job(),
@@ -70,10 +72,21 @@ class Manager:
             if any(not Path(path).is_dir() for path in roots):
                 raise RunManagerError("INPUT_ROOT_NOT_DIRECTORY")
             return self.store.register_workspace(workspace, sorted(set(programs)), sorted(set(roots)))
+        if operation == "import_batch":
+            with self.submission_lock:
+                if self.draining:
+                    raise RunManagerError("DAEMON_DRAINING")
+                return self.batches.operation(**args)
         if operation == "task_run":
             with self.submission_lock:
                 if self.draining:
                     raise RunManagerError("DAEMON_DRAINING")
+                if args.get("action") == "end":
+                    self.tasks.record(args["task_run_id"], str(Path(args["workspace"]).resolve()))
+                    if args.get("outcome") == "complete":
+                        self.batches.verify_close(args["task_run_id"],args["workspace"])
+                    if args.get("outcome") == "pause":
+                        self.batches.hold(args["task_run_id"])
                 return self.tasks.operation(**args)
         if operation == "submit":
             with self.submission_lock:
@@ -345,6 +358,7 @@ class Manager:
             while not self.stop.wait(.25):
                 self.step()
                 self.tasks.tick()
+                self.batches.tick()
         except BaseException as error:
             self.events.event({"event": "scheduler_failed", "error_type": type(error).__name__, "message": str(error)})
             self.server.shutdown()

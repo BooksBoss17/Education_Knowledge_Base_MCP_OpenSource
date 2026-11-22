@@ -63,6 +63,10 @@ class ModelApiError(ValueError):
     pass
 
 
+class ConfirmedSessionTimeout(ModelApiError):
+    """Local server confirmed a timed-out request after worker cleanup."""
+
+
 def api_policy(*, table_enabled=False):
     return VisualSerialPolicy(policy_id=SCHEMA, layout_model_id="api:layout",
                               formula_model_id="api:formula", text_model_id="api:text",
@@ -164,6 +168,14 @@ class LocalModelApi:
             if missing_ok and exc.code in {404, 405, 501}:
                 return None
             detail = exc.read(8192).decode("utf-8", errors="replace")
+            if exc.code == 500 and self.base_url and url == self.base_url + "/v2/session/infer" and self.role == "text" and (
+                    self.capability or {}).get("confirmed_timeout_split") is True:
+                try:
+                    error = json.loads(detail)
+                except ValueError:
+                    error = None
+                if error == {"error":"MODEL_SESSION_REQUEST_TIMEOUT"}:
+                    raise ConfirmedSessionTimeout("MODEL_SESSION_REQUEST_TIMEOUT") from exc
             raise ModelApiError(f"MODEL_API_HTTP_ERROR:{self.role}:{exc.code}:{detail}") from exc
 
     def _progress(self, state, request_id=None, model_unloaded=False):
@@ -171,6 +183,24 @@ class LocalModelApi:
         record_progress({"role": self.role, "stage_id": self.stage_id, "session_id": self.session_id,
                          "state": state, "request_id": request_id, "completed_requests": self.stage_requests,
                          "completed_items": self.stage_items, "model_unloaded": model_unloaded})
+
+    def metrics_checkpoint(self):
+        cache = self.metrics.get("text_result_cache", {})
+        return (len(self.metrics["requests"]), len(self.metrics.get("sessions", [])), dict(cache))
+
+    def metrics_since(self, checkpoint):
+        requests, sessions, previous_cache = checkpoint
+        metrics = {**self.metrics, "requests": self.metrics["requests"][requests:]}
+        if "sessions" in metrics:
+            metrics["sessions"] = metrics["sessions"][sessions:]
+        if "text_result_cache" in metrics:
+            cache = dict(metrics["text_result_cache"])
+            for key in ("occurrences", "model_generations", "hits", "evictions",
+                        "identity_bypass_occurrences", "empty_results_not_cached"):
+                cache[key] -= previous_cache.get(key, 0)
+            metrics["text_result_cache"] = cache
+        identity = {**self.identity, "invoked": bool(metrics["requests"])}
+        return identity, metrics
 
     def discover(self):
         self._assert_config_fixed()
@@ -226,6 +256,19 @@ class LocalModelApi:
             max_pixels=self._config_snapshot.get("batch_pixels"))
 
     def request(self, items):
+        try:
+            return self._request_once(items)
+        except ConfirmedSessionTimeout:
+            if len(items) < 2:
+                raise
+            # Previous successful batches are already in the running converter. Only
+            # retry this failed batch, once in two smaller parts, on a fresh session.
+            self._close_session()
+            middle = len(items) // 2
+            self.metrics.setdefault("timeout_splits", []).append({"count":len(items),"parts":[middle,len(items)-middle]})
+            return self._request_once(items[:middle]) + self._request_once(items[middle:])
+
+    def _request_once(self, items):
         self._assert_config_fixed()
         self.discover()
         if self.stage_id is None:
@@ -252,6 +295,9 @@ class LocalModelApi:
                     result = receipt["result"]
             else:
                 result = self._http(self._config_snapshot["url"], payload)
+        except ConfirmedSessionTimeout:
+            self._progress("REQUEST_FAILED", request_id)
+            raise
         except Exception as exc:
             self._progress("REQUEST_FAILED", request_id)
             raise ModelApiError(f"MODEL_API_REQUEST_FAILED:{self.role}:{type(exc).__name__}:{exc}") from exc
@@ -285,7 +331,7 @@ class LocalModelApi:
         by_id = {row["id"]: row for row in rows}
         return [by_id[key] for key in expected]
 
-    def close(self):
+    def _close_session(self):
         if self.session_id is not None:
             started = time.perf_counter()
             value = self._session_call("close")
@@ -294,6 +340,9 @@ class LocalModelApi:
                 raise ModelApiError("MODEL_API_SESSION_UNLOAD_UNCONFIRMED")
             self.metrics.setdefault("sessions", []).append({**value, "close_wall_seconds": time.perf_counter()-started})
             self.session_id = None
+
+    def close(self):
+        self._close_session()
         if self.stage_id is not None:
             self._progress("STAGE_COMPLETE", model_unloaded=True)
             self.stage_id = None

@@ -147,7 +147,7 @@ class ProcessBackend:
         from .model_session import SESSION_SCHEMA
         return {"schema": "bemarkdown-model-api-capabilities-v1", "roles": list(ROLES),
                 "session_schema": SESSION_SCHEMA, "max_items": MAX_ITEMS, "max_bytes": MAX_BYTES,
-                "layout_batch_items": 8, "idle_seconds": 120}
+                "layout_batch_items": 8, "idle_seconds": 120, "confirmed_timeout_split": True}
 
     def session_action(self, action, payload):
         from .model_session import SessionProcess, SESSION_SCHEMA

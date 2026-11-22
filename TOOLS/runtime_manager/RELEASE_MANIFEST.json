@@ -1,7 +1,7 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "mcp-v0.7.1",
-  "bemarkdown_wheel_sha256": "e68c3f4a9bdd4fb5357fc3efa7a6f8e7c9ea42e31ce1ebe81479cd52d59f79f3",
+  "release_id": "mcp-v0.8.0",
+  "bemarkdown_wheel_sha256": "5259922f6801d1e49442490d90e559fa93085fec4610d86fb2b3e51ec383128e",
   "files": {
     "bootstrap.py": "ba379bc956f4a391a76d30f5c27b3dd0b41b33f28e251b8191bd05d66076fc64",
     "external_resource_policy.py": "9ab0f8e1f87f078701b90a1ea6c32decf4308324f6ba7904b0f8a8d9f41a9b9b",
@@ -21,9 +21,10 @@
     "src/ekb_model_runtime/path_security.py": "7b63648d7b5786290bf9be10f0da63b122f368af9f4bbc08b8beda4f1769fc09",
     "src/ekb_model_runtime/resolver.py": "c65696493a5aa4c18bed23cabaea1fb185e5ee3aa1b393ab4e2ae27bea891a94",
     "src/ekb_model_runtime/run_manager/__init__.py": "fef446a566aa67fe3afe1517afaa41897fd2f16ea5f9a10bb98ecbb43bcf0065",
-    "src/ekb_model_runtime/run_manager/client.py": "5b6076b7dbfc8935b0f2698bd058e446f19fd71384d9ef0389ed3ef0816534c1",
+    "src/ekb_model_runtime/run_manager/client.py": "2c8ebde0adc263503e147a27d008be1a402f292b9f3e2d7a5407f09a9ca098da",
     "src/ekb_model_runtime/run_manager/common.py": "1dada5b76f752661a01e3137c7c93062cb221b9e73edd048e4ee16248c6d2f57",
-    "src/ekb_model_runtime/run_manager/daemon.py": "f91a189fd2eb8797c2beb1fb11efb267a06371c3c47d1ed25ae8985a9f941c33",
+    "src/ekb_model_runtime/run_manager/daemon.py": "2c4d760a4a13f53ecb253e242265e05f785bc0384c67173c3a83001d4a3f8dc1",
+    "src/ekb_model_runtime/run_manager/import_batches.py": "edd846573fab6eaa00c3a3c78e2da8a44bd238a40f9419fecd3cfdbe412e4e2b",
     "src/ekb_model_runtime/run_manager/ipc.py": "dc40cde930c4f89bac3f22f2a5dfe2e894328e4c4b4e4d906b7e99a797f79945",
     "src/ekb_model_runtime/run_manager/process.py": "60be514185b3d17d1f9f2934d3e2350aa72c6c5631dc0250fc41e444ac468ed9",
     "src/ekb_model_runtime/run_manager/README.md": "aa1d2c72dbe1e206669acf05d23533de9c54cbe5c63cd512931ec4fa67f7d183",

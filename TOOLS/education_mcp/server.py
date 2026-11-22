@@ -23,7 +23,7 @@ import uuid
 import zipfile
 from urllib.parse import unquote
 
-VERSION = "0.7.0"
+VERSION = "0.8.0"
 RASTER_SUFFIXES = frozenset({'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'})
 IMAGE_REVIEW = runpy.run_path(str(Path(__file__).with_name("image_review.py")))
 WORKSPACE_MANAGER = runpy.run_path(str(Path(__file__).with_name("workspace_manager.py")))["WorkspaceManager"]
@@ -109,6 +109,14 @@ JOB = {"type": "string", "pattern": "^[a-f0-9]{32}$"}
 MONITOR = runpy.run_path(str(Path(__file__).with_name("runtime_monitor.py")))
 TOOLS = [
     MONITOR["SCHEMA"],
+    {"name":"import_batch", "description":"Register all curriculum/research PDFs in one durable conversion batch. Begin runtime_jobs first; batch_id equals task_run_id. Agents claim up to four pages, submit source review notes, and attest organizer publication. Use events for resumable notifications.",
+     "inputSchema":schema({"action":{"enum":["list","begin","status","events","pages","claim","reviewed","published","skip"]},
+         "batch_id":JOB,"sources":{"type":"array","minItems":1,"maxItems":1000,"items":schema({
+             "source":STRING,"sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},"job_id":JOB},["source","sha256"])},
+         "ordinal":{"type":"integer","minimum":1},"claim_id":JOB,
+         "notify_desktop":{"type":"boolean"},"notes":{"type":"object","additionalProperties":STRING},"reason":STRING,
+         "manifest_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},"after":{"type":"integer","minimum":0}},
+         ["action"])},
     {"name":"textbook_import","description":"Prepare a source-bound BeMarkdown textbook package; inspect the outline, page evidence and review queue, resolve issues, preview, approve and atomically publish the reviewed revision.", "inputSchema":schema({
         "action":{"type":"string","enum":["prepare","inspect","pending","evidence","flag","resolve","preview","approve","publish"]},
         "source":STRING,"package_path":STRING,"job_id":JOB,"import_id":STRING,"revision":STRING,
@@ -590,6 +598,24 @@ class Service:
             return self.vision.call(**args)
         if name in {tool['name'] for tool in TOOLS} - {'knowledge_workspace', 'bemarkdown_info'}:
             self.vision.require()
+        if name == "import_batch":
+            bridge = runpy.run_path(str(Path(__file__).with_name("managed_bridge.py")))
+            fields = dict(args)
+            action = fields.pop("action")
+            batch = fields.pop("batch_id", None)
+            if action != "list" and not batch:
+                raise ValueError("batch_id required")
+            if self._task_run.get() not in (None, batch):
+                raise ValueError("Batch and task belong to different runs")
+            if action == "begin":
+                fields["input_roots"] = [str(p) for p in self.allowed]
+                fields["config"] = bridge["bootstrap"](self)["installation_fingerprint"](self.mcp_root)
+                for item in fields["sources"]:
+                    if not any(Path(item["source"]).resolve().is_relative_to(root) for root in self.allowed):
+                        raise ValueError("Input is outside configured input roots")
+                self.workspace_manager.safe_path("tmp/bemarkdown")
+            client = bridge["manager"](self)
+            return text_result(client.import_batch(action,self.workspace,batch,**fields))
         if name == "bemarkdown_source":
             return self.source(**args)
         if name == "bemarkdown_read" and args.get("kind") == "asset":

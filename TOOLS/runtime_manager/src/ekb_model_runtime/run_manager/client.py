@@ -43,6 +43,10 @@ class RunManagerClient:
                           retry_of=retry_of, config_fingerprint=config_fingerprint, run_timeout=run_timeout,
                           **({"task_run_id":task_run_id} if task_run_id is not None else {}))
 
+    def import_batch(self, action, workspace, batch_id=None, **fields):
+        return self._call("import_batch", action=action, workspace=str(Path(workspace).resolve()),
+                          batch_id=batch_id, **fields)
+
     def task_run(self, action, workspace, task_run_id, **fields):
         return self._call("task_run",action=action,workspace=str(Path(workspace).resolve()),task_run_id=task_run_id,**fields)
 
