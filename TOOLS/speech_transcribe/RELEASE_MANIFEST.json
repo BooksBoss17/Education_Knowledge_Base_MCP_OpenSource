@@ -1,0 +1,15 @@
+{
+  "schema": "speech-transcribe-release-v1",
+  "release_id": "mcp-v0.13.0",
+  "runtime": "qwen3-speech-006",
+  "model_manifests": {
+    "Qwen3-ASR-1.7B": "ca7e5f132772ce50981296e1b8baca892042467b21ac71f3ab74dfdc69e99fde",
+    "Qwen3-ForcedAligner-0.6B": "184f77deb0c9047430f065bc30e5feae1fbb472b6c76f17914b7b93462dda893"
+  },
+  "files": {
+    "mcp_tool.py": "f65460bccc30cd369111110ce0d1b94dac53c9332a3daf31a98793a1c5232be1",
+    "README.md": "b607dbcb1d44429b71272f6b468fe0bdff6da209f4362498016ae0b61b925620",
+    "requirements.lock": "27415289207a7cb235b8ba86dd772a501ab18ab197cb224e2a633850624c3d45",
+    "worker.py": "36ec25c193473e14f794a2c95ecbba744f811556f3360e4e9e94bc9ec9ad30c5"
+  }
+}

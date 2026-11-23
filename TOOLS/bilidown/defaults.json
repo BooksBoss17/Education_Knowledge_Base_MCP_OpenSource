@@ -1,0 +1,30 @@
+{
+  "output": "Original_Backup/INSTRUCTIONAL_VIDEOS",
+  "common": {
+    "tray": false,
+    "pic": true,
+    "music": true,
+    "xml": false,
+    "ass": false,
+    "guaxiao": false,
+    "zimu": false,
+    "tools": false,
+    "soundTip": true,
+    "maxDownCount": 1,
+    "videoEncoding": "avc1",
+    "addBV": false,
+    "addDATE": false,
+    "addUpInfo": false,
+    "addFrontNum": false,
+    "addAudioQn": false,
+    "addVideoQn": false
+  },
+  "guest": {
+    "videoQn": "32",
+    "audioQn": "192"
+  },
+  "account": {
+    "videoQn": "80",
+    "audioQn": "192"
+  }
+}

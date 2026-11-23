@@ -23,7 +23,7 @@ import uuid
 import zipfile
 from urllib.parse import unquote
 
-VERSION = "0.9.0"
+VERSION = "0.13.0"
 RASTER_SUFFIXES = frozenset({'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'})
 IMAGE_REVIEW = runpy.run_path(str(Path(__file__).with_name("image_review.py")))
 WORKSPACE_MANAGER = runpy.run_path(str(Path(__file__).with_name("workspace_manager.py")))["WorkspaceManager"]
@@ -108,7 +108,15 @@ STRING = {"type": "string"}
 JOB = {"type": "string", "pattern": "^[a-f0-9]{32}$"}
 MONITOR = runpy.run_path(str(Path(__file__).with_name("runtime_monitor.py")))
 EXERCISE = runpy.run_path(str(Path(__file__).with_name("exercise_import.py")))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from speech_transcribe import mcp_tool as SPEECH
+from bilidown import search_tool as BILI_SEARCH
+from bilidown import mcp_tool as BILIDOWN
+
 TOOLS = [
+    SPEECH.SCHEMA,
+    BILI_SEARCH.SCHEMA,
+    BILIDOWN.SCHEMA,
     EXERCISE["SCHEMA"],
     MONITOR["SCHEMA"],
     {"name":"import_batch", "description":"Register all curriculum/research PDFs in one durable conversion batch. Begin runtime_jobs first; batch_id equals task_run_id. Agents claim up to four pages, submit source review notes, and attest organizer publication. Use events for resumable notifications.",
@@ -596,6 +604,12 @@ class Service:
         if name == 'runtime_jobs':
             bridge = runpy.run_path(str(Path(__file__).with_name('managed_bridge.py')))
             return text_result(bridge['call'](self, **args))
+        if name == "speech_transcribe":
+            return text_result(SPEECH.call(self, **args))
+        if name == "bilibili_search":
+            return text_result(BILI_SEARCH.call(self, **args))
+        if name == "bilibili_download":
+            return text_result(BILIDOWN.call(self, **args))
         if name == 'bemarkdown_vision':
             return self.vision.call(**args)
         if name in {tool['name'] for tool in TOOLS} - {'knowledge_workspace', 'bemarkdown_info'}:

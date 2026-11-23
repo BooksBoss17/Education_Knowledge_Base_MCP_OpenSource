@@ -1,0 +1,4 @@
+interface:
+  display_name: "教学视频导入"
+  short_description: "将本地或 B 站教学视频整理成时间戳稿件、关键帧和课堂笔记"
+  default_prompt: "用 $instructional-video-import 将这份教学视频录入知识库。"

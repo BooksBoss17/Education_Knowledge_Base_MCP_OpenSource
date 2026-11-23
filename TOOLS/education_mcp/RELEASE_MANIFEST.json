@@ -1,6 +1,6 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "mcp-v0.9.0",
+  "release_id": "mcp-v0.13.0",
   "bemarkdown_wheel_sha256": "5259922f6801d1e49442490d90e559fa93085fec4610d86fb2b3e51ec383128e",
   "files": {
     "atomic_files.py": "b25301470331a273020c5899c4e2f135c179e6b1213becdbcb792c646f916b7d",
@@ -13,9 +13,9 @@
     "managed_worker.py": "52ec59060c44d5a0ddc2a5be1719d26fde17b8ce1e61b49b3a3b240326cff898",
     "next_handoff.py": "d6cd8f88fdfe8802805d469c44de4ea278bb904300a222cd3730d53d97c4e17b",
     "process_gpu.py": "1ed8738e8ba264cdabc8a81604222a3dbe37766dc92d9af78b15c44c405e7b3f",
-    "README.md": "dc2d1532d89261f7479d6cda9573888008568d146adbae6627343fefbaa095e6",
+    "README.md": "b136c54e779759f786aec72cdbf21a95ae872bbcd966df0ebe8c283e2171ca88",
     "runtime_monitor.py": "34016c7e9e160b0ec072d7863626ef79e85dbf79935a764d66fe54eeaadefea7",
-    "server.py": "26bbe2b9e81bf8c25e8cdb2684d3e76fd26faaf4e5b8d9c6c63d74e9c5752d80",
+    "server.py": "ed11fed61b6ef115b9e4416af751ad7e41bd9476ce6e1880e2d4662f575ad351",
     "textbook_format.py": "b1ec694cae78292e98178ebba7618c216b6daffb46da7494587e57cd96890f0d",
     "TEXTBOOK_IMPORT.md": "5efc38f308c42032f48ff3da9dfbe4e2a44aa9b555c38bdf7a9f0ac750934293",
     "textbook_import.py": "abba8dd7e43e41765654e92439e2879e4a85c8bf38cddcee16b4d043946abb69",

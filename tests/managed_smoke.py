@@ -68,7 +68,7 @@ def main():
 
                 try:
                     initialization = rpc('initialize',protocolVersion='2025-11-25',capabilities={},clientInfo={'name':'public-smoke','version':'1'})
-                    assert initialization['serverInfo']['version'] == '0.9.0'
+                    assert initialization['serverInfo']['version'] == '0.13.0'
                     tools = {t['name']: t for t in rpc('tools/list')['tools']}
                     assert set(tools) == {
                         'bemarkdown_convert',
@@ -83,9 +83,15 @@ def main():
                         'exercise_import',
                         'import_batch',
                         'runtime_jobs',
+                        'speech_transcribe',
+                        'bilibili_search',
+                        'bilibili_download',
                         'runtime_monitor',
                         'textbook_import',
                     }
+                    for tool, arguments in [('bilibili_search', dict(title='physics')), ('speech_transcribe', dict(action='start',source='unused.mp4'))]:
+                        unavailable = rpc('tools/call', expect_error=True, name=tool, arguments=arguments)
+                        assert 'setup_video.py' in unavailable['content'][0]['text'], unavailable
                     for retired in ('textbook_organize', 'bemarkdown_review_context'):
                         response = rpc('tools/call', expect_error=True, name=retired, arguments={})
                         assert 'Unknown tool' in response['content'][0]['text']

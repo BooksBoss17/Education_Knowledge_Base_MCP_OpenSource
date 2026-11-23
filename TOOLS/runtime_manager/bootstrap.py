@@ -74,6 +74,18 @@ def registry(mcp_root, python):
             programs[name]['resource_kind']='cpu'
             programs[name]['gpu_key']='EXTERNAL_API'
             programs[name]['requirement']=dict(extra_private_bytes=512*1024**2,extra_physical_bytes=512*1024**2,extra_gpu_mib=0)
+    speech = root / 'TOOLS/speech_transcribe'
+    speech_python = root / '.local/runtimes/qwen3-speech-006/Scripts/python.exe'
+    if (speech / 'worker.py').is_file() and speech_python.is_file() and all((root/'MODELS'/model/'MODEL_MANIFEST.json').is_file() for model in ('Qwen3-ASR-1.7B','Qwen3-ForcedAligner-0.6B')):
+        script = speech / 'worker.py'
+        bindings = [speech / 'RELEASE_MANIFEST.json', speech / 'requirements.lock']
+        bindings += [root/'MODELS'/model/'MODEL_MANIFEST.json' for model in ('Qwen3-ASR-1.7B','Qwen3-ForcedAligner-0.6B')]
+        programs['speech-transcribe'] = dict(
+            python=str(speech_python), script=str(script), script_sha256=sha(script), installed_root=str(root),
+            arguments=['--manager-job-id','{job_id}','--manager-request','{request_path}'],
+            resource_kind='gpu', gpu_key='GPU:0',
+            requirement=dict(extra_private_bytes=8*1024**3,extra_physical_bytes=8*1024**3,extra_gpu_mib=0),
+            runtime_files={str(path):sha(path) for path in bindings})
     value = dict(schema='ekb-run-manager-registry-v1', programs=programs,
                  resource_policy=dict(module_path=str(policy), sha256=sha(policy), gpu_index=0, mode=mode))
     encoded = json.dumps(value, sort_keys=True, ensure_ascii=False, indent=2).encode('utf-8')

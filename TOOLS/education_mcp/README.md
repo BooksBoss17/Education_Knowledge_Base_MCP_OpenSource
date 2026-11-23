@@ -28,3 +28,7 @@ claim 需要 ordinal、claim_id；reviewed 用相同参数和 notes（物理页�
 ## 物理题目导入
 
 [题目导入 Skill](../../SKILLS/exercise-import/SKILL.md) 配合 exercise_import 使用。支持题卷与答案卷配对、按章节拆题、Agent 赋标、缺答案或详解时补写并记录来源。发布后生成每份原件的 Markdown 和 SQLite 题库。
+
+## 教学视频导入
+
+使用[教学视频导入 Skill](../../SKILLS/instructional-video-import/SKILL.md)处理本地或 B 站视频，保留带时间戳的转写与带图课堂笔记。视频工具按需安装，请参阅[视频依赖配置](../bilidown/README.md)。
