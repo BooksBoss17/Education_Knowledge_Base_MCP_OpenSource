@@ -7,7 +7,7 @@ from dataclasses import asdict, dataclass
 from enum import StrEnum
 from typing import Any
 
-from .formula import FormulaConversion
+from .formula import FormulaConversion, MATHML_MOVER_COMMAND
 
 
 class FormulaVerdict(StrEnum):
@@ -97,6 +97,12 @@ class FormulaStructuralValidator:
         }
         if latex is not None:
             self._validate_latex(latex, issues, latex_evidence, metadata)
+            if "mover" in mathml_evidence["structural_nodes"] and MATHML_MOVER_COMMAND.search(latex):
+                self._add(
+                    issues, "UNSUPPORTED_MATHML_OVERSCRIPT",
+                    "The MathML converter emitted an unsupported overscript command.",
+                    "latex",
+                )
         elif not mathml:
             self._add(
                 issues,
@@ -111,6 +117,7 @@ class FormulaStructuralValidator:
             "EMPTY_MATHML_CONTAINER",
             "UNMATCHED_DELIMITER",
             "UNMATCHED_ENVIRONMENT",
+            "UNSUPPORTED_MATHML_OVERSCRIPT",
             "NO_STRUCTURAL_RESULT",
         }:
             verdict = FormulaVerdict.INVALID

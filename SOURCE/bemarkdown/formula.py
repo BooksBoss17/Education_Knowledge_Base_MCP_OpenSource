@@ -24,6 +24,9 @@ class FormulaConversion:
 
 
 _OMML_CONVERTER = None
+MATHML_MOVER_COMMAND = re.compile(r"(?<!\\)(?:\\\\)*(?P<command>\\mover)(?![A-Za-z])")
+_LATEX_BRACE = re.compile(r"\\.|[{}]", re.DOTALL)
+_MACRON_OVERSCRIPT = "^{¯}"
 _OMML_COMPONENT = None
 
 
@@ -131,6 +134,27 @@ def is_mathml_semantically_empty(mathml: str) -> bool:
     return True
 
 
+def _normalize_mathml_macrons(latex: str) -> str:
+    # The pinned converter emits \mover{base}^{¯}. Read balanced groups so a
+    # fraction, subscript, or another accent can be part of the base.
+    for command in reversed(list(MATHML_MOVER_COMMAND.finditer(latex))):
+        left = command.end()
+        if latex[left:left + 1] != "{":
+            continue
+        depth = 1
+        for brace in _LATEX_BRACE.finditer(latex, left + 1):
+            depth += (brace[0] == "{") - (brace[0] == "}")
+            if depth == 0:
+                end = brace.end()
+                if latex.startswith(_MACRON_OVERSCRIPT, end):
+                    latex = (
+                        latex[:command.start("command")] + r"\bar" + latex[left:end]
+                        + latex[end + len(_MACRON_OVERSCRIPT):]
+                    )
+                break
+    return latex
+
+
 def convert_mathml(mathml: str, *, component: str) -> FormulaConversion:
     if is_mathml_semantically_empty(mathml):
         return FormulaConversion(
@@ -148,6 +172,8 @@ def convert_mathml(mathml: str, *, component: str) -> FormulaConversion:
         latex = (process_mathml(soup) or "").strip()
         if not latex:
             raise ValueError("mathml2latex returned empty LaTeX")
+        if "\\mover" in latex and soup.find("mover"):
+            latex = _normalize_mathml_macrons(latex)
         return FormulaConversion(
             latex,
             "SUCCESS_NORMALIZED",

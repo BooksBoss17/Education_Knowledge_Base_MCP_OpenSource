@@ -1,7 +1,7 @@
 {
   "schema": "public-api-adapter-release-v1",
-  "release_id": "mcp-v0.14.0",
-  "bemarkdown_wheel_sha256": "5259922f6801d1e49442490d90e559fa93085fec4610d86fb2b3e51ec383128e",
+  "release_id": "mcp-v0.14.1",
+  "bemarkdown_wheel_sha256": "439b59fd6572209654cfafe8e6bba72396bc043f148cf399e9303092dbe56a03",
   "files": {
     "bootstrap.py": "5236f4ba84ecfd31d29b85a2c1071a9de36cc3cb10749784e78892778cc030e8",
     "external_resource_policy.py": "9ab0f8e1f87f078701b90a1ea6c32decf4308324f6ba7904b0f8a8d9f41a9b9b",

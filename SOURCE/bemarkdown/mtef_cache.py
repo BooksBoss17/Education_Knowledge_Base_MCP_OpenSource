@@ -28,8 +28,8 @@ from .validator import (
 )
 
 MTEF_CACHE_SCHEMA_VERSION = 1
-MTEF_CONVERSION_CONTRACT = "bemarkdown-mtef-conversion-v1"
-MTEF_VALIDATOR_CONTRACT = "bemarkdown-formula-structural-validator-v1"
+MTEF_CONVERSION_CONTRACT = "bemarkdown-mtef-conversion-v2"
+MTEF_VALIDATOR_CONTRACT = "bemarkdown-formula-structural-validator-v2"
 MATHTYPEJX_REVISION = "7d90e7274c85cf56ac28d4d15e593044693d7e70"
 MTEF_COMPONENT = "mathtypejx 0.1.0 + mathml2latex 0.2.12"
 _OLE_STREAM_NAMES = ("Equation Native", "EquationNative", "Equation")

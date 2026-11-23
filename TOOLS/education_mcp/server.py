@@ -23,7 +23,7 @@ import uuid
 import zipfile
 from urllib.parse import unquote
 
-VERSION = "0.14.0"
+VERSION = "0.14.1"
 RASTER_SUFFIXES = frozenset({'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'})
 IMAGE_REVIEW = runpy.run_path(str(Path(__file__).with_name("image_review.py")))
 WORKSPACE_MANAGER = runpy.run_path(str(Path(__file__).with_name("workspace_manager.py")))["WorkspaceManager"]
