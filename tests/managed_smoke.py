@@ -68,7 +68,7 @@ def main():
 
                 try:
                     initialization = rpc('initialize',protocolVersion='2025-11-25',capabilities={},clientInfo={'name':'public-smoke','version':'1'})
-                    assert initialization['serverInfo']['version'] == '0.13.0'
+                    assert initialization['serverInfo']['version'] == '0.14.0'
                     tools = {t['name']: t for t in rpc('tools/list')['tools']}
                     assert set(tools) == {
                         'bemarkdown_convert',
@@ -81,6 +81,7 @@ def main():
                         'bemarkdown_vision',
                         'knowledge_workspace',
                         'exercise_import',
+                        'checklist_import',
                         'import_batch',
                         'runtime_jobs',
                         'speech_transcribe',

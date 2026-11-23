@@ -23,7 +23,7 @@ import uuid
 import zipfile
 from urllib.parse import unquote
 
-VERSION = "0.13.0"
+VERSION = "0.14.0"
 RASTER_SUFFIXES = frozenset({'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'})
 IMAGE_REVIEW = runpy.run_path(str(Path(__file__).with_name("image_review.py")))
 WORKSPACE_MANAGER = runpy.run_path(str(Path(__file__).with_name("workspace_manager.py")))["WorkspaceManager"]
@@ -109,6 +109,8 @@ JOB = {"type": "string", "pattern": "^[a-f0-9]{32}$"}
 MONITOR = runpy.run_path(str(Path(__file__).with_name("runtime_monitor.py")))
 EXERCISE = runpy.run_path(str(Path(__file__).with_name("exercise_import.py")))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import checklist_import as CHECKLIST
 from speech_transcribe import mcp_tool as SPEECH
 from bilidown import search_tool as BILI_SEARCH
 from bilidown import mcp_tool as BILIDOWN
@@ -118,6 +120,7 @@ TOOLS = [
     BILI_SEARCH.SCHEMA,
     BILIDOWN.SCHEMA,
     EXERCISE["SCHEMA"],
+    CHECKLIST.SCHEMA,
     MONITOR["SCHEMA"],
     {"name":"import_batch", "description":"Register all curriculum/research PDFs in one durable conversion batch. Begin runtime_jobs first; batch_id equals task_run_id. Agents claim up to four pages, submit source review notes, and attest organizer publication. Use events for resumable notifications.",
      "inputSchema":schema({"action":{"enum":["list","begin","status","events","pages","claim","reviewed","published","skip"]},
@@ -616,6 +619,8 @@ class Service:
             self.vision.require()
         if name == "exercise_import":
             return text_result(EXERCISE["run"](self.workspace,self.allowed,**args))
+        if name == "checklist_import":
+            return text_result(CHECKLIST.run(self.workspace, self.allowed, **args))
         if name == "import_batch":
             bridge = runpy.run_path(str(Path(__file__).with_name("managed_bridge.py")))
             fields = dict(args)

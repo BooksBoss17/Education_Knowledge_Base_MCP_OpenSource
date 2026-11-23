@@ -33,10 +33,13 @@ description: 主会话调度教育资料入库。接收单份或批量导入，�
 | --- | --- | --- |
 | PDF 课程标准、评价体系、教学与考试研究资料 | BeMarkdown 转录，按原件校对与预览，使用业务 Skill 随附整理程序发布 | [课标与教学研究资料导入](../curriculum-research-import/SKILL.md) |
 | 试卷、作业、讲义拆题入库 | BeMarkdown 转录各原件，exercise_import 暂存、对账和发布 | [题目导入](../exercise-import/SKILL.md) |
+| 独立知识手册、考点总结、公式表 | BeMarkdown 转录，checklist_import 暂存、逐段审查和发布 | [知识清单导入](../knowledge-checklist-import/SKILL.md) |
 | 本地教学视频或 B 站教学视频 | 标题或作者先检索，BV 下载或接收本地文件；speech_transcribe 转写并按视频归档 | [教学视频导入](../instructional-video-import/SKILL.md) |
 | 教材 | 通过 textbook_import 完成审查、审批与发布 | [教材导入](../textbook-import/SKILL.md) |
 
 遇到尚未接入的类型，记录该项所缺的线路，继续处理同批已就绪的资料。新增类型时在表中登记其业务入口。业务入口说明支持的输入、可调用 API 或 MCP 工具、阶段依赖、可恢复作业标识、审查单位、成品位置和发布条件。
+
+导入含系统知识梳理的讲义时，把同一 BeMarkdown job_id 交给题目和知识清单两条支线。分别保存 exercise_import 与 checklist_import 的 import_id、revision 和回执。知识审查可提前推进，发布时先对账讲义全文、原件和题库，再发布知识清单。两条支线均收到回执后计入完成。已有归档讲义补提清单时，直接以已发布的原件 SHA-256 接入知识支线。库存中含 ZIP 时按知识清单 Skill 的盘点步骤去重，再派发唯一原件。
 
 ## 调度 API 与子 agent
 

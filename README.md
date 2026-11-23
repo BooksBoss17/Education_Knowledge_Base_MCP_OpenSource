@@ -2,7 +2,7 @@
 
 将 PDF、截图、Word 转为可追溯的 Markdown。**模型由使用者选择：部署自己的本地服务，或通过本地网关调用联网 API。** 安装包只提供转换和调度所需的软件，模型由使用者配置。
 
-核心版本 **0.4.6+localapi.8.review.2**；MCP 适配器 **0.13.0**，发行版 **0.13.0**。
+核心版本 **0.4.6+localapi.8.review.2**；MCP 适配器 **0.14.0**，发行版 **0.14.0**。
 
 ## 课标与教研资料导入
 
@@ -104,3 +104,7 @@ Word矩形图片按裁剪、翻转、旋转和普通非重叠图片组合的可�
 ## 教学视频导入
 
 使用[教学视频导入 Skill](SKILLS/instructional-video-import/SKILL.md)处理本地或 B 站视频，保留带时间戳的转写与带图课堂笔记。视频工具按需安装，请参阅[视频依赖配置](TOOLS/bilidown/README.md)。
+
+## 知识清单导入
+
+[知识清单导入 Skill](SKILLS/knowledge-checklist-import/SKILL.md)使用 checklist_import 暂存、逐段核对并发布独立清单和讲义知识摘录。混合讲义共用转录，分别对账题库和知识清单。

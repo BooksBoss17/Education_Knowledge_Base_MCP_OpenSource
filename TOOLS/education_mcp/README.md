@@ -32,3 +32,7 @@ claim 需要 ordinal、claim_id；reviewed 用相同参数和 notes（物理页�
 ## 教学视频导入
 
 使用[教学视频导入 Skill](../../SKILLS/instructional-video-import/SKILL.md)处理本地或 B 站视频，保留带时间戳的转写与带图课堂笔记。视频工具按需安装，请参阅[视频依赖配置](../bilidown/README.md)。
+
+## 知识清单导入
+
+[知识清单导入 Skill](../../SKILLS/knowledge-checklist-import/SKILL.md)使用 checklist_import 暂存、逐段核对并发布独立清单和讲义知识摘录。混合讲义共用转录，分别对账题库和知识清单。
