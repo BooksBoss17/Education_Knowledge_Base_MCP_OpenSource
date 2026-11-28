@@ -102,19 +102,40 @@ class SessionProcess:
         command = [sys.executable, "-m", "bemarkdown.model_session", "--config", str(self.config_path),
                    "--role", role, "--folder", str(self.folder), "--session-id", self.session_id,
                    "--idle-seconds", str(idle_seconds)]
+        from .session_recovery import RetryReceipts
+        self.recovery = RetryReceipts(self)
+        self.closing = False
+        self.job = None
+        flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+        if os.name == "nt":
+            from .session_job import SessionJob
+            self.job = SessionJob()
+            flags |= 0x00000004  # CREATE_SUSPENDED: capture launcher and all descendants before code runs
         try:
             self.child = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=self.log, stderr=self.log,
-                creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0), start_new_session=os.name != "nt")
+                creationflags=flags, start_new_session=os.name != "nt")
+            if self.job is not None:
+                import psutil
+                self.job.attach(self.child)
+                psutil.Process(self.child.pid).resume()
             write_json(self.journal / "OPENED.json", {"session_id": self.session_id, "role": role,
                        "worker_pid": self.child.pid, "config_sha256": self.config_sha256})
         except BaseException:
+            if self.job is not None:
+                try:
+                    self.job.terminate()
+                finally:
+                    self.job.close()
+            if hasattr(self, "child") and self.child.poll() is None:
+                self.child.kill()
+                self.child.wait(timeout=15)
             self.log.close()
             self.temporary.cleanup()
             raise
 
     def status(self, request_id=None):
-        result = {"session_id": self.session_id, "model_unloaded": self.closed or self.child.poll() is not None,
-                  "state": "CLOSED" if self.closed or self.child.poll() is not None else "OPEN"}
+        result = {"session_id": self.session_id, "model_unloaded": self.closed,
+                  "state": "CLOSED" if self.closed else ("EXIT_PENDING" if self.closing else "OPEN")}
         if request_id is not None:
             key = hashlib.sha256(request_id.encode()).hexdigest()
             receipt = self.journal / (key + ".json")
@@ -124,8 +145,8 @@ class SessionProcess:
         return result
 
     def request(self, payload):
-        if self.closed:
-            raise RuntimeError("MODEL_SESSION_CLOSED")
+        if self.closing or self.closed:
+            raise RuntimeError("MODEL_SESSION_CLOSING_OR_CLOSED")
         if hashlib.sha256(self.config_path.read_bytes()).hexdigest() != self.config_sha256:
             self.close(force=True)
             raise RuntimeError("MODEL_SESSION_CONFIG_CHANGED")
@@ -143,6 +164,11 @@ class SessionProcess:
         journal_bytes = sum(p.stat().st_size for p in self.journal.parent.glob('*/*.json'))
         if journal_bytes + 64 * 1024**2 > 512 * 1024**2:
             raise RuntimeError("MODEL_SESSION_JOURNAL_BUDGET_EXCEEDED")
+        recovered = self.recovery.recover(payload)
+        if recovered is not None:
+            write_json(receipt, self.recovery.envelope(payload, recovered))
+            self.recovery.record(payload, receipt, recovered)
+            return recovered
         sequence = self.sequence
         self.sequence += 1
         request = self.folder / f"request-{sequence:08d}.json"
@@ -161,7 +187,8 @@ class SessionProcess:
                 raise RuntimeError(value["error"])
             if value.get("request_id") != payload["request_id"] or value.get("session_id") != self.session_id:
                 raise ValueError("MODEL_SESSION_RESPONSE_BINDING_INVALID")
-            write_json(receipt, {"payload_sha256": fingerprint, "result": value})
+            write_json(receipt, self.recovery.envelope(payload, value))
+            self.recovery.record(payload, receipt, value)
             request.unlink(missing_ok=True)
             response.unlink()
             return value
@@ -172,24 +199,42 @@ class SessionProcess:
     def close(self, *, force=False):
         if self.closed:
             return dict(self.close_receipt)
-        descendants = owned_processes(self.child)
+        first = not self.closing
+        self.closing = True
         try:
-            if force:
-                stop_process_tree(self.child)
+            if self.job is not None:
+                if first and not force:
+                    (self.folder / "STOP").touch()
+                if not self.job.wait_empty(15 if first and not force else 0):
+                    if first or not getattr(self, "_termination_sent", False):
+                        try:
+                            self.job.terminate()
+                            self._termination_sent = True
+                        except OSError:
+                            pass  # Verify actual membership even if termination raced with exit.
+                    if not self.job.wait_empty(15 if first else 1):
+                        write_json(self.journal / "EXIT_PENDING.json", {"session_id": self.session_id,
+                                   "role": self.role, "model_unloaded": False})
+                        raise RuntimeError("MODEL_SESSION_EXIT_PENDING")
+                self.child.wait(timeout=1)
             else:
-                (self.folder / "STOP").touch()
-                try:
-                    self.child.wait(timeout=15)
-                except subprocess.TimeoutExpired:
+                descendants = owned_processes(self.child)
+                if force:
                     stop_process_tree(self.child)
-            if self.child.poll() is None:
-                raise RuntimeError("MODEL_SESSION_EXIT_UNCONFIRMED")
-            wait_processes_exit(descendants)
-            self.closed = True
+                else:
+                    (self.folder / "STOP").touch()
+                    try:
+                        self.child.wait(timeout=15)
+                    except subprocess.TimeoutExpired:
+                        stop_process_tree(self.child)
+                wait_processes_exit(descendants)
             result = {"session_id": self.session_id, "model_unloaded": True,
                       "worker_exit_code": self.child.returncode}
-            self.close_receipt = result
             write_json(self.journal / "CLOSED.json", result)
+            self.close_receipt = result
+            self.closed = True
+            if self.job is not None:
+                self.job.close()
             return result
         finally:
             if self.closed:

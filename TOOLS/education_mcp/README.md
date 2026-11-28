@@ -36,3 +36,7 @@ claim 需要 ordinal、claim_id；reviewed 用相同参数和 notes（物理页�
 ## 知识清单导入
 
 [知识清单导入 Skill](../../SKILLS/knowledge-checklist-import/SKILL.md)使用 checklist_import 暂存、逐段核对并发布独立清单和讲义知识摘录。混合讲义共用转录，分别对账题库和知识清单。
+
+## 课页 Studio
+
+仍使用当前 education-knowledge-base 的 stdio 启动方式。连接后可调用 studio_catalog、studio_create、studio_edit、studio_import、studio_export 及协作工具。[课页 Studio 使用说明](../slide_studio/README.md)

@@ -1,12 +1,12 @@
 {
   "name": "bemarkdown",
-  "version": "0.4.6+localapi.8.review.3",
-  "release_id": "mcp-v0.14.1",
+  "version": "0.4.6+localapi.8.review.4",
+  "release_id": "mcp-v0.15.1",
   "runtime_route": "LOCAL_MODEL_API_V1",
   "wheel": {
-    "path": "dist/bemarkdown-0.4.6+localapi.8.review.3-py3-none-any.whl",
-    "sha256": "439b59fd6572209654cfafe8e6bba72396bc043f148cf399e9303092dbe56a03",
-    "python_modules": 44
+    "path": "dist/bemarkdown-0.4.6+localapi.8.review.4-py3-none-any.whl",
+    "sha256": "a5c289019e96be598f0e59e5c94eab75cbd62db75157fcd5eeadb7f9603c70ac",
+    "python_modules": 46
   },
   "distribution": "PUBLIC_API_FIRST"
 }

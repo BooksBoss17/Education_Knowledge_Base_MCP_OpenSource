@@ -1,0 +1,282 @@
+<meta charset="utf-8" /><title>地球自转与昼夜</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    background: #102331;
+    color: #eaf3f4;
+    font:
+      14px system-ui,
+      sans-serif;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    touch-action: none;
+    cursor: grab;
+  }
+  canvas:active {
+    cursor: grabbing;
+  }
+  .controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    background: #193243;
+    padding: 6px 12px;
+  }
+  button {
+    background: #254958;
+    color: #edf4ef;
+    border: 1px solid #557480;
+    border-radius: 5px;
+    padding: 4px 9px;
+  }
+  input {
+    accent-color: #7cd7c2;
+  }
+  output {
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+<canvas id="globe" aria-label="可旋转的三维经纬球，拖动改变观察角度"></canvas>
+<div class="controls">
+  <button id="spin">自转</button><button id="home">复位</button
+  ><label><input id="axis" type="checkbox" />地轴</label
+  ><label><input id="light" type="checkbox" />昼夜</label
+  ><output id="longitude"></output>
+</div>
+<script>
+  (() => {
+    const get = (id) => document.getElementById(id),
+      canvas = get("globe"),
+      ctx = canvas.getContext("2d"),
+      cfg = window.studioParams || {};
+    const rad = Math.PI / 180,
+      tau = Math.PI * 2;
+    let lon,
+      lat,
+      rotation = 0,
+      frame = 0,
+      last = 0,
+      drag = null;
+    // Public-domain Natural Earth 1:110m land, rendered as an equirectangular binary mask.
+    const texture = new Image(),
+      globe = document.createElement("canvas"),
+      gc = globe.getContext("2d");
+    const side = 288,
+      cache = new Map();
+    globe.width = globe.height = side;
+    let land;
+    texture.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = 720;
+      c.height = 360;
+      const t = c.getContext("2d");
+      t.drawImage(texture, 0, 0);
+      land = t.getImageData(0, 0, 720, 360).data;
+      draw();
+    };
+    texture.src =
+      "data:image/png;base64,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";
+    function paintSphere(r, cx, cy) {
+      if (!land) return;
+      // Cache inverse-projected sample coordinates while the viewing latitude stays fixed.
+      if (!cache.has(lat)) {
+        cache.clear();
+        const lut = [];
+        for (let y = 0; y < side; y++)
+          for (let x = 0; x < side; x++) {
+            const nx = ((x + 0.5) * 2) / side - 1,
+              ny = 1 - ((y + 0.5) * 2) / side,
+              nz2 = 1 - nx * nx - ny * ny;
+            if (nz2 < 0) continue;
+            const nz = Math.sqrt(nz2),
+              worldY = ny * Math.cos(lat) + nz * Math.sin(lat),
+              worldZ = nz * Math.cos(lat) - ny * Math.sin(lat);
+            lut.push([
+              4 * (y * side + x),
+              (Math.atan2(nx, worldZ) / rad) * 2 + 360,
+              Math.min(
+                359,
+                Math.max(0, Math.floor(180 - (Math.asin(worldY) / rad) * 2)),
+              ) * 720,
+              nx,
+              nz,
+            ]);
+          }
+        cache.set(lat, lut);
+      }
+      const pixels = gc.createImageData(side, side),
+        shift = ((lon + rotation) / rad) * 2,
+        lit = get("light").checked;
+      for (const [i, u, v, nx, nz] of cache.get(lat)) {
+        const col = ((Math.floor(u - shift) % 720) + 720) % 720;
+        const isLand = land[4 * (v + col)] > 127;
+        const brightness = lit
+          ? 0.35 + 0.65 * Math.max(0, Math.min(1, 0.55 - 3 * nx))
+          : 1;
+        const shade = (0.81 + 0.19 * nz) * brightness;
+        pixels.data[i] = (isLand ? 140 : 56) * shade;
+        pixels.data[i + 1] = (isLand ? 184 : 126) * shade;
+        pixels.data[i + 2] = (isLand ? 145 : 154) * shade;
+        pixels.data[i + 3] = 255;
+      }
+      gc.putImageData(pixels, 0, 0);
+      ctx.drawImage(globe, cx - r, cy - r, 2 * r, 2 * r);
+    }
+    function draw() {
+      const w = canvas.width,
+        h = canvas.height;
+      if (!w || !h) return;
+      ctx.clearRect(0, 0, w, h);
+      const r = Math.min(w * 0.37, h * 0.405),
+        cx = w / 2,
+        cy = h / 2;
+      // Rotate points in 3D, cull the far hemisphere, then project to the screen.
+      function project(phi, theta) {
+        const a = theta + lon + rotation,
+          x = Math.cos(phi) * Math.sin(a),
+          b = Math.sin(phi),
+          c = Math.cos(phi) * Math.cos(a);
+        return [
+          cx + r * x,
+          cy - r * (b * Math.cos(lat) - c * Math.sin(lat)),
+          c * Math.cos(lat) + b * Math.sin(lat),
+        ];
+      }
+      function line(points, color, width = 1) {
+        ctx.beginPath();
+        let visible = false;
+        for (const [x, y, z] of points) {
+          if (z >= 0) {
+            if (visible) ctx.lineTo(x, y);
+            else ctx.moveTo(x, y);
+          }
+          visible = z >= 0;
+        }
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.stroke();
+      }
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, tau);
+      ctx.clip();
+      ctx.fillStyle = "#387e9a";
+      ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+      // Orthographic terminator for sunlight arriving from screen-left.
+      if (get("light").checked) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2);
+        ctx.closePath();
+        ctx.fillStyle = "#173345";
+        ctx.fill();
+      }
+      paintSphere(r, cx, cy);
+      for (let a = -75; a <= 75; a += 15)
+        line(
+          Array.from({ length: 181 }, (_, i) =>
+            project(a * rad, (i * tau) / 180),
+          ),
+          a === 0 ? "#ffcf83" : "#8dbabd",
+          a === 0 ? 2 : 1,
+        );
+      for (let b = 0; b < 360; b += 15)
+        line(
+          Array.from({ length: 91 }, (_, i) =>
+            project((i * 2 - 90) * rad, b * rad),
+          ),
+          b === 0 ? "#efba80" : "#78aeb4",
+          b === 0 ? 2 : 1,
+        );
+      const point = project(0, 0);
+      if (point[2] >= 0) {
+        ctx.beginPath();
+        ctx.arc(point[0], point[1], 4, 0, tau);
+        ctx.fillStyle = "#ffcb7a";
+        ctx.fill();
+      }
+      ctx.restore();
+      if (get("axis").checked) {
+        ctx.strokeStyle = "#ecd098";
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - r * 1.15 * Math.cos(lat));
+        ctx.lineTo(cx, cy + r * 1.15 * Math.cos(lat));
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#ffe2a3";
+        ctx.font = "14px system-ui";
+        ctx.fillText("N", cx + 6, Math.max(15, cy - r * 1.15 * Math.cos(lat)));
+      }
+      get("longitude").textContent =
+        "旋转 " + ((((rotation / rad) % 360) + 360) % 360).toFixed(0) + "°";
+    }
+    function pause() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      get("spin").textContent = "自转";
+    }
+    function tick(t) {
+      rotation += (t - last) * 0.00045;
+      last = t;
+      draw();
+      frame = requestAnimationFrame(tick);
+    }
+    function play() {
+      if (frame) return;
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+      get("spin").textContent = "暂停";
+    }
+    function reset() {
+      pause();
+      lon = Number(cfg.longitude ?? 30) * rad;
+      lat = Number(cfg.latitude ?? 23.5) * rad;
+      rotation = 0;
+      get("axis").checked = cfg.axis !== false;
+      get("light").checked = cfg.daylight !== false;
+      draw();
+    }
+    new ResizeObserver(() => {
+      canvas.width = Math.max(
+        1,
+        Math.round(canvas.clientWidth * devicePixelRatio),
+      );
+      canvas.height = Math.max(
+        1,
+        Math.round(canvas.clientHeight * devicePixelRatio),
+      );
+      draw();
+    }).observe(canvas);
+    canvas.onpointerdown = (e) => {
+      drag = [e.clientX, e.clientY];
+      canvas.setPointerCapture(e.pointerId);
+    };
+    canvas.onpointermove = (e) => {
+      if (!drag) return;
+      lon += (e.clientX - drag[0]) * 0.009;
+      lat = Math.max(
+        -1.45,
+        Math.min(1.45, lat + (e.clientY - drag[1]) * 0.009),
+      );
+      drag = [e.clientX, e.clientY];
+      draw();
+    };
+    canvas.onlostpointercapture = () => (drag = null);
+    get("spin").onclick = () => (frame ? pause() : play());
+    get("home").onclick = reset;
+    get("axis").onchange = get("light").onchange = draw;
+    addEventListener("message", (e) => {
+      if (e.source === parent && e.data?.type === "studio-action")
+        ({ play, pause, reset })[e.data.action]?.();
+    });
+    reset();
+  })();
+</script>

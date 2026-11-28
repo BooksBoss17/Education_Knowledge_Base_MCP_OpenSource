@@ -1,0 +1,301 @@
+[
+  {
+    "name": "studio_session_pair",
+    "description": "Redeem the one-use code pasted by the user in this chat. Keep the returned credential within this conversation; do not print it. Host and label are display names, not authentication.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string",
+          "enum": [
+            "Codex",
+            "WorkBuddy",
+            "DSH",
+            "其他 MCP 客户端"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "thread": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "host"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_session_receive",
+    "description": "Wait for the oldest item addressed to this conversation (0–45 seconds, default 20). History and selected objects are frozen at send time. Acknowledge the feedbackId, then reply. An unfinished item may be redelivered; timeout means no message.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "credential": {
+          "type": "string"
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 45
+        }
+      },
+      "required": [
+        "credential"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_session_ack",
+    "description": "Confirm this chat actually received a delivered item. Idempotent.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "credential": {
+          "type": "string"
+        },
+        "feedback_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "credential",
+        "feedback_id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_session_reply",
+    "description": "Reply to a received item; optional page-scoped edits are applied atomically with the receipt. Default base is the original revision. If a field changed, inspect the latest page before explicitly rebasing. Retry with identical arguments.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "credential": {
+          "type": "string"
+        },
+        "feedback_id": {
+          "type": "string"
+        },
+        "reply": {
+          "type": "string"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "resolved",
+            "needs_input"
+          ]
+        },
+        "base": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "edits": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "credential",
+        "feedback_id",
+        "reply"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_catalog",
+    "description": "List animation keys, transitions or interactive templates. Set section to effects, transitions or templates. Supply a template name to get editable HTML and defaults.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "section": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_library",
+    "description": "List locally editable presentations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_inspect",
+    "description": "Inspect page list or a single slide, stable object IDs, ordered steps and revision.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slide": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_create",
+    "description": "Start an empty presentation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_import",
+    "description": "Import a user-provided local WPS PPT/PPTX or exported HTML package into the editor.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_feedback",
+    "description": "Get persisted user comments with page, selection, region and playback step. Poll for new pending items.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_edit",
+    "description": "Apply atomic commands. Read inspect beforehand. Supply command={op:'edit',actor,base,request,edits:[{path:['slides',slideId,'elements',objectId,'x'],value:42}]}. Use a fresh request ID per distinct command, reuse for retry. To resolve feedback include feedbackId and reply in the same edit. Animation arrays have target, effect (see studio_catalog or legacy effects), trigger (click/with/after), duration and delay in seconds. To undo/redo use op undo/redo and current base. Follow the teacher's instructions for the slide. By default, use editable presets for text reveals and simple entrances. For a continuous demonstration, you can author self-contained HTML, SVG, Canvas or WebGL with JavaScript within the bounds of an object with type='component'. Put its markup in html and declare its action names in actions. Use a timeline step with effect='component', trigger='click', target and action. Handle the studio-action event in the component (event.detail is the action name). One Next step can animate multiple objects together and stop where the class should observe or predict. Use the slide timeline for playback of passive demonstrations. Add on-canvas controls when learners need to change conditions or manipulate the experiment.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "command": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "command"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_export",
+    "description": "Export offline HTML under the deck title to an existing directory.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "directory": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "directory"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_package",
+    "description": "Export a ZIP for the knowledge base with named HTML and per-slide reference images.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "directory": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "directory"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "studio_snapshot",
+    "description": "Render a page in editing view, at a playback step, or return its original WPS reference. Returns a PNG.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "slide": {
+          "type": "string"
+        },
+        "step": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reference": {
+          "type": "boolean"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "id",
+        "slide"
+      ],
+      "additionalProperties": false
+    }
+  }
+]

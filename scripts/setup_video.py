@@ -87,16 +87,40 @@ def configure_speech(source):
         copy_verified(manifest, target, digest(manifest))
 
 
+def configure_speech_api(source):
+    source = source.resolve(strict=True)
+    sys.path.insert(0, str(ROOT / "TOOLS"))
+    from speech_transcribe.routing import resolve
+    route = resolve(ROOT, config_path=source)
+    if any(spec["type"] != "http" for name, spec in route.items() if name != "timing"):
+        raise ValueError("Use --speech-model-root for a route with managed local models")
+    runtime = LOCAL / "runtimes/speech-api-v1"
+    python = runtime / "Scripts/python.exe"
+    if not python.exists():
+        venv.EnvBuilder(with_pip=True).create(runtime)
+    lock = (SPEECH / "requirements.lock").read_text("utf8").splitlines()
+    packages = [line for line in lock if line.startswith(("av==", "numpy=="))]
+    if len(packages) != 2:
+        raise ValueError("Speech decoder dependencies missing from lock")
+    subprocess.run([python, "-m", "pip", "install", *packages], check=True)
+    target = LOCAL / "speech-api.json"
+    temp = target.with_suffix(".pending")
+    shutil.copyfile(source, temp)
+    temp.replace(target)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ffmpeg", type=Path)
     parser.add_argument("--aria2", type=Path)
     parser.add_argument("--browser", action="store_true")
-    parser.add_argument("--speech-model-root", type=Path)
+    speech = parser.add_mutually_exclusive_group()
+    speech.add_argument("--speech-model-root", type=Path)
+    speech.add_argument("--speech-api-config", type=Path)
     args = parser.parse_args()
     if sys.platform != "win32" or sys.version_info[:2] != (3, 11):
         parser.error("Use Windows CPython 3.11")
-    if not any((args.ffmpeg, args.aria2, args.browser, args.speech_model_root)):
+    if not any((args.ffmpeg, args.aria2, args.browser, args.speech_model_root, args.speech_api_config)):
         parser.error("Select at least one optional video dependency")
     if args.ffmpeg or args.aria2:
         configure_binaries(args.ffmpeg, args.aria2)
@@ -104,3 +128,6 @@ if __name__ == "__main__":
         configure_browser()
     if args.speech_model_root:
         configure_speech(args.speech_model_root)
+
+    if args.speech_api_config:
+        configure_speech_api(args.speech_api_config)

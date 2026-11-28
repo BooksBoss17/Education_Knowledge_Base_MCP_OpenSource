@@ -1,4 +1,4 @@
-"""Managed local Qwen3-ASR worker."""
+"""Managed speech worker with configurable recognition and optional alignment."""
 import argparse
 import json
 import os
@@ -7,7 +7,12 @@ import runpy
 import sys
 
 
-def windows(source):
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from speech_transcribe import providers, routing
+from speech_transcribe.api_session import open_providers
+
+
+def windows(source, timeline):
     """Decode the first audio track, cutting long inputs near a quiet boundary."""
     import av
     import numpy as np
@@ -22,8 +27,18 @@ def windows(source):
                 yield from resampler.resample(frame)
             yield from resampler.resample(None)
         blocks=[];size=0
+        consumed=0
+        origin=media.start_time/av.time_base if media.start_time is not None else None
         for frame in frames():
             block=frame.to_ndarray().reshape(-1);blocks.append(block);size+=len(block)
+            audio_time=consumed/rate
+            media_time=float(frame.pts*frame.time_base)-origin if frame.pts is not None and frame.time_base and origin is not None else None
+            last=timeline[-1] if timeline else None
+            if last is None or (last["media_start"] is None)!=(media_time is None) or (
+                media_time is not None and abs(media_time-last["media_start"]-(audio_time-last["audio_start"]))>1/rate
+            ):
+                timeline.append(dict(audio_start=audio_time,media_start=media_time))
+            consumed+=len(block)
             if size>=target:
                 joined=np.concatenate(blocks)
                 area=joined[target-5*rate:target].reshape(-1,320)
@@ -33,53 +48,58 @@ def windows(source):
         if size:yield np.concatenate(blocks)
 
 
-def load_models(models, timestamps):
-    import torch
-    from qwen_asr import Qwen3ASRModel, Qwen3ForcedAligner
-    torch.set_num_threads(min(8,torch.get_num_threads()))
-    def options(folder):
-        size=sum(p.stat().st_size for p in folder.glob("*.safetensors"))
-        device="cpu"
-        if torch.cuda.is_available() and torch.cuda.mem_get_info()[0]>size*1.15+512*1024**2:
-            device="cuda:0"
-        return dict(device_map=device,dtype=torch.bfloat16 if device!="cpu" else torch.float32,local_files_only=True)
-    asr=models/"Qwen3-ASR-1.7B";opts=options(asr)
-    recognizer=Qwen3ASRModel.from_pretrained(str(asr),**opts,max_inference_batch_size=1,max_new_tokens=2048)
-    aligner=None;devices={"asr":opts["device_map"]}
-    if timestamps:
-        folder=models/"Qwen3-ForcedAligner-0.6B";opts=options(folder)
-        aligner=Qwen3ForcedAligner.from_pretrained(str(folder),**opts)
-        devices["aligner"]=opts["device_map"]
-    return recognizer,aligner,devices
-
-
-def transcribe(models, source, payload, output):
+def transcribe(models, source, payload, output, route=None):
     import itertools
-    audio=windows(source)
+    timing_requested=payload["timestamps"]
+    route=route or routing.resolve(models.parent,timing_requested)
+    timeline=[]
+    audio=windows(source,timeline)
     first=next(audio,None)
     if first is None:raise ValueError("EMPTY_AUDIO")
-    asr,aligner,devices=load_models(models,payload["timestamps"])
-    supported=set(aligner.get_supported_languages() or []) if aligner else set()
+    with open_providers(route,models) as clients:
+        return process_windows(itertools.chain([first],audio),timeline,clients,route,payload,output)
+
+
+def process_windows(audio,timeline,clients,route,payload,output):
+    timing_requested=payload["timestamps"]
+    timing=route["timing"]
+    asr=clients["asr"]
+    aligner=clients.get("aligner")
+    clock=route.get("aligner",route["asr"])
+    granularity=clock.get("granularity","word_or_character") if timing!="none" else "none"
     samples=count=spans=unaligned=0
     with (output/"transcript.txt").open("x",encoding="utf8") as text, (output/"segments.jsonl").open("x",encoding="utf8") as rows:
-        for block in itertools.chain([first],audio):
+        for block in audio:
             begin=samples/16000;samples+=len(block);end=samples/16000
             clip=(block,16000)
-            prediction=asr.transcribe(audio=clip,language=payload["language"])[0]
-            row=dict(index=count,start=begin,end=end,language=prediction.language,text=prediction.text)
-            if aligner:
-                row["timestamps"]=[]
-                if prediction.text.strip() and supported and prediction.language.lower() not in supported:
-                    row["alignment"]="unsupported_language";unaligned+=1
-                elif prediction.text.strip():
-                    aligned=aligner.align(audio=clip,text=prediction.text,language=prediction.language)[0]
-                    for token in aligned:
-                        row["timestamps"].append(dict(text=token.text,start=round(begin+token.start_time,3),end=round(begin+token.end_time,3)))
-                    if not row["timestamps"]:unaligned+=1
-                    spans+=len(row["timestamps"])
-            count+=1;text.write(prediction.text+"\n");rows.write(json.dumps(row,ensure_ascii=False)+"\n")
-    return dict(segment_count=count,audio_seconds=samples/16000,timestamp_count=spans,unaligned_segments=unaligned,
-                source_sha256=payload["source_sha256"],devices=devices,timestamps_requested=payload["timestamps"])
+            pred=asr.recognize(clip,payload["language"],timing=="native")
+            words=pred["text"];lang=pred.get("language") or payload["language"] or ""
+            if not isinstance(words,str) or not isinstance(lang,str):raise ValueError("Invalid speech prediction")
+            row=dict(index=count,start=begin,end=end,language=lang,text=words)
+            if timing!="none":
+                if timing=="native":
+                    timed=pred
+                elif words.strip():
+                    timed=aligner.align(clip,lang,words)
+                else:
+                    timed={"timestamps":[]}
+                marks=providers.intervals(timed.get("timestamps"),len(block)/16000,begin)
+                row["timestamp_granularity"]=granularity
+                row["timed_segments" if granularity=="segment" else "timestamps"]=marks
+                if timed.get("alignment")=="unsupported_language":
+                    row["alignment"]="unsupported_language"
+                if words.strip() and not marks:
+                    if clock["type"]=="http" and "alignment" not in row:
+                        raise ValueError("Requested speech timing missing")
+                    unaligned+=1
+                spans+=len(marks)
+            count+=1;text.write(words+"\n");rows.write(json.dumps(row,ensure_ascii=False)+"\n")
+    devices={role:client.device for role,client in clients.items()}
+    return dict(http_calls={role:client.calls for role,client in clients.items()},segment_count=count,audio_seconds=samples/16000,timestamp_count=spans,unaligned_segments=unaligned,
+                source_sha256=payload["source_sha256"],devices=devices,timestamps_requested=timing_requested,
+                timing_mode=timing,timestamp_granularity=granularity,time_base="decoded_audio_seconds",
+                audio_to_media=timeline,route_fingerprint=routing.fingerprint(route),
+                models={role:route[role]["model"] for role in devices})
 
 
 def main():
@@ -99,7 +119,10 @@ def main():
     tmp=manager.safe_path("tmp/speech_transcribe/"+job["job_id"]);tmp.mkdir(parents=True,exist_ok=False)
     output=manager.safe_path("Output/speech_transcribe/"+job["job_id"]);output.parent.mkdir(parents=True,exist_ok=True)
     os.environ.update(HF_HUB_OFFLINE="1",TRANSFORMERS_OFFLINE="1",TOKENIZERS_PARALLELISM="false")
-    summary=transcribe(root/"MODELS",source,payload,tmp)
+    route=routing.resolve(root,payload["timestamps"])
+    if routing.fingerprint(route)!=payload.get("route_fingerprint"):
+        raise ValueError("Speech provider configuration changed after submission; submit again")
+    summary=transcribe(root/"MODELS",source,payload,tmp,route)
     if helpers["sha"](source)!=payload["source_sha256"]:raise ValueError("Source changed during transcription")
     (tmp/"summary.json").write_text(json.dumps(summary,ensure_ascii=False),encoding="utf8")
     tmp.rename(output)

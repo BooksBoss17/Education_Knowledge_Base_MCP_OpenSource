@@ -39,6 +39,10 @@ class Manager:
         self.adapter = ResourceAdapter(registry["resource_policy"])
         self.key = auth_key(root)
         self.active = {}
+        self.cleanup_dir = self.root / "ownership"
+        self.cleanup_dir.mkdir(exist_ok=True, parents=True)
+        self.recheck_after = {}
+        self.orphan_records = list(self.cleanup_dir.glob("*.json"))
         self.active_lock = threading.RLock()
         self.submission_lock = threading.Lock()
         self.draining = False
@@ -232,13 +236,46 @@ class Manager:
                                        "stderr_tail": owned.logs["stderr"].tail.decode("utf-8", errors="replace"),
                                        "resource_summary": owned.summary})
 
+        (self.cleanup_dir / (job["job_id"] + ".json")).unlink(missing_ok=True)
+        self.recheck_after.pop(job["job_id"], None)
+
+    def release_orphaned_jobs(self):
+        # Opening with query-only access cannot terminate or adopt an unrelated process.
+        for marker in list(self.orphan_records):
+            identifier = marker.stem
+            if time.monotonic() < self.recheck_after.get(identifier, 0):
+                continue
+            self.recheck_after[identifier] = time.monotonic() + 3
+            try:
+                record = json.loads(marker.read_bytes())
+                if WindowsJob.members_after_restart(record["name"]):
+                    continue
+            except (OSError, RunManagerError):
+                continue
+            job = self.store.status(identifier)
+            self.store.transition(identifier, job["state"], updates={"cleanup": {"exit_confirmed": True, "after_restart": True}})
+            marker.unlink(missing_ok=True)
+            self.orphan_records.remove(marker)
+            self.recheck_after.pop(identifier, None)
+
     def step(self):
+        self.release_orphaned_jobs()
+        if self.orphan_records:
+            return
         with self.active_lock:
             running = list(self.active.items())
         for identifier, owned in running:
             job = self.store.status(identifier)
             if job["state"] == "INTERRUPTED":
-                continue  # Ownership cleanup must be explicitly investigated.
+                if time.monotonic() >= self.recheck_after.get(identifier, 0):
+                    self.recheck_after[identifier] = time.monotonic() + 3
+                    try:
+                        empty = not owned.job.handle or not owned.job.pids()
+                    except (OSError, RunManagerError):
+                        empty = False
+                    if empty:
+                        self.finish(job, "INTERRUPTED", job.get("error"))
+                continue
             if job["state"] == "CANCEL_REQUESTED":
                 self.finish(job, "CANCELLED", job.get("error"))
                 continue
@@ -328,7 +365,10 @@ class Manager:
             # Job. Live observations include the worker tree and policy floors.
             cap = job["policy"].get("project_ram_cap_gib")
             memory_limit = max(1024**2, int(cap * 1024**3) - 128 * 1024**2) if cap else None
-            owned = OwnedProcess(command, cwd=job["workspace"], environment=environment, folder=folder, memory_limit=memory_limit)
+            name = "Local\\EKB-Worker-" + mutex_name(self.root, job["job_id"])
+            marker = self.cleanup_dir / (job["job_id"] + ".json")
+            atomic_json(marker, {"name": name})
+            owned = OwnedProcess(command, cwd=job["workspace"], environment=environment, folder=folder, memory_limit=memory_limit, job_name=name)
             owned.resources = RotatingLog(folder / "resources.jsonl")
             owned.summary = {"samples": 0, "scope": "MANAGER_PLUS_OWNED_WORKER_TREE; whole-device GPU",
                              "controller_reserve_bytes": 128 * 1024**2,
@@ -347,11 +387,16 @@ class Manager:
                 try:
                     owned.close()
                 except BaseException as cleanup_error:
+                    with self.active_lock:
+                        self.active[job["job_id"]] = owned
                     self.store.transition(job["job_id"], "INTERRUPTED", error={"code": "OWNED_CLEANUP_UNCONFIRMED", "message": str(cleanup_error)})
                     return
                 with self.active_lock:
                     self.active.pop(job["job_id"], None)
             self.store.transition(job["job_id"], "FAILED", error={"code": getattr(error, "code", "WORKER_START_FAILED"), "message": str(error)})
+            marker = self.cleanup_dir / (job["job_id"] + ".json")
+            if marker.exists() and marker not in self.orphan_records:
+                self.orphan_records.append(marker)
 
     def loop(self):
         try:

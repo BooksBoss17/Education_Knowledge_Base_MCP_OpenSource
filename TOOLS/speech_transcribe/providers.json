@@ -1,0 +1,6 @@
+{
+  "schema": "speech-providers-v1",
+  "timing": "aligner",
+  "asr": {"type": "managed_http", "model": "Qwen3-ASR-1.7B"},
+  "aligner": {"type": "managed_http", "model": "Qwen3-ForcedAligner-0.6B"}
+}

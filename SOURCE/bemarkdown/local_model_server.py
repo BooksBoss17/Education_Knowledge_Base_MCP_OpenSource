@@ -160,6 +160,8 @@ class ProcessBackend:
         if closed is None and journal is not None and (journal / "CLOSED.json").is_file():
             closed = {"schema": SESSION_SCHEMA, "state": "CLOSED", **json.loads((journal / "CLOSED.json").read_text("utf-8"))}
         if action == "open":
+            if self.session is not None and getattr(self.session, "closing", False):
+                raise ModelApiError("MODEL_SESSION_EXIT_PENDING")
             if hashlib.sha256(self.config_path.read_bytes()).hexdigest() != self.config_sha256:
                 raise ModelApiError("MODEL_API_SERVER_CONFIG_CHANGED")
             role = payload.get("role")
@@ -216,7 +218,7 @@ class ProcessBackend:
         return closed
 
     def reap(self):
-        if self.session is not None and self.session.child.poll() is not None:
+        if self.session is not None and self.session.child.poll() is not None and (self.session.job is None or self.session.job.empty()):
             self.close_session()
 
     def close(self):

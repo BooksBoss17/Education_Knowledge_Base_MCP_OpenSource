@@ -23,6 +23,7 @@ def _kernel():
         "CreateJobObjectW": ([ctypes.c_void_p, wintypes.LPCWSTR], wintypes.HANDLE),
         "SetInformationJobObject": ([wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD], wintypes.BOOL),
         "QueryInformationJobObject": ([wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD, ctypes.c_void_p], wintypes.BOOL),
+        "OpenJobObjectW": ([wintypes.DWORD, wintypes.BOOL, wintypes.LPCWSTR], wintypes.HANDLE),
         "AssignProcessToJobObject": ([wintypes.HANDLE, wintypes.HANDLE], wintypes.BOOL),
         "TerminateJobObject": ([wintypes.HANDLE, wintypes.UINT], wintypes.BOOL),
         "CreateMutexW": ([ctypes.c_void_p, wintypes.BOOL, wintypes.LPCWSTR], wintypes.HANDLE),
@@ -108,9 +109,9 @@ def mutex_name(root, role):
 
 
 class WindowsJob:
-    def __init__(self, memory_limit=None, *, breakaway=False):
+    def __init__(self, memory_limit=None, *, breakaway=False, name=None):
         self.kernel = _kernel()
-        self.handle = self.kernel.CreateJobObjectW(None, None)
+        self.handle = self.kernel.CreateJobObjectW(None, name)
         if not self.handle:
             raise ctypes.WinError(ctypes.get_last_error())
         class Limits(ctypes.Structure):
@@ -131,6 +132,21 @@ class WindowsJob:
             self.kernel.CloseHandle(self.handle)
             self.handle = None
             raise error
+
+    @classmethod
+    def members_after_restart(cls, name):
+        kernel = _kernel()
+        handle = kernel.OpenJobObjectW(0x0004, False, name)  # JOB_OBJECT_QUERY
+        if not handle:
+            if ctypes.get_last_error() == 2:
+                return []
+            raise ctypes.WinError(ctypes.get_last_error())
+        job = cls.__new__(cls)
+        job.kernel, job.handle = kernel, handle
+        try:
+            return job.pids()
+        finally:
+            kernel.CloseHandle(handle)
 
     def assign(self, process):
         if not self.kernel.AssignProcessToJobObject(self.handle, int(process._handle)):
@@ -220,8 +236,8 @@ class WindowsJob:
 
 class OwnedProcess:
     """Created suspended: registration and Job assignment precede execution."""
-    def __init__(self, command, *, cwd, environment, folder, memory_limit=None):
-        self.job = WindowsJob(memory_limit)
+    def __init__(self, command, *, cwd, environment, folder, memory_limit=None, job_name=None):
+        self.job = WindowsJob(memory_limit, name=job_name)
         self.process = None
         self.threads = []
         self.logs = {name: RotatingLog(Path(folder) / (name + ".log")) for name in ("stdout", "stderr")}

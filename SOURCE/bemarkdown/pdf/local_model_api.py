@@ -63,6 +63,10 @@ class ModelApiError(ValueError):
     pass
 
 
+class SessionExitPending(ModelApiError):
+    """The server retains ownership of a closing worker."""
+
+
 class ConfirmedSessionTimeout(ModelApiError):
     """Local server confirmed a timed-out request after worker cleanup."""
 
@@ -168,6 +172,13 @@ class LocalModelApi:
             if missing_ok and exc.code in {404, 405, 501}:
                 return None
             detail = exc.read(8192).decode("utf-8", errors="replace")
+            if exc.code == 500 and self.base_url and url == self.base_url + "/v2/session/close":
+                try:
+                    pending = json.loads(detail) == {"error": "MODEL_SESSION_EXIT_PENDING"}
+                except ValueError:
+                    pending = False
+                if pending:
+                    raise SessionExitPending("MODEL_SESSION_EXIT_PENDING") from exc
             if exc.code == 500 and self.base_url and url == self.base_url + "/v2/session/infer" and self.role == "text" and (
                     self.capability or {}).get("confirmed_timeout_split") is True:
                 try:
@@ -334,7 +345,15 @@ class LocalModelApi:
     def _close_session(self):
         if self.session_id is not None:
             started = time.perf_counter()
-            value = self._session_call("close")
+            for attempt in range(4):
+                try:
+                    value = self._session_call("close")
+                    break
+                except SessionExitPending:
+                    self._progress("EXIT_PENDING")
+                    if attempt == 3:
+                        raise
+                    time.sleep(1)
             if (value.get("schema") != SESSION_SCHEMA or value.get("session_id") != self.session_id
                     or value.get("model_unloaded") is not True or value.get("state") != "CLOSED"):
                 raise ModelApiError("MODEL_API_SESSION_UNLOAD_UNCONFIRMED")

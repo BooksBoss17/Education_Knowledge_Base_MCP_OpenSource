@@ -1,15 +1,24 @@
 {
   "schema": "speech-transcribe-release-v1",
-  "release_id": "mcp-v0.13.0",
+  "release_id": "mcp-v0.15.1",
   "runtime": "qwen3-speech-006",
   "model_manifests": {
     "Qwen3-ASR-1.7B": "ca7e5f132772ce50981296e1b8baca892042467b21ac71f3ab74dfdc69e99fde",
     "Qwen3-ForcedAligner-0.6B": "184f77deb0c9047430f065bc30e5feae1fbb472b6c76f17914b7b93462dda893"
   },
   "files": {
-    "mcp_tool.py": "f65460bccc30cd369111110ce0d1b94dac53c9332a3daf31a98793a1c5232be1",
-    "README.md": "b607dbcb1d44429b71272f6b468fe0bdff6da209f4362498016ae0b61b925620",
-    "requirements.lock": "27415289207a7cb235b8ba86dd772a501ab18ab197cb224e2a633850624c3d45",
-    "worker.py": "36ec25c193473e14f794a2c95ecbba744f811556f3360e4e9e94bc9ec9ad30c5"
-  }
+    "api_session.py": "b791559142061ba675d094e0a448c2522d4c1b3a77acef9ce107eafc2c9cd8de",
+    "local_api.py": "3567c127c043719845723dafc8d1bbfac506e568b6cc0d958901d4f986079979",
+    "mcp_tool.py": "d34492f8fc4b70ab3e98f08d1f8890e8f57beff93d2d5b10ac7faf592ccf4145",
+    "model-manifests/Qwen3-ASR-1.7B.json": "ca7e5f132772ce50981296e1b8baca892042467b21ac71f3ab74dfdc69e99fde",
+    "model-manifests/Qwen3-ForcedAligner-0.6B.json": "184f77deb0c9047430f065bc30e5feae1fbb472b6c76f17914b7b93462dda893",
+    "providers.json": "f99a55e963b78179aa3b0d27cfcd0c09fc1a660b5e7cc5c4a8bc8b93a388f7d9",
+    "providers.py": "56300ec72a4c5f4f45289f5389f25b3957026509bcd42b94921319adbab4b479",
+    "README.md": "799b85b2ab8d588521988a343cf0e1e45268e5f9530a4094616ca24fb02fa8e2",
+    "requirements.lock": "fb7819fbbcec512429153ab51ad7bee13aac52b629aff7510f413a37c91374eb",
+    "routing.py": "26449f76133b1f918f5d86befea2cac5249671636f85a9bd0feccf50a51e457d",
+    "worker.py": "eac00abea53cb85468ed46caa7ef8d167dc41bf8161af42f4bde5eb797bc105e"
+  },
+  "provider_contract": "speech-api-v1",
+  "managed_transport": "http-f32le-v1"
 }

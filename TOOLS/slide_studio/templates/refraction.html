@@ -1,0 +1,190 @@
+<meta charset="utf-8" /><title>光的折射</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    background: #102930;
+    color: #e5f1ed;
+    font:
+      14px system-ui,
+      sans-serif;
+  }
+  svg {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    user-select: none;
+  }
+  svg text {
+    fill: #b6cfd0;
+    font:
+      14px system-ui,
+      sans-serif;
+  }
+  .controls {
+    background: #17363d;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 6px 12px;
+  }
+  button,
+  select,
+  input {
+    font: inherit;
+    accent-color: #62d6c0;
+  }
+  button,
+  select {
+    color: #ecf7f2;
+    background: #234950;
+    border: 1px solid #537074;
+    border-radius: 5px;
+    padding: 3px 8px;
+  }
+  output {
+    font-variant-numeric: tabular-nums;
+  }
+  #handle {
+    cursor: grab;
+  }
+</style>
+<svg id="scene" viewBox="0 0 720 330" aria-label="拖动光源改变入射角">
+  <rect width="720" height="165" fill="#152f38" />
+  <rect y="165" width="720" height="165" fill="#20505e" />
+  <path d="M0 165H720" stroke="#84c5c4" />
+  <path id="guide" d="M360 14V315" stroke="#91afb5" stroke-dasharray="5 6" />
+  <text id="topMedium" x="18" y="28"></text>
+  <text id="lowerMedium" x="18" y="192"></text>
+  <path id="incoming" stroke="#ffcf76" stroke-width="4" fill="none" />
+  <path id="outgoing" stroke="#83ecdb" stroke-width="4" fill="none" />
+  <circle id="handle" r="9" fill="#ffcf76" stroke="#fff2c9" stroke-width="3" />
+  <circle cx="360" cy="165" r="3" fill="#fff" />
+</svg>
+<div class="controls">
+  <button id="go">演示</button><button id="reset">复位</button
+  ><select id="medium" aria-label="介质">
+    <option value="air-glass">空气 → 玻璃</option>
+    <option value="glass-air">玻璃 → 空气</option></select
+  ><label
+    >入射角 <input id="angle" type="range" min="0" max="88" step=".1" /></label
+  ><output id="readout"></output>
+</div>
+<script>
+  (() => {
+    const get = (id) => document.getElementById(id),
+      svg = get("scene"),
+      angle = get("angle"),
+      medium = get("medium");
+    const rad = Math.PI / 180,
+      settings = window.studioParams || {};
+    let progress = 1,
+      frame = 0,
+      previous = 0;
+    function draw() {
+      get("guide").style.display = settings.normal === false ? "none" : "";
+      const a = Number(angle.value) * rad,
+        dense = medium.value === "glass-air",
+        n1 = dense ? 1.5 : 1,
+        n2 = dense ? 1 : 1.5;
+      const sine = (n1 * Math.sin(a)) / n2,
+        total = sine > 1,
+        b = total ? a : Math.asin(Math.min(1, sine));
+      const x = 360 - 145 * Math.sin(a),
+        y = 165 - 145 * Math.cos(a);
+      // Equal geometric segments take time proportional to the refractive index of their medium.
+      const split = n1 / (n1 + (total ? n1 : n2)),
+        first = Math.min(1, progress / split),
+        last = Math.max(0, (progress - split) / (1 - split));
+      get("handle").setAttribute("cx", x);
+      get("handle").setAttribute("cy", y);
+      get("incoming").setAttribute(
+        "d",
+        "M" +
+          x +
+          " " +
+          y +
+          " L" +
+          (x + first * (360 - x)) +
+          " " +
+          (y + first * (165 - y)),
+      );
+      get("outgoing").setAttribute(
+        "d",
+        "M360 165 L" +
+          (360 + 145 * Math.sin(b) * last) +
+          " " +
+          (165 + (total ? -1 : 1) * 145 * Math.cos(b) * last),
+      );
+      get("guide").style.display = settings.normal === false ? "none" : "";
+      get("topMedium").textContent = dense
+        ? "玻璃 · n = 1.50"
+        : "空气 · n = 1.00";
+      get("lowerMedium").textContent = dense
+        ? "空气 · n = 1.00"
+        : "玻璃 · n = 1.50";
+      get("readout").textContent =
+        Number(angle.value).toFixed(1) +
+        "°　" +
+        (total
+          ? "全反射 · 反射角 " + Number(angle.value).toFixed(1) + "°"
+          : "折射角 " + (b / rad).toFixed(1) + "°");
+    }
+    function pause() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      get("go").textContent = "演示";
+    }
+    function tick(now) {
+      progress = Math.min(1, progress + (now - previous) / 1800);
+      previous = now;
+      draw();
+      if (progress < 1) frame = requestAnimationFrame(tick);
+      else pause();
+    }
+    function play() {
+      if (frame) return;
+      if (progress >= 1) progress = 0;
+      previous = performance.now();
+      get("go").textContent = "暂停";
+      frame = requestAnimationFrame(tick);
+    }
+    function reset() {
+      pause();
+      angle.value = Number(settings.angle ?? 35);
+      medium.value =
+        settings.medium === "glass-air" ? "glass-air" : "air-glass";
+      progress = 1;
+      draw();
+    }
+    function drag(e) {
+      const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(
+        svg.getScreenCTM().inverse(),
+      );
+      angle.value = Math.max(
+        0,
+        Math.min(88, Math.atan2(360 - p.x, 165 - p.y) / rad),
+      );
+      draw();
+    }
+    svg.onpointerdown = (e) => {
+      svg.setPointerCapture(e.pointerId);
+      drag(e);
+    };
+    svg.onpointermove = (e) => {
+      if (svg.hasPointerCapture(e.pointerId)) drag(e);
+    };
+    get("go").onclick = () => (frame ? pause() : play());
+    get("reset").onclick = reset;
+    angle.oninput = medium.onchange = draw;
+    addEventListener("message", (e) => {
+      if (e.source === parent && e.data?.type === "studio-action")
+        ({ play, pause, reset })[e.data.action]?.();
+    });
+    reset();
+  })();
+</script>

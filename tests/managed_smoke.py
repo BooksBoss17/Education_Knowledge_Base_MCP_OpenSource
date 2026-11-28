@@ -68,9 +68,12 @@ def main():
 
                 try:
                     initialization = rpc('initialize',protocolVersion='2025-11-25',capabilities={},clientInfo={'name':'public-smoke','version':'1'})
-                    assert initialization['serverInfo']['version'] == '0.14.1'
+                    assert initialization['serverInfo']['version'] == '0.15.1'
                     tools = {t['name']: t for t in rpc('tools/list')['tools']}
-                    assert set(tools) == {
+                    studio = json.loads((ROOT/"TOOLS/slide_studio/plugin/tools.json").read_bytes())
+                    studio_names = {x["name"] for x in studio}
+                    assert len(studio_names)==14
+                    assert set(tools) == studio_names | {
                         'bemarkdown_convert',
                         'bemarkdown_convert_image',
                         'bemarkdown_info',

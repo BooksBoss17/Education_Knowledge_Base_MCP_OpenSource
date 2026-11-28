@@ -23,7 +23,7 @@ import uuid
 import zipfile
 from urllib.parse import unquote
 
-VERSION = "0.14.1"
+VERSION = "0.15.1"
 RASTER_SUFFIXES = frozenset({'.png', '.jpg', '.jpeg', '.webp', '.bmp', '.tif', '.tiff'})
 IMAGE_REVIEW = runpy.run_path(str(Path(__file__).with_name("image_review.py")))
 WORKSPACE_MANAGER = runpy.run_path(str(Path(__file__).with_name("workspace_manager.py")))["WorkspaceManager"]
@@ -115,7 +115,10 @@ from speech_transcribe import mcp_tool as SPEECH
 from bilidown import search_tool as BILI_SEARCH
 from bilidown import mcp_tool as BILIDOWN
 
+from slide_studio.plugin import mcp_tool as STUDIO
+
 TOOLS = [
+    *STUDIO.SCHEMAS,
     SPEECH.SCHEMA,
     BILI_SEARCH.SCHEMA,
     BILIDOWN.SCHEMA,
@@ -604,6 +607,8 @@ class Service:
             client.task_run("leave",self.workspace,task,**fields)
 
     def _dispatch(self, name, args):
+        if name in STUDIO.NAMES:
+            return STUDIO.call(self,name,args)
         if name == 'runtime_jobs':
             bridge = runpy.run_path(str(Path(__file__).with_name('managed_bridge.py')))
             return text_result(bridge['call'](self, **args))
@@ -661,56 +666,69 @@ class Service:
 
 def serve(service, incoming=sys.stdin, outgoing=sys.stdout):
     """MCP JSON-RPC newline framing; stdout contains protocol messages only."""
-    initialized = False
-    for line in incoming:
-        request = None
-        try:
-            request = json.loads(line)
-            if not isinstance(request, dict) or request.get("jsonrpc") != "2.0":
-                raise ValueError("Invalid JSON-RPC request")
-            if "id" not in request:
-                continue
-            method = request.get("method")
-            params = request.get("params", {})
-            if method == "initialize":
-                version = params.get("protocolVersion")
-                if version not in ("2024-11-05", "2025-03-26", "2025-06-18", "2025-11-25"):
-                    version = "2024-11-05"
-                result = dict(protocolVersion=version, capabilities={"tools": {}},
-                              serverInfo={"name": "education-knowledge-base", "version": VERSION})
-                check = service.workspace_manager.inspect()
-                result['instructions'] = (
-                    'Only image-capable models are supported. Before conversion, source review or textbook organization, '
-                    'call bemarkdown_vision action=challenge and then action=verify using the six symbols seen in its image. '
-                    'If the image is unavailable, switch to a visual model. Repeat the check after changing models. '
-                    'Workspace initialization has already run automatically. Use knowledge_workspace inspect '
-                    'to receive the folder and GPU report; do not reconstruct the framework yourself. '
-                    'Only repair/configure when requested by the user. Current missing directory count: '
-                    + str(len(check['missing_directories'])) + '; GPU profile: '
-                    + str(check['gpu'].get('profile')) + '; installation recommended: '
-                    + str(check['gpu'].get('recommended')))
-                initialized = True
-            elif method == "ping":
-                result = {}
-            elif not initialized:
-                raise ValueError("Initialize before using tools")
-            elif method == "tools/list":
-                result = {"tools": TOOLS}
-            elif method == "tools/call":
-                try:
-                    result = service.call(params["name"], params.get("arguments", {}))
-                except Exception as exc:
-                    result = {"isError": True, "content": [{"type": "text", "text": type(exc).__name__ + ": " + str(exc)}]}
-            else:
-                outgoing.write(json.dumps(dict(jsonrpc="2.0", id=request["id"], error=dict(code=-32601, message="Method not found"))) + "\n")
-                outgoing.flush()
-                continue
-            response = dict(jsonrpc="2.0", id=request["id"], result=result)
-        except Exception as exc:
-            response = dict(jsonrpc="2.0", id=request.get("id") if isinstance(request, dict) else None,
-                            error=dict(code=-32700 if isinstance(exc, json.JSONDecodeError) else -32600, message=str(exc)))
-        outgoing.write(json.dumps(response, ensure_ascii=False) + "\n")
-        outgoing.flush()
+    receivers = STUDIO.Receivers()
+    output_lock = threading.Lock()
+    def reply(response):
+        with output_lock:
+            outgoing.write(json.dumps(response, ensure_ascii=False) + "\n")
+            outgoing.flush()
+    try:
+        initialized = False
+        for line in incoming:
+            request = None
+            try:
+                request = json.loads(line)
+                if not isinstance(request, dict) or request.get("jsonrpc") != "2.0":
+                    raise ValueError("Invalid JSON-RPC request")
+                if "id" not in request and request.get("method") == "notifications/cancelled":
+                    receivers.cancel(request.get("params", {}).get("requestId"))
+                if "id" not in request:
+                    continue
+                method = request.get("method")
+                params = request.get("params", {})
+                if method == "initialize":
+                    version = params.get("protocolVersion")
+                    if version not in ("2024-11-05", "2025-03-26", "2025-06-18", "2025-11-25"):
+                        version = "2024-11-05"
+                    result = dict(protocolVersion=version, capabilities={"tools": {}},
+                                  serverInfo={"name": "education-knowledge-base", "version": VERSION})
+                    check = service.workspace_manager.inspect()
+                    result['instructions'] = (
+                        'Only image-capable models are supported. Before conversion, source review or textbook organization, '
+                        'call bemarkdown_vision action=challenge and then action=verify using the six symbols seen in its image. '
+                        'If the image is unavailable, switch to a visual model. Repeat the check after changing models. '
+                        'Workspace initialization has already run automatically. Use knowledge_workspace inspect '
+                        'to receive the folder and GPU report; do not reconstruct the framework yourself. '
+                        'Only repair/configure when requested by the user. Current missing directory count: '
+                        + str(len(check['missing_directories'])) + '; GPU profile: '
+                        + str(check['gpu'].get('profile')) + '; installation recommended: '
+                        + str(check['gpu'].get('recommended')))
+                    initialized = True
+                elif method == "ping":
+                    result = {}
+                elif not initialized:
+                    raise ValueError("Initialize before using tools")
+                elif method == "tools/list":
+                    result = {"tools": TOOLS}
+                elif method == "tools/call":
+                    try:
+                        name, args = params["name"], params.get("arguments", {})
+                        if name == "studio_session_receive" and args.get("timeout", 20) != 0:
+                            receivers.start(request["id"], lambda n=name, a=args: service.call(n, a), reply)
+                            continue
+                        result = service.call(name, args)
+                    except Exception as exc:
+                        result = {"isError": True, "content": [{"type": "text", "text": type(exc).__name__ + ": " + str(exc)}]}
+                else:
+                    reply(dict(jsonrpc="2.0", id=request["id"], error=dict(code=-32601, message="Method not found")))
+                    continue
+                response = dict(jsonrpc="2.0", id=request["id"], result=result)
+            except Exception as exc:
+                response = dict(jsonrpc="2.0", id=request.get("id") if isinstance(request, dict) else None,
+                                error=dict(code=-32700 if isinstance(exc, json.JSONDecodeError) else -32600, message=str(exc)))
+            reply(response)
+    finally:
+        receivers.close()
 
 
 def main():

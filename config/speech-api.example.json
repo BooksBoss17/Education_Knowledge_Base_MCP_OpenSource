@@ -1,0 +1,11 @@
+{
+  "schema": "speech-providers-v1",
+  "timing": "native",
+  "asr": {
+    "type": "http",
+    "endpoint": "http://127.0.0.1:8075/transcribe",
+    "model": "my-asr",
+    "revision": "v1",
+    "granularity": "word"
+  }
+}

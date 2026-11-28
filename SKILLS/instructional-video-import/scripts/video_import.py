@@ -102,6 +102,13 @@ def prepare(root, args):
     lines = [f"# {title} · 时间戳稿件", "", f"原视频 [{video.name}](<{quote(video.name)}>)", f"\nSHA-256 `{sha}`"]
     if url:
         lines += ["", f"[B 站原视频]({url})"]
+    clock = summary.get("audio_to_media", [])
+    if any(anchor["media_start"] is None or abs(anchor["media_start"]-anchor["audio_start"]) > .001 for anchor in clock):
+        lines += ["", "以下标题按解码音轨计时。选帧时从对应起点加上本段已过时间。", "", "| 音轨起点 | 播放起点（秒） |","|---|---:|"]
+        for anchor in clock:
+            media_start = anchor["media_start"]
+            value = "需回看原片" if media_start is None else f"{media_start:.3f}"
+            lines.append(f"| {stamp(anchor['audio_start'])} | {value} |")
     count = 0
     duration = summary["audio_seconds"]
     if not math.isfinite(duration) or duration <= 0:
@@ -117,9 +124,11 @@ def prepare(root, args):
             last_end = row["end"]
             count += 1
             lines += ["", f"## {stamp(row['start'])} – {stamp(row['end'])}", "", row["text"] or "（无转写语音）"]
-            marks = row.get("timestamps", [])
+            is_segment = row.get("timestamp_granularity") == "segment"
+            marks = row.get("timed_segments" if is_segment else "timestamps", [])
             if marks:
-                lines += ["", "<details><summary>字词对齐时间</summary>", ""]
+                label = "片段时间" if is_segment else "字词对齐时间"
+                lines += ["", f"<details><summary>{label}</summary>", ""]
                 for mark in marks:
                     lines.append(f"- {stamp(mark['start'])} – {stamp(mark['end'])}　{mark['text']}")
                 lines += ["", "</details>"]
